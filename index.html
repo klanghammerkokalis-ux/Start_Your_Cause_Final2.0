@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Your Cause — Build Your 501(c)(3) Nonprofit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--cream:#fdf8f2;--warm:#fff9f4;--sand:#f0e9de;--sand2:#e2d5c6;
+--green:#2d8f6f;--gdark:#1d6b52;--glight:#e8f5ef;--gmid:#c4e8d8;
+--amber:#e07b39;--amberL:#fdf0e6;
+--text:#2c2418;--tmid:#6b5c4c;--tlight:#9e8e7e;
+--r:14px;--rs:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);font-size:16px;line-height:1.7}
+h1,h2,h3,h4{font-family:'Lora',serif;line-height:1.25}
+a{color:inherit;text-decoration:none}
+
+/* ── PAGES ── */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:var(--warm);border-bottom:1px solid var(--sand2);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:'Lora',serif;font-size:17px;font-weight:600;color:var(--gdark);display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap}
+.nl{display:flex;align-items:center;gap:2px;flex-wrap:nowrap}
+.nl button{background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--tmid);padding:7px 11px;border-radius:var(--rs);transition:background .15s,color .15s;white-space:nowrap}
+.nl button:hover{background:var(--sand);color:var(--text)}
+.nl button.active{color:var(--gdark);font-weight:500;background:var(--glight)}
+.nl .ncta{background:var(--green)!important;color:#fff!important;font-weight:500!important}
+.nl .ncta:hover{background:var(--gdark)!important}
+.nmb{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:4px}
+.mnav{display:none;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:var(--warm);border-bottom:1px solid var(--sand2);padding:.75rem;gap:2px;z-index:190}
+.mnav.open{display:flex}
+.mnav button{background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--tmid);padding:10px 14px;border-radius:var(--rs);text-align:left}
+.mnav button:hover{background:var(--sand);color:var(--text)}
+
+/* ── BUTTONS ── */
+.btn{font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:var(--rs);font-size:15px;font-weight:500;transition:all .15s;padding:12px 26px}
+.btn-p{background:var(--green);color:#fff;border:none}
+.btn-p:hover{background:var(--gdark);transform:translateY(-1px)}
+.btn-s{background:transparent;color:var(--gdark);border:1.5px solid var(--gmid)}
+.btn-s:hover{background:var(--glight)}
+
+/* ── HERO ── */
+.hero{background:var(--warm);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,#d4ede2 0%,transparent 70%);pointer-events:none}
+.badge{display:inline-block;background:var(--glight);color:var(--gdark);font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px;margin-bottom:1.25rem;border:1px solid var(--gmid)}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);max-width:700px;margin:0 auto 1.25rem;line-height:1.2}
+.hero h1 em{color:var(--green);font-style:italic}
+.hero-sub{font-size:17px;color:var(--tmid);max-width:520px;margin:0 auto 2rem}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-stats{display:flex;justify-content:center;gap:2.5rem;margin-top:3.5rem;flex-wrap:wrap}
+.stat-n{font-family:'Lora',serif;font-size:2rem;font-weight:600;color:var(--gdark);display:block}
+.stat-l{font-size:13px;color:var(--tlight)}
+
+/* ── SECTIONS ── */
+.wrap{max-width:1100px;margin:0 auto;padding:5rem 2rem}
+.sec-hd{text-align:center;margin-bottom:3rem}
+.sec-hd h2{font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:.75rem}
+.sec-hd p{color:var(--tmid);max-width:520px;margin:0 auto;font-size:15px}
+.stag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
+
+/* ── STEPS GRID ── */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.25rem}
+.step-card{background:var(--warm);border-radius:var(--r);padding:1.5rem 1.25rem;border:1px solid var(--sand2);transition:box-shadow .2s}
+.step-card:hover{box-shadow:0 4px 24px rgba(45,143,111,.1)}
+.step-num{font-family:'Lora',serif;font-size:2rem;font-weight:600;color:var(--gmid);display:block;margin-bottom:.5rem;line-height:1}
+.step-card h3{font-size:15px;margin-bottom:.3rem}
+.step-card p{font-size:13px;color:var(--tmid);line-height:1.6}
+
+/* ── INFO CARDS ── */
+.info-2{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.info-box{background:var(--warm);border-radius:var(--r);border:1px solid var(--sand2);padding:1.75rem}
+.info-row{display:flex;align-items:flex-start;gap:12px;padding:.875rem;background:var(--cream);border-radius:var(--rs);margin-bottom:.75rem}
+.info-icon{width:34px;height:34px;border-radius:7px;background:var(--glight);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.info-row h4{font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;margin-bottom:2px}
+.info-row p{font-size:12px;color:var(--tmid);line-height:1.5}
+
+/* ── STATE GUIDE PAGE ── */
+.sg-search{max-width:480px;margin:0 auto 2rem;position:relative}
+.sg-search input{width:100%;padding:12px 16px 12px 44px;border:1.5px solid var(--sand2);border-radius:var(--r);font-size:15px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text)}
+.sg-search input:focus{outline:none;border-color:var(--green)}
+.sg-search .sg-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--tlight);font-size:18px}
+.sg-select{width:100%;padding:12px 16px;border:1.5px solid var(--sand2);border-radius:var(--r);font-size:15px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);appearance:none;cursor:pointer;margin-bottom:1.5rem}
+.sg-select:focus{outline:none;border-color:var(--green)}
+.state-card{background:var(--warm);border-radius:var(--r);border:1px solid var(--sand2);padding:1.75rem;margin-bottom:1.25rem;display:none}
+.state-card.visible{display:block}
+.state-card h2{font-size:1.5rem;margin-bottom:.5rem}
+.state-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.meta-pill{background:var(--glight);color:var(--gdark);font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid var(--gmid)}
+.meta-pill.warn{background:var(--amberL);color:#7a4010;border-color:#f5cfa8}
+.state-table{width:100%;border-collapse:collapse;margin-bottom:1.25rem}
+.state-table td{padding:8px 0;font-size:14px;border-bottom:1px solid var(--sand)}
+.state-table td:first-child{color:var(--tmid);width:48%;padding-right:12px}
+.state-table tr:last-child td{border-bottom:none}
+.unique-list{margin:.75rem 0 0;padding-left:1.25rem}
+.unique-list li{font-size:13px;color:var(--tmid);margin-bottom:.3rem;line-height:1.5}
+.state-tip{background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:.875rem 1rem;font-size:13px;color:#7a4010;line-height:1.6;margin-top:1rem}
+
+/* ── FAQ ── */
+.faq-wrap{max-width:720px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--sand2)}
+.faq-q{width:100%;background:none;border:none;text-align:left;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;color:var(--text);padding:1.1rem 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.faq-q:hover{color:var(--gdark)}
+.faq-chev{color:var(--green);font-size:18px;transition:transform .2s;flex-shrink:0}
+.faq-item.open .faq-chev{transform:rotate(180deg)}
+.faq-a{font-size:14px;color:var(--tmid);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s}
+.faq-item.open .faq-a{max-height:500px;padding-bottom:1.1rem}
+
+/* ── CHECKLIST PAGE ── */
+.cl-hero{background:var(--warm);padding:4rem 2rem 3rem;text-align:center;border-bottom:1px solid var(--sand2)}
+.cl-hero h1{font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:.75rem}
+.cl-body{max-width:760px;margin:0 auto;padding:2.5rem 2rem 5rem}
+.cl-prog{background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.cl-emoji{font-size:28px}
+.cl-pt h3{font-size:16px;font-family:'DM Sans',sans-serif;font-weight:500;margin-bottom:2px}
+.cl-pt p{font-size:13px;color:var(--tmid)}
+.cl-bar-w{flex:1;min-width:120px}
+.cl-bar-bg{height:8px;background:var(--sand2);border-radius:4px;overflow:hidden}
+.cl-bar-f{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
+.cl-phase{margin-bottom:2.5rem}
+.phase-lbl{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
+.phase-title{font-size:19px;font-family:'Lora',serif;margin-bottom:1rem}
+.cl-items{display:flex;flex-direction:column;gap:8px}
+.cl-item{display:flex;align-items:flex-start;gap:12px;background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:12px 14px;cursor:pointer;transition:border-color .15s,background .15s}
+.cl-item:hover{border-color:var(--gmid)}
+.cl-item.chk{background:var(--glight);border-color:var(--gmid)}
+.cl-box{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--sand2);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:12px;color:var(--gdark);transition:all .15s}
+.cl-item.chk .cl-box{background:var(--green);border-color:var(--green);color:#fff}
+.cl-content h4{font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;margin-bottom:2px}
+.cl-content p{font-size:13px;color:var(--tmid);line-height:1.5}
+.cl-item.chk .cl-content h4{color:var(--gdark)}
+
+/* ── FORM ── */
+.form-hero{background:var(--warm);padding:4rem 2rem 3rem;text-align:center;border-bottom:1px solid var(--sand2)}
+.form-hero h1{font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:.75rem}
+.form-body{max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.f-prog-bar{height:6px;background:var(--sand2);border-radius:3px;margin-bottom:1.25rem}
+.f-prog-f{height:100%;background:var(--green);border-radius:3px;transition:width .4s}
+.f-dots{display:flex;gap:5px;margin-bottom:1.5rem}
+.fdot{width:8px;height:8px;border-radius:50%;background:var(--sand2);transition:all .3s}
+.fdot.done{background:var(--green)}
+.fdot.cur{background:var(--green);width:20px;border-radius:4px}
+.fsec{display:none}
+.fsec.active{display:block}
+.fcard{background:var(--warm);border-radius:var(--r);border:1px solid var(--sand2);padding:1.75rem;margin-bottom:1rem}
+.fs-tag{font-size:11px;font-weight:500;color:var(--green);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
+.fs-title{font-size:19px;font-family:'Lora',serif;margin-bottom:.5rem}
+.fs-desc{font-size:14px;color:var(--tmid);line-height:1.6;margin-bottom:1.25rem}
+.field{margin-bottom:1.1rem}
+.field label{display:block;font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.field .hint{font-size:12px;color:var(--tlight);margin-bottom:5px;line-height:1.5}
+.field input,.field textarea,.field select{width:100%;padding:10px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;resize:vertical;transition:border-color .15s}
+.field textarea{min-height:80px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(45,143,111,.1)}
+.rgroup{display:flex;flex-direction:column;gap:7px}
+.ri{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+.ri:hover{border-color:var(--gmid);background:var(--glight)}
+.ri input[type=radio]{margin-top:3px;accent-color:var(--green);flex-shrink:0}
+.ri .rt{font-size:14px;color:var(--text);line-height:1.5}
+.cgroup{display:flex;flex-direction:column;gap:7px}
+.ci{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);cursor:pointer;background:#fff;transition:border-color .15s}
+.ci:hover{border-color:var(--gmid)}
+.ci input[type=checkbox]{margin-top:3px;accent-color:var(--green);flex-shrink:0}
+.ci .ct{font-size:14px;color:var(--text);line-height:1.5}
+.tip{background:var(--glight);border-radius:var(--rs);padding:11px 13px;font-size:13px;color:#1d6b52;line-height:1.6;margin-top:10px;border:1px solid var(--gmid)}
+.warn-tip{background:var(--amberL);border-radius:var(--rs);padding:11px 13px;font-size:13px;color:#7a4010;line-height:1.6;margin-top:10px;border:1px solid #f5cfa8}
+.f-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.fb{padding:10px 24px;border-radius:var(--rs);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.fb-back{background:transparent;color:var(--tmid);border:1.5px solid var(--sand2)}
+.fb-back:hover{background:var(--sand)}
+.fb-next{background:var(--green);color:#fff;border:none}
+.fb-next:hover{background:var(--gdark);transform:translateY(-1px)}
+
+/* State-specific banner in form */
+.state-banner{background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;font-size:14px;color:#5a3010;line-height:1.6}
+.state-banner strong{display:block;font-size:15px;margin-bottom:.25rem;color:#3a1f08}
+.state-banner ul{padding-left:1.25rem;margin-top:.25rem}
+.state-banner li{margin-bottom:.2rem;font-size:13px}
+
+/* Summary & docs */
+.sum-table{width:100%;border-collapse:collapse}
+.sum-table td{padding:8px 0;font-size:14px;border-bottom:1px solid var(--sand);vertical-align:top}
+.sum-table td:first-child{color:var(--tmid);width:44%;padding-right:10px}
+.sum-table tr:last-child td{border-bottom:none}
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.875rem;margin-top:1.25rem}
+.doc-card{background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1rem 1.125rem;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.doc-card:hover{border-color:var(--gmid);box-shadow:0 2px 12px rgba(45,143,111,.1)}
+.doc-icon{font-size:24px;margin-bottom:.5rem;display:block}
+.doc-card h4{font-size:14px;font-weight:500;margin-bottom:.2rem}
+.doc-card p{font-size:12px;color:var(--tmid);line-height:1.4}
+.doc-badge{display:inline-block;font-size:11px;background:var(--glight);color:var(--gdark);padding:2px 8px;border-radius:10px;margin-top:.4rem;font-weight:500}
+
+/* ── FOOTER ── */
+footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font-size:14px}
+.f-logo{font-family:'Lora',serif;color:#fff;font-size:18px;margin-bottom:.5rem}
+.f-links{display:flex;gap:1.25rem;justify-content:center;margin:.75rem 0;flex-wrap:wrap}
+.f-links button{background:none;border:none;cursor:pointer;color:#b8a898;font-size:13px;font-family:'DM Sans',sans-serif}
+.f-links button:hover{color:#fff}
+.disclaimer{font-size:12px;color:#7a6a5a;max-width:580px;margin:.875rem auto 0;line-height:1.6}
+
+/* ── CTA STRIP ── */
+.cta-strip{background:var(--green);padding:4rem 2rem;text-align:center;margin-top:2rem}
+.cta-strip h2{color:#fff;font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:.75rem}
+.cta-strip p{color:rgba(255,255,255,.82);max-width:420px;margin:0 auto 1.5rem;font-size:15px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .nl{display:none}.nmb{display:block}
+  .info-2{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:1.5rem}
+  .cl-prog{flex-wrap:wrap}
+}
+@media(max-width:480px){.steps-grid{grid-template-columns:1fr}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero h1,.hero-sub,.hero-btns{animation:fadeUp .5s ease both}
+.hero-sub{animation-delay:.1s}.hero-btns{animation-delay:.2s}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="go('home')">🌱 Start Your Cause</div>
+  <div class="nl">
+    <button id="nb-home" class="active" onclick="go('home')">Home</button>
+    <button id="nb-what" onclick="go('what')">What is 501(c)(3)?</button>
+    <button id="nb-states" onclick="go('states')">State Guide</button>
+    <button id="nb-checklist" onclick="go('checklist')">Checklist</button>
+    <button id="nb-faq" onclick="go('faq')">FAQ</button>
+    <button id="nb-annual" onclick="go('annual')">Annual Filing</button>
+    <button id="nb-pricing" onclick="go('pricing')">Pricing</button>
+    <button id="nb-form" class="ncta" onclick="go('form')">Start My Nonprofit →</button>
+  </div>
+  <button class="nmb" onclick="toggleMob()">☰</button>
+</nav>
+<div class="mnav" id="mnav">
+  <button onclick="go('home');toggleMob()">Home</button>
+  <button onclick="go('what');toggleMob()">What is 501(c)(3)?</button>
+  <button onclick="go('states');toggleMob()">State Guide</button>
+  <button onclick="go('checklist');toggleMob()">Checklist</button>
+  <button onclick="go('faq');toggleMob()">FAQ</button>
+  <button onclick="go('annual');toggleMob()">Annual Filing</button>
+  <button onclick="go('pricing');toggleMob()">Pricing</button>
+  <button onclick="go('form');toggleMob()" style="color:var(--gdark);font-weight:500">Start My Nonprofit →</button>
+</div>
+
+<!-- ═══════ HOME ═══════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="badge">Free guide, state data &amp; formation documents</div>
+    <h1>Your dream to help others<br><em>starts here.</em></h1>
+    <p class="hero-sub">Starting a 501(c)(3) nonprofit doesn't have to be scary. We walk you through every step — in plain, simple language — and generate your actual formation documents.</p>
+    <div class="hero-btns">
+      <button class="btn btn-p" onclick="go('form')">Build my nonprofit now →</button>
+      <button class="btn btn-s" onclick="go('what')">Learn the basics first</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat text-center"><span class="stat-n">1.5M+</span><span class="stat-l">Nonprofits in the U.S.</span></div>
+      <div class="stat text-center"><span class="stat-n">56</span><span class="stat-l">States &amp; territories covered</span></div>
+      <div class="stat text-center"><span class="stat-n">8</span><span class="stat-l">Documents generated for you</span></div>
+      <div class="stat text-center"><span class="stat-n">$275</span><span class="stat-l">Minimum IRS filing fee</span></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="sec-hd">
+      <div class="stag">how it works</div>
+      <h2>From idea to 501(c)(3) in 7 steps</h2>
+      <p>Here's the big picture. Fill out our intake form and we'll generate the actual documents you need.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card"><span class="step-num">01</span><h3>Define your mission</h3><p>What problem do you want to solve? Who will you help?</p></div>
+      <div class="step-card"><span class="step-num">02</span><h3>Build your board</h3><p>Gather at least 3 people who believe in your cause.</p></div>
+      <div class="step-card"><span class="step-num">03</span><h3>Write your bylaws</h3><p>We generate these for you based on your answers.</p></div>
+      <div class="step-card"><span class="step-num">04</span><h3>Incorporate in your state</h3><p>File Articles of Incorporation — we show you exactly how.</p></div>
+      <div class="step-card"><span class="step-num">05</span><h3>Get your EIN</h3><p>A free tax ID number from IRS.gov — takes 10 minutes.</p></div>
+      <div class="step-card"><span class="step-num">06</span><h3>File IRS Form 1023</h3><p>We prepare your 1023 summary and all required attachments.</p></div>
+      <div class="step-card"><span class="step-num">07</span><h3>Open a bank account</h3><p>Keep your nonprofit's money separate from personal funds.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="go('form')">Fill out the intake form →</button>
+      <button class="btn btn-s" onclick="go('states')">Look up your state</button>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <h2>We generate your actual formation documents</h2>
+    <p>Articles of incorporation, bylaws, conflict of interest policy, board minutes, and more — all filled in with your answers.</p>
+    <button class="btn btn-s" style="background:#fff;border-color:#fff;color:var(--gdark)" onclick="go('form')">Start the intake form →</button>
+  </div>
+  <div id="home-footer"></div>
+</div>
+
+<!-- ═══════ WHAT IS 501c3 ═══════ -->
+<div class="page" id="page-what">
+  <div class="cl-hero">
+    <div class="stag">the basics</div>
+    <h1>What is a 501(c)(3)?</h1>
+    <p>Everything you need to know, in plain language — no law degree required.</p>
+  </div>
+  <div class="cl-body" style="max-width:900px">
+    <div class="info-2" style="margin-bottom:3rem">
+      <div>
+        <h2 style="font-size:1.6rem;margin-bottom:.875rem">It's a tax-exempt nonprofit</h2>
+        <p style="color:var(--tmid);margin-bottom:.875rem;font-size:15px">A 501(c)(3) is an organization the IRS approves as tax-exempt. The name comes from Section 501, part (c), subsection (3) of the tax code.</p>
+        <p style="color:var(--tmid);margin-bottom:.875rem;font-size:15px"><strong>The big deal?</strong> Donations to your org are tax-deductible for donors. That means more people give — because they get a tax break for doing so.</p>
+        <p style="color:var(--tmid);font-size:15px">Your organization also doesn't pay federal income tax on money it raises.</p>
+        <div style="margin-top:1.5rem;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-p" onclick="go('form')" style="font-size:14px;padding:10px 20px">Start my nonprofit →</button>
+          <button class="btn btn-s" onclick="go('states')" style="font-size:14px;padding:10px 20px">Check my state</button>
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-row"><div class="info-icon">🏛️</div><div><h4>Tax-exempt status</h4><p>No federal income tax on donations and grants.</p></div></div>
+        <div class="info-row"><div class="info-icon">💝</div><div><h4>Deductible donations</h4><p>Donors can deduct their gifts on personal tax returns.</p></div></div>
+        <div class="info-row"><div class="info-icon">🤝</div><div><h4>Public trust &amp; credibility</h4><p>501(c)(3) signals legitimacy — donors and grantors trust it.</p></div></div>
+        <div class="info-row" style="margin-bottom:0"><div class="info-icon">📋</div><div><h4>Grant eligibility</h4><p>Most foundations and government grants require 501(c)(3) status.</p></div></div>
+      </div>
+    </div>
+
+    <h2 style="font-size:1.5rem;margin-bottom:.75rem">Public Charity vs. Private Foundation</h2>
+    <p style="color:var(--tmid);margin-bottom:1.25rem;font-size:15px">Both are 501(c)(3)s — but they work differently.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2.5rem">
+      <div style="background:var(--warm);border:1.5px solid var(--gmid);border-radius:var(--r);padding:1.5rem">
+        <div class="stag">Most common</div>
+        <h3 style="font-size:17px;margin-bottom:.75rem">Public Charity</h3>
+        <ul style="font-size:14px;color:var(--tmid);padding-left:1.25rem;line-height:2.1">
+          <li>Raises money from the public, events, grants</li>
+          <li>Serves a broad community need</li>
+          <li>Easier to start and maintain</li>
+          <li>Examples: food banks, youth programs, animal shelters, schools</li>
+        </ul>
+      </div>
+      <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.5rem">
+        <div class="stag" style="color:var(--tlight)">Less common</div>
+        <h3 style="font-size:17px;margin-bottom:.75rem">Private Foundation</h3>
+        <ul style="font-size:14px;color:var(--tmid);padding-left:1.25rem;line-height:2.1">
+          <li>Typically funded by one family or corporation</li>
+          <li>Usually gives money to other nonprofits</li>
+          <li>More paperwork and restrictions</li>
+          <li>Examples: Gates Foundation, family giving funds</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--r);padding:1.5rem;margin-bottom:2rem">
+      <h3 style="font-size:17px;margin-bottom:.5rem">⚠️ Important rules for 501(c)(3) nonprofits</h3>
+      <ul style="font-size:14px;color:var(--tmid);padding-left:1.25rem;line-height:2.1">
+        <li>You <strong>cannot</strong> use the nonprofit to make personal profit</li>
+        <li>You <strong>cannot</strong> support or oppose political candidates</li>
+        <li>You <strong>must</strong> file an annual report (Form 990) with the IRS</li>
+        <li>All funds must go toward your stated charitable mission</li>
+        <li>Board members generally serve as volunteers</li>
+      </ul>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-p" onclick="go('form')" style="margin-right:10px">Fill out the intake form →</button>
+      <button class="btn btn-s" onclick="go('states')">Look up your state</button>
+    </div>
+  </div>
+  <div id="what-footer"></div>
+</div>
+
+<!-- ═══════ STATE GUIDE ═══════ -->
+<div class="page" id="page-states">
+  <div class="cl-hero">
+    <div class="stag">all 50 states + territories</div>
+    <h1>State &amp; Territory Guide</h1>
+    <p>Select your state or territory to see exactly what's required — fees, forms, unique rules, and watch-outs.</p>
+  </div>
+  <div style="max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 5rem">
+    <div class="field">
+      <label>Select your state or territory</label>
+      <select class="sg-select" id="stateSelect" onchange="showStateCard()">
+        <option value="">— Choose a state or territory —</option>
+      </select>
+    </div>
+    <div class="state-card" id="stateCard"></div>
+    <div id="allStatesTeaser" style="margin-top:1rem">
+      <p style="color:var(--tmid);font-size:14px;text-align:center">Choose a state above to see its specific requirements, fees, and unique considerations.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-top:1.5rem" id="stateQuickGrid"></div>
+    </div>
+  </div>
+  <div id="states-footer"></div>
+</div>
+
+<!-- ═══════ CHECKLIST ═══════ -->
+<div class="page" id="page-checklist">
+  <div class="cl-hero">
+    <div class="stag">step by step</div>
+    <h1>Your Nonprofit Checklist</h1>
+    <p>Check off each item as you go. Progress saves in this browser session.</p>
+  </div>
+  <div class="cl-body">
+    <div class="cl-prog">
+      <span class="cl-emoji" id="cl-emoji">🌱</span>
+      <div class="cl-pt"><h3 id="cl-title">Let's get started!</h3><p id="cl-sub">Check off items as you complete them.</p></div>
+      <div class="cl-bar-w"><div class="cl-bar-bg"><div class="cl-bar-f" id="cl-bar" style="width:0%"></div></div></div>
+    </div>
+    <div class="cl-phase">
+      <div class="phase-lbl">Phase 1</div><div class="phase-title">Plan your organization</div>
+      <div class="cl-items">
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Write your mission statement</h4><p>1–2 sentences: what you do, who you help, and why.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Define who you will serve</h4><p>Be specific: what community, what need, what location?</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Research existing nonprofits</h4><p>Is there already an org doing exactly what you want to do?</p></div></div>
+      </div>
+    </div>
+    <div class="cl-phase">
+      <div class="phase-lbl">Phase 2</div><div class="phase-title">Build your team</div>
+      <div class="cl-items">
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Recruit at least 3 board members</h4><p>Most states require a minimum of 3 (some need 5). Choose committed people with useful skills.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Assign board roles</h4><p>At minimum: President (or Chair), Secretary, and Treasurer.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Find a registered agent</h4><p>Most states require a registered agent with a physical in-state address.</p></div></div>
+      </div>
+    </div>
+    <div class="cl-phase">
+      <div class="phase-lbl">Phase 3</div><div class="phase-title">Set up legally</div>
+      <div class="cl-items">
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Choose your nonprofit's name</h4><p>Check your state's business registry to confirm it's available.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Write your bylaws</h4><p>Use our form to generate bylaws tailored to your org and state.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>File Articles of Incorporation with your state</h4><p>Fees vary by state ($8 in Kentucky to $170 in Maryland). Check the State Guide for your exact requirements.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Register for charitable solicitation (if required)</h4><p>About 40 states require this before you can publicly fundraise. See our State Guide.</p></div></div>
+      </div>
+    </div>
+    <div class="cl-phase">
+      <div class="phase-lbl">Phase 4</div><div class="phase-title">Federal tax status</div>
+      <div class="cl-items">
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Apply for an EIN (Employer Identification Number)</h4><p>Free, online, instant. Go to IRS.gov. You need this before opening a bank account or filing Form 1023.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Hold your first official board meeting</h4><p>Adopt bylaws, elect officers, document everything with minutes.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Adopt Conflict of Interest Policy</h4><p>Required for IRS Form 1023. We generate this for you.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>File IRS Form 1023 or 1023-EZ</h4><p>1023-EZ ($275) for orgs under $50,000/yr. Form 1023 ($600) for larger orgs. IRS typically responds in 3–6 months.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Apply for state tax exemption</h4><p>Most states require a separate application after IRS approval.</p></div></div>
+      </div>
+    </div>
+    <div class="cl-phase">
+      <div class="phase-lbl">Phase 5</div><div class="phase-title">Operations</div>
+      <div class="cl-items">
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Open a bank account</h4><p>In your nonprofit's name only — never mix with personal funds.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Set up bookkeeping</h4><p>Track all income and expenses from day one. Wave (free) or QuickBooks Nonprofit work well.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Register for charitable solicitation in your state (if not done)</h4><p>Required in ~40 states before publicly fundraising.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Set up annual report reminders</h4><p>Most states and the IRS require annual filings. Missing them can cost your exempt status.</p></div></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <button class="btn btn-p" onclick="go('form')">Generate my formation documents →</button>
+    </div>
+  </div>
+  <div id="checklist-footer"></div>
+</div>
+
+<!-- ═══════ FAQ ═══════ -->
+<div class="page" id="page-faq">
+  <div class="cl-hero">
+    <div class="stag">questions &amp; answers</div>
+    <h1>Frequently Asked Questions</h1>
+    <p>Plain answers to what people wonder about most.</p>
+  </div>
+  <div class="cl-body" style="max-width:760px">
+    <div class="faq-wrap" id="faqWrap"></div>
+    <div style="text-align:center;margin-top:3rem">
+      <button class="btn btn-p" onclick="go('form')">Ready? Generate my documents →</button>
+    </div>
+  </div>
+  <div id="faq-footer"></div>
+</div>
+
+<!-- ═══════ FORM ═══════ -->
+<div class="page" id="page-form">
+  <div class="form-hero">
+    <div class="stag">intake form</div>
+    <h1>Let's build your nonprofit</h1>
+    <p>Answer each question. We'll use your answers to generate your actual formation documents.</p>
+  </div>
+  <div class="form-body">
+    <div class="f-prog-bar"><div class="f-prog-f" id="fpf" style="width:12.5%"></div></div>
+    <div class="f-dots" id="fdots"></div>
+
+    <!-- STEP 1: CAUSE -->
+    <div class="fsec active" id="fs1">
+      <div class="fcard">
+        <div class="fs-tag">Step 1 of 8 — Your Cause</div>
+        <div class="fs-title">What is your nonprofit about?</div>
+        <div class="fs-desc">A nonprofit helps people, animals, or the community — without making personal profit. Let's start with your big idea.</div>
+        <div class="field"><label>Name of your nonprofit</label><div class="hint">Example: "Bright Future Youth Center" or "Paws &amp; Claws Rescue"</div><input type="text" id="f_orgName" placeholder="e.g. Helping Hands Community Center"></div>
+        <div class="field"><label>What problem are you trying to fix?</label><div class="hint">Explain it like you're telling a friend. What hurts your community?</div><textarea id="f_problem" placeholder="e.g. Many kids in our town don't have a safe place to go after school..."></textarea></div>
+        <div class="field"><label>What will your nonprofit DO to help?</label><div class="hint">What programs, activities, or services will you offer?</div><textarea id="f_activities" placeholder="e.g. We will run an after-school tutoring program, offer free meals, and provide safe activities..."></textarea></div>
+        <div class="field"><label>Write a one-sentence mission statement (optional — we can help you draft one)</label><div class="hint">Example: "Our mission is to provide safe after-school programs for underserved youth in Chicago."</div><input type="text" id="f_mission" placeholder="Our mission is to..."></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: WHO YOU HELP -->
+    <div class="fsec" id="fs2">
+      <div class="fcard">
+        <div class="fs-tag">Step 2 of 8 — Who You Help</div>
+        <div class="fs-title">Who does your nonprofit serve?</div>
+        <div class="fs-desc">The IRS needs to know your nonprofit benefits the public — not just a private group.</div>
+        <div class="field"><label>Who are the people (or animals, places) you want to help?</label><div class="hint">Be specific! Example: "Kids ages 5–12 in Cook County, IL" or "Stray cats in rural Texas"</div><textarea id="f_whoHelp" placeholder="e.g. Low-income families in our county who struggle to afford healthy food..."></textarea></div>
+        <div class="field"><label>How many people do you hope to help each year?</label><div class="hint">A rough guess is totally fine.</div><input type="text" id="f_howMany" placeholder="e.g. About 200–300 families per year"></div>
+        <div class="field"><label>Where will your nonprofit work?</label><div class="hint">City, county, state — or is it online/national?</div><input type="text" id="f_location" placeholder="e.g. Cook County, Illinois"></div>
+        <div class="field">
+          <label>Type of nonprofit</label>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_type" value="Public Charity"><span class="rt"><strong>Public Charity</strong> — Helps the general public. Most common. Examples: food banks, shelters, youth programs.</span></label>
+            <label class="ri"><input type="radio" name="f_type" value="Private Foundation"><span class="rt"><strong>Private Foundation</strong> — Usually funded by one family or company; gives grants to other nonprofits.</span></label>
+            <label class="ri"><input type="radio" name="f_type" value="Not sure yet"><span class="rt"><strong>Not sure yet</strong> — That's okay! We recommend Public Charity for most new orgs.</span></label>
+          </div>
+          <div class="tip">💡 <strong>Most people choose Public Charity.</strong> It's the most common type and easiest to raise donations for.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: STATE -->
+    <div class="fsec" id="fs3">
+      <div class="fcard">
+        <div class="fs-tag">Step 3 of 8 — Your State</div>
+        <div class="fs-title">Where will you incorporate?</div>
+        <div class="fs-desc">Every state and U.S. territory has different requirements, fees, and rules. Select yours and we'll show you exactly what you need.</div>
+        <div class="field">
+          <label>Select your state or territory</label>
+          <select id="f_stateSelect" onchange="updateStateBanner()">
+            <option value="">— Choose your state or territory —</option>
+          </select>
+        </div>
+        <div id="f_stateBanner" style="display:none"></div>
+        <div class="field" style="margin-top:1rem"><label>What is the mailing address of your nonprofit?</label><div class="hint">This will appear on your Articles of Incorporation.</div><input type="text" id="f_address" placeholder="Street address, City, State, ZIP"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: BOARD -->
+    <div class="fsec" id="fs4">
+      <div class="fcard">
+        <div class="fs-tag">Step 4 of 8 — Leadership</div>
+        <div class="fs-title">Who will lead your nonprofit?</div>
+        <div class="fs-desc">Every 501(c)(3) needs a <strong>board of directors</strong> — at least 3 people in most states who make key decisions. Board members volunteer their time and cannot personally profit.</div>
+        <div class="field"><label>Your full name (Founder / President)</label><input type="text" id="f_founderName" placeholder="Your full name"></div>
+        <div class="field"><label>Your email address</label><input type="email" id="f_founderEmail" placeholder="you@email.com"></div>
+        <div class="field"><label>Second board member's name</label><div class="hint">A friend, colleague, or community member who supports your cause.</div><input type="text" id="f_board2" placeholder="Full name"></div>
+        <div class="field"><label>Third board member's name</label><input type="text" id="f_board3" placeholder="Full name"></div>
+        <div class="field"><label>Fourth board member (optional)</label><input type="text" id="f_board4" placeholder="Full name (if applicable)"></div>
+        <div class="field"><label>Fifth board member (optional)</label><div class="hint">New Hampshire requires 5 incorporators. Other states may too.</div><input type="text" id="f_board5" placeholder="Full name (if applicable)"></div>
+        <div class="tip">💡 <strong>Tip:</strong> Choose people with diverse skills — finance, legal, marketing, or program expertise. A strong board makes your IRS application stronger.</div>
+      </div>
+    </div>
+
+    <!-- STEP 5: MONEY -->
+    <div class="fsec" id="fs5">
+      <div class="fcard">
+        <div class="fs-tag">Step 5 of 8 — Finances</div>
+        <div class="fs-title">Money and budget</div>
+        <div class="fs-desc">The IRS wants to know how you'll earn and spend money. This also feeds directly into your Form 1023 financial section.</div>
+        <div class="field">
+          <label>How do you plan to raise money? (Check all that apply)</label>
+          <div class="cgroup">
+            <label class="ci"><input type="checkbox" class="f_funding" value="Individual donations and crowdfunding"><span class="ct">Individual donations and crowdfunding (GoFundMe, etc.)</span></label>
+            <label class="ci"><input type="checkbox" class="f_funding" value="Grants from foundations or government"><span class="ct">Grants from private foundations or government agencies</span></label>
+            <label class="ci"><input type="checkbox" class="f_funding" value="Fundraising events"><span class="ct">Fundraising events (galas, auctions, charity runs)</span></label>
+            <label class="ci"><input type="checkbox" class="f_funding" value="Program fees"><span class="ct">Program or service fees (charging a small fee for classes, etc.)</span></label>
+            <label class="ci"><input type="checkbox" class="f_funding" value="Corporate sponsorships"><span class="ct">Corporate sponsorships</span></label>
+            <label class="ci"><input type="checkbox" class="f_funding" value="Membership dues"><span class="ct">Membership dues</span></label>
+          </div>
+        </div>
+        <div class="field"><label>Estimated total budget for year one</label><div class="hint">A rough guess — this helps determine whether to use Form 1023-EZ (under $50K) or 1023 (over $50K).</div><input type="text" id="f_budget" placeholder="e.g. Around $15,000"></div>
+        <div class="field"><label>What will the money be spent on?</label><textarea id="f_expenses" placeholder="e.g. Renting event space, buying supplies, part-time coordinator salary, website hosting..."></textarea></div>
+        <div class="field">
+          <label>Do you expect to pay any employees or contractors in year one?</label>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_employees" value="No — all volunteers"><span class="rt">No — everyone will volunteer</span></label>
+            <label class="ri"><input type="radio" name="f_employees" value="Yes — part-time staff"><span class="rt">Yes — part-time paid staff or contractors</span></label>
+            <label class="ri"><input type="radio" name="f_employees" value="Yes — full-time staff"><span class="rt">Yes — full-time paid staff</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6: LEGAL -->
+    <div class="fsec" id="fs6">
+      <div class="fcard">
+        <div class="fs-tag">Step 6 of 8 — Legal &amp; Compliance</div>
+        <div class="fs-title">A few legal questions</div>
+        <div class="fs-desc">These help ensure your documents are correct and your application to the IRS is complete.</div>
+        <div class="field">
+          <label>Do you have a lawyer or accountant helping you?</label>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_lawyer" value="Yes"><span class="rt">Yes, I have professional help</span></label>
+            <label class="ri"><input type="radio" name="f_lawyer" value="No — planning to find one"><span class="rt">No — I'm planning to find one</span></label>
+            <label class="ri"><input type="radio" name="f_lawyer" value="No — doing it myself"><span class="rt">No — I'm doing it myself for now</span></label>
+          </div>
+          <div class="tip" style="margin-top:10px">💡 <strong>Nonprofit legal aid clinics</strong> in many areas offer free or low-cost help. Search "nonprofit legal aid [your city]".</div>
+        </div>
+        <div class="field">
+          <label>Are you ready to pay the IRS filing fee?</label>
+          <div class="hint">Form 1023-EZ: $275 (orgs under ~$50K/yr). Form 1023 full: $600.</div>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_fee" value="Yes"><span class="rt">Yes, I can cover it</span></label>
+            <label class="ri"><input type="radio" name="f_fee" value="Need to fundraise for it"><span class="rt">I'll need to fundraise for it first</span></label>
+            <label class="ri"><input type="radio" name="f_fee" value="Not sure"><span class="rt">Not sure yet</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Does your organization involve any of the following? (Check all that apply)</label>
+          <div class="cgroup">
+            <label class="ci"><input type="checkbox" class="f_special" value="Church or religious organization"><span class="ct">Church or religious organization</span></label>
+            <label class="ci"><input type="checkbox" class="f_special" value="School or educational institution"><span class="ct">School or educational institution (K-12 or higher ed)</span></label>
+            <label class="ci"><input type="checkbox" class="f_special" value="Hospital or healthcare"><span class="ct">Hospital or healthcare provider</span></label>
+            <label class="ci"><input type="checkbox" class="f_special" value="Native American / tribal organization"><span class="ct">Native American or tribal organization</span></label>
+            <label class="ci"><input type="checkbox" class="f_special" value="International activities"><span class="ct">Activities outside the United States</span></label>
+            <label class="ci"><input type="checkbox" class="f_special" value="None of the above"><span class="ct">None of the above</span></label>
+          </div>
+          <div class="warn-tip">⚠️ If you checked church, school, or hospital — you likely <strong>cannot use Form 1023-EZ</strong> and must file the full Form 1023. These org types have additional IRS requirements.</div>
+        </div>
+        <div class="field"><label>Any questions or concerns you want noted in your documents?</label><textarea id="f_notes" placeholder="Write any questions, special circumstances, or concerns here..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- STEP 7: FISCAL -->
+    <div class="fsec" id="fs7">
+      <div class="fcard">
+        <div class="fs-tag">Step 7 of 8 — Governance Details</div>
+        <div class="fs-title">A few more details for your bylaws</div>
+        <div class="fs-desc">These details will be filled into your bylaws and board minutes automatically.</div>
+        <div class="field">
+          <label>What will your fiscal year be?</label>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_fiscal" value="January 1 – December 31 (Calendar Year)" checked><span class="rt">January 1 – December 31 (Calendar Year) — most common</span></label>
+            <label class="ri"><input type="radio" name="f_fiscal" value="July 1 – June 30"><span class="rt">July 1 – June 30</span></label>
+            <label class="ri"><input type="radio" name="f_fiscal" value="October 1 – September 30"><span class="rt">October 1 – September 30</span></label>
+            <label class="ri"><input type="radio" name="f_fiscal" value="Other"><span class="rt">Other (specify in notes)</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>How often will the board meet?</label>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_meetFreq" value="Monthly"><span class="rt">Monthly</span></label>
+            <label class="ri"><input type="radio" name="f_meetFreq" value="Quarterly (4 times per year)" checked><span class="rt">Quarterly — 4 times per year (recommended minimum)</span></label>
+            <label class="ri"><input type="radio" name="f_meetFreq" value="Biannually (2 times per year)"><span class="rt">Biannually — 2 times per year</span></label>
+          </div>
+        </div>
+        <div class="field"><label>Maximum spending amount before board approval is required ($)</label><div class="hint">For example: purchases over $500 require board approval. This goes into your bylaws.</div><input type="text" id="f_spendLimit" placeholder="e.g. $500"></div>
+        <div class="field"><label>Will any board members receive compensation (salary)?</label>
+          <div class="rgroup">
+            <label class="ri"><input type="radio" name="f_comp" value="No — all volunteer board"><span class="rt">No — all board members serve as volunteers</span></label>
+            <label class="ri"><input type="radio" name="f_comp" value="Yes — executive director only"><span class="rt">Yes — Executive Director (paid staff, not a board member)</span></label>
+            <label class="ri"><input type="radio" name="f_comp" value="Yes — some board members compensated"><span class="rt">Yes — some board members may receive reasonable compensation</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8: REVIEW & GENERATE -->
+    <div class="fsec" id="fs8">
+      <div class="fcard">
+        <div class="fs-tag">Step 8 of 8 — Review &amp; Generate</div>
+        <div class="fs-title">Here's your summary 🎉</div>
+        <div class="fs-desc">Review your answers below, then generate all your formation documents with one click.</div>
+        <table class="sum-table" id="sumTable"></table>
+      </div>
+      <div class="fcard" style="margin-top:.875rem">
+        <div class="fs-title" style="font-size:18px;margin-bottom:.5rem">Your Formation Documents</div>
+        <p style="font-size:14px;color:var(--tmid);margin-bottom:1.25rem">Click any document to open it — filled in with your answers. Print it or save as PDF.</p>
+        <div class="docs-grid" id="docsGrid"></div>
+      </div>
+      <div class="fcard" style="margin-top:.875rem">
+        <div class="fs-title" style="font-size:17px;margin-bottom:.75rem">Your State-Specific Next Steps</div>
+        <div id="stateNextSteps"></div>
+      </div>
+      <div style="margin-top:1rem;text-align:center">
+        <button onclick="if(confirm('Clear all your answers and start over?')){clearFormData();location.reload();}" style="padding:10px 24px;border-radius:var(--rs);background:transparent;border:1.5px solid var(--sand2);color:var(--tmid);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">↺ Start over / clear answers</button>
+      </div>
+    </div>
+
+    <div class="f-nav">
+      <button class="fb fb-back" id="fb-back" onclick="fNav(-1)" style="visibility:hidden">← Back</button>
+      <button class="fb fb-next" id="fb-next" onclick="fNav(1)">Next →</button>
+    </div>
+  </div>
+  <div id="form-footer"></div>
+</div>
+
+<!-- ═══════ ANNUAL FILING ═══════ -->
+<div class="page" id="page-annual">
+  <div class="cl-hero">
+    <div class="stag">yearly compliance</div>
+    <h1>Annual Filing Documents</h1>
+    <p>Generate your yearly IRS and state filing documents — filled in with your nonprofit's details. Updated for the current tax year.</p>
+  </div>
+  <div style="max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 5rem">
+
+    <!-- Year selector -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap">
+      <label style="font-size:14px;font-weight:500;color:var(--text)">Tax year:</label>
+      <select id="annual-year" style="padding:9px 14px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff;color:var(--text);cursor:pointer" onchange="updateAnnualYear()"></select>
+      <span style="font-size:13px;color:var(--tlight)">Documents will be filled in for the selected year</span>
+    </div>
+
+    <!-- Access banner -->
+    <div id="annual-access-banner" style="display:none;background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:14px;color:var(--gdark)">
+      ✓ <strong>Subscription active.</strong> All annual filing documents are unlocked.
+    </div>
+
+    <!-- Paywall teaser (shown when not subscribed) -->
+    <div id="annual-paywall-teaser" style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--r);padding:1.5rem;margin-bottom:2rem;text-align:center">
+      <div style="font-size:24px;margin-bottom:.5rem">🔒</div>
+      <h3 style="font-family:'Lora',serif;font-size:17px;margin-bottom:.5rem">Annual filing documents require a subscription</h3>
+      <p style="font-size:14px;color:var(--tmid);margin-bottom:1.25rem">Subscribe to unlock Form 990 prep guides, state annual reports, board meeting minutes, and donor acknowledgment letters — all filled in with your nonprofit's info.</p>
+      <button class="btn btn-p" onclick="showPricingModal('annual-docs')">See plans →</button>
+    </div>
+
+    <!-- Document grid -->
+    <div class="docs-grid" id="annual-docs-grid">
+      <div class="doc-card" onclick="openAnnualDoc('form990')">
+        <span class="doc-icon">🏛️</span>
+        <h4>Form 990 Prep Guide</h4>
+        <p>Revenue, expenses, balance sheet, program narrative, and governance checklist</p>
+        <span class="doc-badge">IRS annual filing</span>
+      </div>
+      <div class="doc-card" onclick="openAnnualDoc('stateReport')">
+        <span class="doc-icon">📍</span>
+        <h4>State Annual Report</h4>
+        <p>State-specific annual report template with compliance checklist and deadlines</p>
+        <span class="doc-badge">State filing</span>
+      </div>
+      <div class="doc-card" onclick="openAnnualDoc('annualMinutes')">
+        <span class="doc-icon">📝</span>
+        <h4>Annual Board Meeting Minutes</h4>
+        <p>Complete minutes template with officer elections, budget approval, and 990 authorization</p>
+        <span class="doc-badge">Board governance</span>
+      </div>
+      <div class="doc-card" onclick="openAnnualDoc('donorLetters')">
+        <span class="doc-icon">💌</span>
+        <h4>Donor Acknowledgment Letters</h4>
+        <p>5 IRS-compliant templates: cash gifts, recurring donors, in-kind, events, year-end summary</p>
+        <span class="doc-badge">5 templates</span>
+      </div>
+    </div>
+
+    <!-- Annual compliance calendar -->
+    <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.5rem;margin-top:2rem">
+      <h3 style="font-family:'Lora',serif;font-size:18px;margin-bottom:1rem">Annual Compliance Calendar</h3>
+      <div style="display:flex;flex-direction:column;gap:0" id="compliance-calendar"></div>
+    </div>
+
+    <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#7a4010;line-height:1.6">
+      ⚠️ <strong>Never miss a filing:</strong> Failing to file Form 990 for 3 consecutive years automatically revokes your 501(c)(3) status. Set a recurring calendar reminder for May 15 every year.
+    </div>
+  </div>
+  <div id="annual-footer"></div>
+</div>
+
+<!-- ═══════ PRICING ═══════ -->
+<div class="page" id="page-pricing">
+  <div class="cl-hero">
+    <div class="stag">pricing</div>
+    <h1>Simple, transparent pricing</h1>
+    <p>One subscription. Every document your nonprofit needs — formation, yearly filings, state guides, and more.</p>
+  </div>
+  <div style="max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 5rem">
+    <div id="pricing-section-container">
+      <div style="max-width:700px;margin:0 auto 2rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem">
+          <!-- Monthly -->
+          <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.75rem">
+            <div class="stag" style="color:var(--tlight)">Monthly</div>
+            <div style="font-size:2.5rem;font-family:'Lora',serif;font-weight:600;color:var(--text);line-height:1;margin:.25rem 0">$12</div>
+            <div style="font-size:13px;color:var(--tlight);margin-bottom:1.25rem">per month, cancel anytime</div>
+            <ul style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All 8 formation documents</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All 4 yearly filing documents</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Form 990 / 990-EZ / 990-N prep guide</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>State report templates (all 56 jurisdictions)</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Annual board meeting minutes</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Donor acknowledgment letters (5 templates)</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>State guide for all 50 states + territories</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Unlimited document regeneration</li>
+              <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Email support</li>
+            </ul>
+            <button onclick="doCheckout('monthly')"  style="width:100%;padding:11px;border-radius:8px;background:transparent;border:1.5px solid #c4e8d8;color:#1d6b52;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start monthly — $12/mo</button>
+          </div>
+          <!-- Annual -->
+          <div style="background:var(--warm);border:2px solid var(--green);border-radius:var(--r);padding:1.75rem;position:relative">
+            <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;white-space:nowrap">Best value — save 45%</div>
+            <div class="stag">Annual</div>
+            <div style="font-size:2.5rem;font-family:'Lora',serif;font-weight:600;color:var(--text);line-height:1;margin:.25rem 0">$79</div>
+            <div style="font-size:13px;color:var(--tlight);margin-bottom:1.25rem">per year — just $6.58/month</div>
+            <ul style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Everything in Monthly</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Priority email support</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>New documents added automatically</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Annual compliance reminder emails</li>
+              <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Save $65 vs monthly</li>
+            </ul>
+            <button onclick="doCheckout('annual')"  style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan → $79/yr</button>
+          </div>
+        </div>
+        <p style="text-align:center;font-size:12px;color:var(--tlight)">🔒 Secure payment via Stripe &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; 7-day money-back guarantee</p>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem">
+      <h2 style="font-family:'Lora',serif;font-size:1.4rem;margin-bottom:1.5rem;text-align:center">Everything included in your subscription</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem">
+          <div style="font-weight:500;font-size:15px;margin-bottom:.75rem">📄 Formation Documents (8)</div>
+          <ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;line-height:2">
+            <li>Articles of Incorporation</li>
+            <li>Bylaws</li>
+            <li>Conflict of Interest Policy</li>
+            <li>First Board Meeting Minutes</li>
+            <li>Mission Statement Worksheet</li>
+            <li>EIN Application Guide</li>
+            <li>IRS Form 1023 Prep Guide</li>
+            <li>State-Specific Filing Checklist</li>
+          </ul>
+        </div>
+        <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem">
+          <div style="font-weight:500;font-size:15px;margin-bottom:.75rem">📅 Annual Filing Documents (4)</div>
+          <ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;line-height:2">
+            <li>Form 990 / 990-EZ / 990-N Prep Guide</li>
+            <li>State Annual Report (all 56 jurisdictions)</li>
+            <li>Annual Board Meeting Minutes</li>
+            <li>Donor Acknowledgment Letters (5 templates)</li>
+          </ul>
+        </div>
+        <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem">
+          <div style="font-weight:500;font-size:15px;margin-bottom:.75rem">📍 State & Territory Guide</div>
+          <ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;line-height:2">
+            <li>All 50 states + DC</li>
+            <li>Puerto Rico, Guam, USVI, CNMI, American Samoa</li>
+            <li>Fees, forms, unique requirements</li>
+            <li>Direct links to state agencies</li>
+          </ul>
+        </div>
+        <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem">
+          <div style="font-weight:500;font-size:15px;margin-bottom:.75rem">✨ Also included</div>
+          <ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;line-height:2">
+            <li>Unlimited document regeneration</li>
+            <li>All 50-state interactive checklist</li>
+            <li>14-question nonprofit FAQ</li>
+            <li>New documents as we add them</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.75rem;margin-top:2rem">
+      <h3 style="font-family:'Lora',serif;font-size:17px;margin-bottom:1rem">Frequently asked questions about pricing</h3>
+      <div id="pricing-faq"></div>
+    </div>
+  </div>
+  <div id="pricing-footer"></div>
+</div>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script src="states.js"></script>
+<script src="docgen.js"></script>
+<script src="yearly-docs.js"></script>
+<script src="paywall.js"></script>
+<script>
+// Safety wrapper — ensures startCheckout always works even if paywall.js loads late
+if (typeof startCheckout === 'undefined') {
+  function startCheckout(planId) {
+    fetch('/.netlify/functions/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        priceId: planId === 'annual' ? 'price_1TMAyDRyNZ1TUldSuM557LTK' : 'price_1TMAwiRyNZ1TUldSZ7tIW7wi',
+        planId: planId,
+        successUrl: window.location.origin + '/?subscribed=true&plan=' + planId,
+        cancelUrl: window.location.origin + '/?canceled=true',
+      }),
+    })
+    .then(r => r.json())
+    .then(data => { if (data.url) window.location.href = data.url; })
+    .catch(err => alert('Payment system unavailable. Please try again later.'));
+  }
+}
+</script>
+<script>
+// ── NAV ──
+const PAGES = ['home','what','states','checklist','faq','form','annual','pricing'];
+function go(id) {
+  PAGES.forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('active', p===id);
+    const b = document.getElementById('nb-'+p);
+    if(b) b.classList.toggle('active', p===id);
+  });
+  window.scrollTo(0,0);
+  if(id==='states') buildStateQuickGrid();
+  if(id==='annual') initAnnualPage();
+  if(id==='pricing') initPricingPage();
+  if(id==='form') { setTimeout(restoreFormData, 50); }
+}
+function toggleMob(){ document.getElementById('mnav').classList.toggle('open'); }
+
+// ── INJECT FOOTERS ──
+const footerHTML = `<footer><div class="f-logo">🌱 Start Your Cause</div>
+<p style="margin-bottom:.25rem">Helping everyday people build organizations that matter.</p>
+<div class="f-links">
+  <button onclick="go('home')">Home</button>
+  <button onclick="go('what')">What is 501(c)(3)?</button>
+  <button onclick="go('states')">State Guide</button>
+  <button onclick="go('checklist')">Checklist</button>
+  <button onclick="go('annual')">Annual Filing</button>
+  <button onclick="go('faq')">FAQ</button>
+  <button onclick="go('pricing')">Pricing</button>
+  <button onclick="go('form')">Start My Nonprofit</button>
+</div>
+<p class="disclaimer">Start Your Cause is for informational purposes only and does not provide legal or tax advice. Documents generated are templates only — have a licensed attorney review before filing. State requirements change; always verify with your state agency.</p>
+</footer>`;
+['home','what','states','checklist','faq','form','annual','pricing'].forEach(p => {
+  const el = document.getElementById(p+'-footer');
+  if(el) el.innerHTML = footerHTML;
+});
+
+// ── STATE DROPDOWNS (form + state guide) ──
+function populateStateDropdowns() {
+  const opts = STATE_LIST.map(s => `<option value="${s.code}">${s.name}</option>`).join('');
+  document.getElementById('stateSelect').innerHTML += opts;
+  document.getElementById('f_stateSelect').innerHTML += opts;
+}
+populateStateDropdowns();
+
+// ── STATE GUIDE ──
+function showStateCard() {
+  const code = document.getElementById('stateSelect').value;
+  const card = document.getElementById('stateCard');
+  const teaser = document.getElementById('allStatesTeaser');
+  if(!code){ card.classList.remove('visible'); teaser.style.display='block'; return; }
+  const sd = STATE_DATA[code];
+  if(!sd){ card.classList.remove('visible'); return; }
+  teaser.style.display='none';
+  const unique = (sd.unique||[]).map(u=>`<li>${u}</li>`).join('');
+  card.innerHTML = `
+<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
+  <h2 style="font-size:1.5rem">${sd.name}</h2>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+    <span class="meta-pill">Fee: $${sd.fee}</span>
+    ${sd.solicitationReg?`<span class="meta-pill warn">Solicitation Reg Required</span>`:`<span class="meta-pill">No Solicitation Reg</span>`}
+    <span class="meta-pill">Min. ${sd.minBoardMembers} directors</span>
+  </div>
+</div>
+<table class="state-table">
+  <tr><td>Formation document</td><td><strong>${sd.form}</strong></td></tr>
+  <tr><td>Filing agency</td><td><a href="${sd.agencyUrl}" target="_blank" style="color:var(--green)">${sd.agency} ↗</a></td></tr>
+  <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
+  <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
+  <tr><td>Minimum board members</td><td>${sd.minBoardMembers}</td></tr>
+  <tr><td>Charitable solicitation reg.</td><td>${sd.solicitationReg?`<strong>Required</strong> — Fee: $${sd.solicitationFee||'Free'}`:'Not required'}</td></tr>
+  <tr><td>State income tax exemption</td><td>${sd.incomeTaxExempt?'Available — apply separately after IRS approval':'N/A'}</td></tr>
+  <tr><td>Estimated minimum total cost</td><td><strong>$${sd.fee+(sd.solicitationFee||0)+275}</strong> (inc. IRS 1023-EZ fee)</td></tr>
+</table>
+<p style="font-size:14px;color:var(--tmid);line-height:1.6;margin-bottom:.875rem">${sd.notes}</p>
+${unique?`<div style="margin-bottom:.875rem"><p style="font-size:13px;font-weight:500;margin-bottom:.4rem;color:var(--text)">⚠️ Watch out for — ${sd.name}-specific:</p><ul class="unique-list">${unique}</ul></div>`:''}
+<div style="margin-top:1rem"><button class="btn btn-p" onclick="document.getElementById('f_stateSelect').value='${code}';go('form');updateStateBanner()" style="font-size:14px;padding:10px 20px">Start my ${sd.name} nonprofit →</button></div>`;
+  card.classList.add('visible');
+}
+
+function buildStateQuickGrid() {
+  const grid = document.getElementById('stateQuickGrid');
+  if(!grid || grid.children.length > 0) return;
+  STATE_LIST.forEach(s => {
+    const sd = STATE_DATA[s.code];
+    const btn = document.createElement('div');
+    btn.style.cssText='background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:.875rem;cursor:pointer;transition:border-color .15s';
+    btn.innerHTML=`<div style="font-weight:500;font-size:14px;margin-bottom:2px">${s.name}</div><div style="font-size:12px;color:var(--tmid)">$${sd.fee} filing fee</div>`;
+    btn.onmouseenter=()=>btn.style.borderColor='var(--gmid)';
+    btn.onmouseleave=()=>btn.style.borderColor='var(--sand2)';
+    btn.onclick=()=>{ document.getElementById('stateSelect').value=s.code; showStateCard(); window.scrollTo(0,300); };
+    grid.appendChild(btn);
+  });
+}
+
+// ── FAQ ──
+const FAQS = [
+  {q:"How long does it take to get 501(c)(3) status?",a:"After filing your IRS application, it typically takes 3–6 months for the IRS to respond. You can operate as a nonprofit during this time, but you don't yet have official tax-exempt status. Keep detailed records of all activities and finances."},
+  {q:"How much does it cost to start a nonprofit?",a:"The IRS filing fee is $275 (Form 1023-EZ, for smaller orgs) or $600 (Form 1023 full). Your state will also charge a fee to incorporate — ranging from $8 (Kentucky) to $170 (Maryland). If you hire a lawyer, add $500–$2,000+. Our State Guide shows exact fees for all 56 jurisdictions."},
+  {q:"Do I need a lawyer?",a:"You don't legally need one, but it's strongly recommended — especially for the IRS application. Many areas have nonprofit legal aid clinics that offer free or low-cost help. Search 'nonprofit legal aid [your city]' to find local resources."},
+  {q:"Can I pay myself to run my own nonprofit?",a:"Yes — founders and staff can receive a reasonable salary approved by the board. What you cannot do is take personal profit from the organization's funds beyond that salary. The IRS scrutinizes compensation, so 'reasonable' means comparable to similar roles at similar organizations."},
+  {q:"What's the difference between incorporating and getting 501(c)(3) status?",a:"Incorporating is a state-level step that creates your legal organization. Getting 501(c)(3) status is a federal step through the IRS that gives you tax-exempt status. You need both — and you always incorporate first, then apply to the IRS."},
+  {q:"Which IRS form do I use — 1023 or 1023-EZ?",a:"Form 1023-EZ ($275) is for organizations that expect to have gross receipts under $50,000/year and assets under $250,000. It's simpler and faster. Form 1023 ($600) is for larger organizations and those that are churches, schools, hospitals, or supporting organizations — these must use the full form."},
+  {q:"What is charitable solicitation registration?",a:"About 40 states require nonprofits to register with a state agency before they can publicly solicit donations from that state's residents. Fees range from free to $100+. Our State Guide shows which states require it and the fees for all 56 jurisdictions."},
+  {q:"What is Form 990 and when do I file it?",a:"Form 990 is an annual informational return filed with the IRS. Most 501(c)(3)s must file it each year. Organizations with gross receipts under $50,000 can file the simpler Form 990-N (the 'e-Postcard'). Failing to file for 3 consecutive years automatically revokes your tax-exempt status."},
+  {q:"What if I operate in multiple states?",a:"If you incorporate in one state but operate in others, you'll typically need to register as a 'foreign nonprofit' in each operating state. Charitable solicitation registration is usually required state-by-state wherever you actively fundraise, regardless of where you're incorporated."},
+  {q:"What are bylaws and why do I need them?",a:"Bylaws are your organization's internal rulebook — they cover how the board operates, how officers are elected, how decisions are made, and what happens if someone needs to be removed. The IRS requires a copy of your bylaws with your 1023 application. We generate them for you based on your intake form answers."},
+  {q:"What is a Conflict of Interest Policy?",a:"The IRS specifically asks if you have a conflict of interest policy in Form 1023. This policy prevents board members and officers from making decisions that benefit them personally at the expense of the nonprofit. We generate this document for you automatically."},
+  {q:"What's different about nonprofits in U.S. territories like Puerto Rico or Guam?",a:"U.S. territories follow federal 501(c)(3) rules for IRS purposes, but each has its own state-equivalent requirements. Puerto Rico has its own tax code and requires a separate local exemption from the PR Treasury (Hacienda). Territories like Guam, USVI, and CNMI generally have longer processing times due to limited agency capacity. Our State Guide covers all territories in detail."},
+  {q:"Can I start a nonprofit for a religious cause?",a:"Yes — religious organizations are one of the oldest categories of 501(c)(3). Churches are technically auto-exempt and don't need to apply, but many choose to for formal recognition and donor trust. Religious orgs that aren't churches (religious schools, camps, social service orgs with a faith basis) typically do need to apply. Note: churches and religious orgs cannot use Form 1023-EZ and must use the full Form 1023."},
+  {q:"What happens if my nonprofit loses its 501(c)(3) status?",a:"The IRS can revoke your exemption for failing to file annual returns (Form 990) for 3 years, for engaging in prohibited political activity, for private inurement (personal financial benefit), or for operating outside your stated exempt purposes. You can apply for reinstatement, but the process can take years."},
+];
+
+const faqWrap = document.getElementById('faqWrap');
+FAQS.forEach((f,i) => {
+  const el = document.createElement('div');
+  el.className='faq-item';
+  el.innerHTML=`<button class="faq-q" onclick="toggleFAQ(${i})"><span>${f.q}</span><span class="faq-chev">▾</span></button><div class="faq-a">${f.a}</div>`;
+  faqWrap.appendChild(el);
+});
+function toggleFAQ(i){ document.querySelectorAll('.faq-item')[i].classList.toggle('open'); }
+
+// ── CHECKLIST ──
+function toggleCL(el){
+  el.classList.toggle('chk');
+  const all=document.querySelectorAll('.cl-item').length;
+  const done=document.querySelectorAll('.cl-item.chk').length;
+  const pct=Math.round(done/all*100);
+  document.getElementById('cl-bar').style.width=pct+'%';
+  const emojis=['🌱','🌿','🌳','🌻','🎉'];
+  const idx=pct===0?0:pct<30?1:pct<60?2:pct<100?3:4;
+  document.getElementById('cl-emoji').textContent=emojis[idx];
+  const titles=['Let\'s get started!','Off to a great start!','Making progress!','Almost there!','You did it! 🎉'];
+  const subs=['Check off items as you complete them.',`${done} of ${all} items done — keep going!`,`${done} of ${all} items done — great work!`,'Just a few more steps left!','Every step is complete — amazing!'];
+  document.getElementById('cl-title').textContent=titles[idx];
+  document.getElementById('cl-sub').textContent=subs[idx];
+}
+
+// ── FORM ──
+let fCur=0;
+const F_TOTAL=8;
+function buildDots(){
+  const d=document.getElementById('fdots');
+  d.innerHTML='';
+  for(let i=0;i<F_TOTAL;i++){
+    const dot=document.createElement('div');
+    dot.className='fdot'+(i<fCur?' done':i===fCur?' cur':'');
+    d.appendChild(dot);
+  }
+}
+buildDots();
+window.addEventListener('load', function() { setTimeout(restoreFormData, 150); });
+
+function fNav(dir){
+  saveFormData();
+  if(dir===1 && fCur===F_TOTAL-2) buildSummary();
+  document.getElementById('fs'+(fCur+1)).classList.remove('active');
+  fCur=Math.max(0,Math.min(F_TOTAL-1,fCur+dir));
+  document.getElementById('fs'+(fCur+1)).classList.add('active');
+  document.getElementById('fpf').style.width=Math.round((fCur+1)/F_TOTAL*100)+'%';
+  document.getElementById('fb-back').style.visibility=fCur===0?'hidden':'visible';
+  document.getElementById('fb-next').textContent=fCur===F_TOTAL-1?'✓ Done':'Next →';
+  buildDots();
+  window.scrollTo(0,0);
+}
+
+function fv(id){ const e=document.getElementById(id); return e&&e.value.trim()?e.value.trim():''; }
+function fr(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:''; }
+function fchk(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value); }
+
+// ── AUTO-SAVE & AUTO-RESTORE ──
+const SAVE_KEY = 'syc_form_data';
+
+function saveFormData() {
+  try {
+    const data = {
+      // Text fields
+      fields: {},
+      // Radio values
+      radios: {},
+      // Checkbox values
+      checkboxes: {},
+      // Current step
+      step: fCur,
+    };
+    // Save all text inputs and textareas
+    const ids = ['f_orgName','f_problem','f_activities','f_mission','f_whoHelp','f_howMany',
+      'f_location','f_address','f_founderName','f_founderEmail','f_board2','f_board3',
+      'f_board4','f_board5','f_budget','f_expenses','f_notes','f_spendLimit'];
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) data.fields[id] = el.value;
+    });
+    // Save select
+    const sel = document.getElementById('f_stateSelect');
+    if (sel) data.fields['f_stateSelect'] = sel.value;
+    // Save radios
+    const radioNames = ['f_type','f_employees','f_lawyer','f_fee','f_fiscal','f_meetFreq','f_comp'];
+    radioNames.forEach(name => {
+      const el = document.querySelector('input[name="'+name+'"]:checked');
+      if (el) data.radios[name] = el.value;
+    });
+    // Save checkboxes
+    ['f_funding','f_special'].forEach(cls => {
+      data.checkboxes[cls] = Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value);
+    });
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  } catch(e) { /* localStorage may be unavailable */ }
+}
+
+function restoreFormData() {
+  try {
+    const saved = localStorage.getItem(SAVE_KEY);
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    // Restore text fields
+    if (data.fields) {
+      Object.entries(data.fields).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) { el.value = val; }
+      });
+    }
+    // Restore radios
+    if (data.radios) {
+      Object.entries(data.radios).forEach(([name, val]) => {
+        const el = document.querySelector('input[name="'+name+'"][value="'+CSS.escape(val)+'"]');
+        if (el) el.checked = true;
+      });
+    }
+    // Restore checkboxes
+    if (data.checkboxes) {
+      Object.entries(data.checkboxes).forEach(([cls, vals]) => {
+        vals.forEach(val => {
+          const el = document.querySelector('.'+cls+'[value="'+CSS.escape(val)+'"]');
+          if (el) el.checked = true;
+        });
+      });
+    }
+    // Restore state banner if state was saved
+    if (data.fields && data.fields['f_stateSelect']) {
+      updateStateBanner();
+    }
+    // Restore step
+    if (data.step && data.step > 0) {
+      document.getElementById('fs'+(fCur+1)).classList.remove('active');
+      fCur = data.step;
+      document.getElementById('fs'+(fCur+1)).classList.add('active');
+      document.getElementById('fpf').style.width=Math.round((fCur+1)/F_TOTAL*100)+'%';
+      document.getElementById('fb-back').style.visibility=fCur===0?'hidden':'visible';
+      document.getElementById('fb-next').textContent=fCur===F_TOTAL-1?'✓ Done':'Next →';
+      buildDots();
+    }
+    console.log('Form data restored from saved session');
+  } catch(e) { /* localStorage may be unavailable */ }
+}
+
+function clearFormData() {
+  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+}
+
+// Auto-save on any input change
+document.addEventListener('input', function(e) {
+  if (e.target.closest('#page-form')) saveFormData();
+});
+document.addEventListener('change', function(e) {
+  if (e.target.closest('#page-form')) saveFormData();
+});
+
+function getAnswers(){
+  return {
+    orgName: fv('f_orgName'), problem: fv('f_problem'), activities: fv('f_activities'),
+    missionStatement: fv('f_mission'), whoHelp: fv('f_whoHelp'), howMany: fv('f_howMany'),
+    location: fv('f_location'), orgType: fr('f_type'),
+    state: fv('f_stateSelect') || document.getElementById('f_stateSelect').value,
+    address: fv('f_address'),
+    founderName: fv('f_founderName'), founderEmail: fv('f_founderEmail'),
+    board2: fv('f_board2'), board3: fv('f_board3'), board4: fv('f_board4'), board5: fv('f_board5'),
+    fundingSources: fchk('f_funding'), budget: fv('f_budget'), expenses: fv('f_expenses'),
+    employees: fr('f_employees'), lawyer: fr('f_lawyer'), filingFee: fr('f_fee'),
+    specialCircumstances: fchk('f_special'), notes: fv('f_notes'),
+    fiscal: fr('f_fiscal'), meetFreq: fr('f_meetFreq'), spendLimit: fv('f_spendLimit'), comp: fr('f_comp'),
+  };
+}
+
+function updateStateBanner(){
+  const code=document.getElementById('f_stateSelect').value;
+  const banner=document.getElementById('f_stateBanner');
+  if(!code){ banner.style.display='none'; return; }
+  const sd=STATE_DATA[code];
+  if(!sd){ banner.style.display='none'; return; }
+  const unique=(sd.unique||[]).slice(0,4).map(u=>`<li>${u}</li>`).join('');
+  banner.innerHTML=`<div class="state-banner">
+    <strong>📍 ${sd.name} — Key Requirements</strong>
+    <strong>Formation document:</strong> ${sd.form}<br>
+    <strong>Filing fee:</strong> $${sd.fee} &nbsp;|&nbsp; <strong>Processing:</strong> ${sd.processingDays} days &nbsp;|&nbsp; <strong>Solicitation reg:</strong> ${sd.solicitationReg?'Required ($'+(sd.solicitationFee||0)+')':'Not required'}
+    ${unique?`<ul style="margin-top:.4rem">${unique}</ul>`:''}
+    <a href="${sd.agencyUrl}" target="_blank" style="color:var(--green);font-size:13px">Visit ${sd.agency} ↗</a>
+  </div>`;
+  banner.style.display='block';
+}
+
+function buildSummary(){
+  const a=getAnswers();
+  const stateCode=document.getElementById('f_stateSelect').value;
+  const sd=STATE_DATA[stateCode]||null;
+  const rows=[
+    ['Nonprofit name',a.orgName||'—'],['Problem solving',a.problem||'—'],['Activities',a.activities||'—'],
+    ['Who you help',a.whoHelp||'—'],['How many/year',a.howMany||'—'],['Location',a.location||'—'],
+    ['Type',a.orgType||'—'],['State',sd?sd.name:(stateCode||'—')],['Address',a.address||'—'],
+    ['Founder',a.founderName||'—'],['Email',a.founderEmail||'—'],
+    ['Board 2',a.board2||'—'],['Board 3',a.board3||'—'],
+    ...(a.board4?[['Board 4',a.board4]]:[]),...(a.board5?[['Board 5',a.board5]]:[]),
+    ['Funding sources',a.fundingSources.length?a.fundingSources.join(', '):'—'],
+    ['Year 1 budget',a.budget||'—'],['Expenses',a.expenses||'—'],
+    ['Employees',a.employees||'—'],['Fiscal year',a.fiscal||'—'],
+    ['Board meetings',a.meetFreq||'—'],['Spend limit',a.spendLimit||'—'],
+  ];
+  document.getElementById('sumTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+
+  // Build docs grid
+  const docs=[
+    {id:'articles',icon:'📄',title:'Articles of Incorporation',desc:'Formation document for your state',badge:'Required — file with state'},
+    {id:'bylaws',icon:'📋',title:'Bylaws',desc:'Internal governance rules for your organization',badge:'Required for IRS 1023'},
+    {id:'conflictPolicy',icon:'⚖️',title:'Conflict of Interest Policy',desc:'Required by IRS for Form 1023',badge:'Required for IRS 1023'},
+    {id:'boardMinutes',icon:'📝',title:'First Board Meeting Minutes',desc:'Official record of your organizational meeting',badge:'Required — keep in records'},
+    {id:'missionStatement',icon:'🎯',title:'Mission Statement Worksheet',desc:'Your drafted mission with refinement checklist',badge:'Internal use'},
+    {id:'ein_checklist',icon:'🔢',title:'EIN Application Guide',desc:'Step-by-step checklist for your IRS tax ID',badge:'Required before 1023'},
+    {id:'irs_prep',icon:'🏛️',title:'IRS Form 1023 Prep Guide',desc:'Fills in your program narrative, financial data, and attachments list',badge:'Required filing'},
+    {id:'stateChecklist',icon:'📍',title:`${sd?sd.name+' ':''}Filing Checklist`,desc:`State-specific step-by-step checklist${sd?' for '+sd.name:''}`,badge:'State-specific'},
+  ];
+
+  document.getElementById('docsGrid').innerHTML=docs.map(d=>`
+    <div class="doc-card" onclick="openDoc('${d.id}')">
+      <span class="doc-icon">${d.icon}</span>
+      <h4>${d.title}</h4>
+      <p>${d.desc}</p>
+      <span class="doc-badge">${d.badge}</span>
+    </div>`).join('');
+
+  // State next steps
+  const sns=document.getElementById('stateNextSteps');
+  if(sd){
+    sns.innerHTML=`<table class="state-table" style="margin-bottom:.875rem">
+      <tr><td>Your state</td><td><strong>${sd.name}</strong></td></tr>
+      <tr><td>Document to file</td><td>${sd.form}</td></tr>
+      <tr><td>File with</td><td><a href="${sd.agencyUrl}" target="_blank" style="color:var(--green)">${sd.agency} ↗</a></td></tr>
+      <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
+      <tr><td>Solicitation registration</td><td>${sd.solicitationReg?`Required — $${sd.solicitationFee||0}`:'Not required in your state'}</td></tr>
+      <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
+      <tr><td>Estimated min. total cost</td><td><strong>$${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--tmid);line-height:1.6">${sd.notes}</p>
+    ${sd.unique&&sd.unique.length?`<ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;margin-top:.5rem;line-height:1.8">${sd.unique.map(u=>`<li>${u}</li>`).join('')}</ul>`:''}`;
+  } else {
+    sns.innerHTML=`<p style="font-size:14px;color:var(--tmid)">Select your state in Step 3 to see state-specific requirements here.</p>`;
+  }
+}
+
+// ── ANNUAL FILING PAGE ──
+function initAnnualPage() {
+  // Populate year dropdown
+  const sel = document.getElementById('annual-year');
+  if (sel && sel.options.length <= 1) {
+    const cur = new Date().getFullYear();
+    for (let y = cur - 1; y >= cur - 5; y--) {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = y;
+      if (y === cur - 1) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+  // Show/hide access banner & teaser
+  const banner = document.getElementById('annual-access-banner');
+  const teaser = document.getElementById('annual-paywall-teaser');
+  if (hasAccess()) {
+    if (banner) banner.style.display = 'block';
+    if (teaser) teaser.style.display = 'none';
+  } else {
+    if (banner) banner.style.display = 'none';
+    if (teaser) teaser.style.display = 'block';
+  }
+  buildComplianceCalendar();
+}
+
+function updateAnnualYear() { /* year is read dynamically when generating */ }
+
+function buildComplianceCalendar() {
+  const cal = document.getElementById('compliance-calendar');
+  if (!cal) return;
+  const stateCode = document.getElementById('f_stateSelect') ? document.getElementById('f_stateSelect').value : '';
+  const sd = STATE_DATA[stateCode] || null;
+  const year = new Date().getFullYear();
+  const items = [
+    { month: 'January', task: 'Send year-end donor acknowledgment letters for prior year', type: 'donor' },
+    { month: 'January', task: 'Hold annual board meeting — elect officers, approve budget', type: 'board' },
+    { month: 'March', task: 'Gather financial records — revenue, expenses, bank statements', type: 'prep' },
+    { month: 'April', task: 'Review draft Form 990 / 990-EZ / 990-N with board', type: 'irs' },
+    { month: 'May 15', task: `IRS Form 990 / 990-EZ / 990-N due for calendar-year orgs`, type: 'irs', urgent: true },
+    { month: 'May 15', task: 'File for extension (Form 8868) if needed — grants 6 months', type: 'irs' },
+    { month: 'Varies', task: `${sd ? sd.name + ' state' : 'State'} annual report due — check ${sd ? sd.agency : 'your state agency'}`, type: 'state' },
+    { month: 'Varies', task: sd && sd.solicitationReg ? `Renew charitable solicitation registration in ${sd.name}` : 'Check if charitable solicitation renewal required', type: 'state' },
+    { month: 'November 15', task: 'Extended Form 990 due (if extension was filed)', type: 'irs' },
+    { month: 'December', task: 'Year-end fundraising push — send donor appeals', type: 'donor' },
+    { month: 'December 31', task: 'Donor deadline for tax-deductible gifts — send reminders', type: 'donor' },
+    { month: 'Ongoing', task: 'Maintain board meeting minutes for every meeting', type: 'board' },
+    { month: 'Ongoing', task: 'Update conflict of interest disclosures annually', type: 'board' },
+  ];
+  const colors = { irs:'#fff0f0', state:'#fff8e6', donor:'#e8f5ef', board:'#f0f0ff', prep:'#f5f5f5' };
+  const labels = { irs:'IRS', state:'State', donor:'Donor', board:'Board', prep:'Prep' };
+  cal.innerHTML = items.map(item => `
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--sand)">
+      <div style="min-width:90px;font-size:12px;font-weight:500;color:var(--tmid);padding-top:2px">${item.month}</div>
+      <div style="flex:1;font-size:14px;color:var(--text)${item.urgent?';font-weight:500':''}">${item.task}</div>
+      <div style="background:${colors[item.type]||'#f5f5f5'};font-size:11px;font-weight:500;padding:3px 8px;border-radius:10px;flex-shrink:0;color:var(--tmid)">${labels[item.type]||item.type}</div>
+    </div>`).join('');
+}
+
+function openAnnualDoc(docId) {
+  paywallGate(() => {
+    const a = getAnswers();
+    const stateCode = document.getElementById('f_stateSelect') ? document.getElementById('f_stateSelect').value : '';
+    const sd = STATE_DATA[stateCode] || null;
+    const year = document.getElementById('annual-year') ? document.getElementById('annual-year').value : new Date().getFullYear() - 1;
+    const docs = generateYearlyDocs(a, sd, year);
+    const html = docs[docId];
+    if (!html) return;
+    const blob = new Blob([html], { type: 'text/html' });
+    window.open(URL.createObjectURL(blob), '_blank');
+  }, 'annual-doc');
+}
+
+// ── UPDATE openDoc TO USE PAYWALL GATE ──
+function openDoc(docId) {
+  paywallGate(() => {
+    const a = getAnswers();
+    const stateCode = document.getElementById('f_stateSelect').value;
+    const sd = STATE_DATA[stateCode] || null;
+    const docs = generateAllDocs(a, sd);
+    const html = docs[docId];
+    if (!html) return;
+    const blob = new Blob([html], { type: 'text/html' });
+    window.open(URL.createObjectURL(blob), '_blank');
+  }, 'formation-doc');
+}
+
+// ── PRICING PAGE ──
+function initPricingPage() {
+  renderPricingSection('pricing-section-container');
+  const pf = document.getElementById('pricing-faq');
+  if (pf && pf.children.length === 0) {
+    const pfaqs = [
+      { q: 'Can I cancel anytime?', a: 'Yes — cancel anytime from your billing portal with no penalties. You keep access until the end of your billing period.' },
+      { q: 'Is there a free trial?', a: 'We offer a 7-day money-back guarantee. If you\'re not satisfied within 7 days, contact us for a full refund.' },
+      { q: 'Does this cover multiple nonprofits?', a: 'Yes — one subscription covers all the nonprofits you manage. Generate documents for as many organizations as you need.' },
+      { q: 'What payment methods are accepted?', a: 'All major credit and debit cards via Stripe. Stripe is used by millions of businesses and is fully PCI-compliant.' },
+      { q: 'Do you store my nonprofit\'s information?', a: 'No — all document generation happens in your browser. We don\'t store or transmit your nonprofit data to our servers.' },
+    ];
+    pf.innerHTML = pfaqs.map((f,i) => `
+      <div style="border-bottom:1px solid var(--sand2)">
+        <button onclick="this.parentElement.classList.toggle('open')" style="width:100%;background:none;border:none;text-align:left;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text);padding:1rem 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+          <span>${f.q}</span><span style="color:var(--green);transition:transform .2s" class="pc">▾</span>
+        </button>
+        <div style="font-size:13px;color:var(--tmid);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s" class="pa">${f.a}</div>
+      </div>`).join('');
+    // Simple open/close
+    pf.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const pa = item.querySelector('.pa');
+        const pc = item.querySelector('.pc');
+        const isOpen = item.classList.contains('open');
+        pa.style.maxHeight = isOpen ? '0' : '200px';
+        pa.style.paddingBottom = isOpen ? '0' : '1rem';
+        pc.style.transform = isOpen ? '' : 'rotate(180deg)';
+      });
+    });
+  }
+}
+
+
+function doCheckout(planId) {
+  var priceId = planId === 'annual' ? 'price_1TMAyDRyNZ1TUldSuM557LTK' : 'price_1TMAwiRyNZ1TUldSZ7tIW7wi';
+  var btn = event.currentTarget;
+  var orig = btn.textContent;
+  btn.textContent = 'Redirecting...';
+  btn.disabled = true;
+  fetch('/.netlify/functions/create-checkout', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      priceId: priceId,
+      planId: planId,
+      successUrl: location.origin + '/?subscribed=true&plan=' + planId,
+      cancelUrl: location.origin + '/?canceled=true'
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.url) { location.href = d.url; }
+    else { btn.textContent = orig; btn.disabled = false; alert('Payment error. Please try again.'); }
+  })
+  .catch(function() { btn.textContent = orig; btn.disabled = false; alert('Payment system unavailable. Please try again later.'); });
+}
+
+</script>
+</body>
+</html>
