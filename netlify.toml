@@ -1,8 +1,8 @@
-[build]
+toml[build]
   publish = "."
 
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "paywall.js"
+  SECRETS_SCAN_OMIT_PATHS = "paywall.js,index.html"
 
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
