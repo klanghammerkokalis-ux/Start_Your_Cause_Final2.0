@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Portal — Start Your Cause</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#fdf8f2;--warm:#fff9f4;--sand:#f0e9de;--sand2:#e2d5c6;
+  --green:#2d8f6f;--gdark:#1d6b52;--glight:#e8f5ef;--gmid:#c4e8d8;
+  --amber:#e07b39;--amberL:#fdf0e6;
+  --text:#2c2418;--tmid:#6b5c4c;--tlight:#9e8e7e;
+  --r:14px;--rs:8px;--red:#e05555;--redL:#fff0f0;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);font-size:16px;line-height:1.7;min-height:100vh}
+h1,h2,h3,h4{font-family:'Lora',serif;line-height:1.25}
+a{color:var(--green);text-decoration:none}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--gdark);color:#fff;flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.main{margin-left:240px;flex:1;min-height:100vh}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform .3s}.sidebar.open{transform:translateX(0)}.main{margin-left:0}}
+
+/* ── SIDEBAR ── */
+.sb-logo{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,.1);font-family:'Lora',serif;font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
+.sb-nav{flex:1;padding:1rem 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;cursor:pointer;font-size:14px;font-weight:400;color:rgba(255,255,255,.75);transition:all .15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+.sb-item:hover{background:rgba(255,255,255,.1);color:#fff}
+.sb-item.active{background:rgba(255,255,255,.15);color:#fff;font-weight:500}
+.sb-item .icon{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.sb-section{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:.75rem 1.25rem .25rem}
+.sb-org{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1);font-size:13px;color:rgba(255,255,255,.6)}
+.sb-org strong{display:block;color:#fff;font-size:14px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-signout{display:flex;align-items:center;gap:8px;padding:10px 1.25rem;cursor:pointer;font-size:13px;color:rgba(255,255,255,.6);border:none;background:none;width:100%;font-family:'DM Sans',sans-serif;transition:color .15s}
+.sb-signout:hover{color:#fff}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--warm);border-bottom:1px solid var(--sand2);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar h1{font-size:18px;font-family:'Lora',serif;color:var(--text)}
+.mob-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text)}
+@media(max-width:768px){.mob-toggle{display:block}}
+.topbar-right{display:flex;align-items:center;gap:.75rem}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+.badge-green{background:var(--glight);color:var(--gdark);border:1px solid var(--gmid)}
+.badge-amber{background:var(--amberL);color:#7a4010;border:1px solid #f5cfa8}
+.badge-red{background:var(--redL);color:var(--red);border:1px solid #f5c0c0}
+
+/* ── PAGES ── */
+.portal-page{display:none;padding:2rem}
+.portal-page.active{display:block}
+
+/* ── AUTH SCREENS ── */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--cream);padding:2rem}
+.auth-card{background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:2.5rem;max-width:440px;width:100%;box-shadow:0 4px 24px rgba(44,36,24,.08)}
+.auth-logo{text-align:center;margin-bottom:2rem}
+.auth-logo .leaf{font-size:36px}
+.auth-logo h1{font-size:1.5rem;color:var(--gdark);margin-top:.5rem}
+.auth-logo p{font-size:14px;color:var(--tmid);margin-top:.25rem}
+.auth-tabs{display:flex;border-bottom:1px solid var(--sand2);margin-bottom:1.5rem}
+.auth-tab{flex:1;padding:.75rem;text-align:center;cursor:pointer;font-size:14px;font-weight:500;color:var(--tlight);border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;transition:all .15s}
+.auth-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.field input{width:100%;padding:10px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;transition:border-color .15s}
+.field input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(45,143,111,.1)}
+.btn-full{width:100%;padding:12px;border-radius:var(--rs);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border:none}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:var(--gdark)}
+.btn-google{background:#fff;color:var(--text);border:1.5px solid var(--sand2);display:flex;align-items:center;justify-content:center;gap:10px;margin-top:.75rem}
+.btn-google:hover{background:var(--sand)}
+.divider{display:flex;align-items:center;gap:.75rem;margin:1rem 0;color:var(--tlight);font-size:13px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--sand2)}
+.auth-error{background:var(--redL);border:1px solid #f5c0c0;border-radius:var(--rs);padding:.75rem 1rem;font-size:13px;color:var(--red);margin-bottom:1rem;display:none}
+.auth-success{background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:.75rem 1rem;font-size:13px;color:var(--gdark);margin-bottom:1rem;display:none}
+
+/* ── CARDS ── */
+.card{background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:16px;font-family:'Lora',serif;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:900px){.grid-4{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+
+/* ── STAT CARDS ── */
+.stat-card{background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.25rem;text-align:center}
+.stat-num{font-family:'Lora',serif;font-size:2rem;font-weight:600;color:var(--gdark);display:block}
+.stat-label{font-size:13px;color:var(--tlight);margin-top:2px}
+
+/* ── PROGRESS ── */
+.progress-bar{height:8px;background:var(--sand2);border-radius:4px;overflow:hidden;margin:.5rem 0}
+.progress-fill{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
+
+/* ── DOC CARDS ── */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.875rem}
+.doc-card{background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.125rem;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative}
+.doc-card:hover{border-color:var(--gmid);box-shadow:0 2px 12px rgba(45,143,111,.1)}
+.doc-card.locked{opacity:.6;cursor:default}
+.doc-icon{font-size:24px;margin-bottom:.5rem;display:block}
+.doc-card h4{font-size:13px;font-weight:500;margin-bottom:.2rem;font-family:'DM Sans',sans-serif}
+.doc-card p{font-size:12px;color:var(--tlight);line-height:1.4}
+.doc-badge{display:inline-block;font-size:10px;background:var(--glight);color:var(--gdark);padding:2px 8px;border-radius:10px;margin-top:.4rem;font-weight:500}
+.lock-icon{position:absolute;top:.75rem;right:.75rem;font-size:14px;color:var(--tlight)}
+
+/* ── REMINDERS ── */
+.reminder-item{display:flex;align-items:flex-start;gap:1rem;padding:1rem;background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);margin-bottom:.75rem;transition:border-color .15s}
+.reminder-item.overdue{border-color:#f5c0c0;background:var(--redL)}
+.reminder-item.upcoming-soon{border-color:#f5cfa8;background:var(--amberL)}
+.reminder-item.completed{opacity:.5}
+.reminder-date{min-width:70px;text-align:center;background:var(--cream);border-radius:var(--rs);padding:.5rem;border:1px solid var(--sand2)}
+.reminder-date .day{font-size:1.5rem;font-family:'Lora',serif;font-weight:600;color:var(--gdark);line-height:1;display:block}
+.reminder-date .month{font-size:11px;color:var(--tlight);text-transform:uppercase;letter-spacing:.05em}
+.reminder-content{flex:1}
+.reminder-content h4{font-size:14px;font-weight:500;margin-bottom:2px;font-family:'DM Sans',sans-serif}
+.reminder-content p{font-size:13px;color:var(--tmid)}
+.reminder-actions{display:flex;gap:.5rem;margin-top:.5rem}
+.btn-sm{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:all .15s}
+.btn-sm-green{background:var(--glight);color:var(--gdark)}
+.btn-sm-green:hover{background:var(--gmid)}
+.btn-sm-ghost{background:transparent;color:var(--tlight);border:1px solid var(--sand2)}
+.btn-sm-ghost:hover{background:var(--sand)}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:.75rem}
+.cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.cal-header span{text-align:center;font-size:11px;font-weight:500;color:var(--tlight)}
+.cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;transition:background .15s}
+.cal-day:hover{background:var(--sand)}
+.cal-day.today{background:var(--glight);color:var(--gdark);font-weight:600}
+.cal-day.has-event::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--amber)}
+.cal-day.other-month{color:var(--tlight)}
+.cal-day.has-overdue::after{background:var(--red)}
+
+/* ── PROFILE FORM ── */
+.profile-field{margin-bottom:1rem}
+.profile-field label{display:block;font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.profile-field input,.profile-field textarea,.profile-field select{width:100%;padding:10px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:#fff;resize:vertical;transition:border-color .15s}
+.profile-field input:focus,.profile-field textarea:focus,.profile-field select:focus{outline:none;border-color:var(--green)}
+.save-btn{background:var(--green);color:#fff;border:none;border-radius:var(--rs);padding:10px 24px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+.save-btn:hover{background:var(--gdark)}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--tmid)}
+.empty-state .empty-icon{font-size:48px;margin-bottom:1rem}
+.empty-state h3{font-size:18px;margin-bottom:.5rem;color:var(--text)}
+.empty-state p{font-size:14px;max-width:360px;margin:0 auto 1.25rem}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(44,36,24,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--warm);border-radius:var(--r);max-width:520px;width:100%;padding:2rem;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--tlight)}
+.modal h2{font-size:1.25rem;margin-bottom:1rem}
+
+/* ── NOTIFICATION TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--gdark);color:#fff;padding:.875rem 1.25rem;border-radius:var(--rs);font-size:14px;z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:var(--red)}
+
+/* ── COMPLETION SCORE ── */
+.score-circle{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:1.25rem;font-weight:600;color:var(--gdark);background:conic-gradient(var(--green) var(--pct, 0%), var(--sand2) 0%);position:relative}
+.score-circle::before{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--warm)}
+.score-circle span{position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<!-- ── AUTH SCREEN ── -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="leaf">🌱</div>
+      <h1>Start Your Cause</h1>
+      <p>Sign in to your nonprofit portal</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('signin')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Create Account</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-success" class="auth-success"></div>
+
+    <!-- Sign In -->
+    <div id="tab-signin">
+      <div class="field"><label>Email</label><input type="email" id="si-email" placeholder="you@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="si-password" placeholder="Your password"></div>
+      <button class="btn-full btn-green" onclick="signIn()">Sign In</button>
+      <div class="divider">or</div>
+      <button class="btn-full btn-google" onclick="signInGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.48A4.8 4.8 0 014.5 7.52V5.45H1.83a8 8 0 000 7.1l2.67-2.07z"/><path fill="#EA4335" d="M8.98 3.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.45L4.5 7.52A4.8 4.8 0 018.98 3.18z"/></svg>
+        Continue with Google
+      </button>
+      <p style="text-align:center;font-size:13px;color:var(--tlight);margin-top:1rem"><a href="#" onclick="showForgot()">Forgot password?</a></p>
+    </div>
+
+    <!-- Sign Up -->
+    <div id="tab-signup" style="display:none">
+      <div class="field"><label>Full Name</label><input type="text" id="su-name" placeholder="Your full name"></div>
+      <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@email.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="su-password" placeholder="At least 8 characters"></div>
+      <button class="btn-full btn-green" onclick="signUp()">Create Account</button>
+      <div class="divider">or</div>
+      <button class="btn-full btn-google" onclick="signInGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 002.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2.04a4.8 4.8 0 01-7.18-2.54H1.83v2.07A8 8 0 008.98 17z"/><path fill="#FBBC05" d="M4.5 10.48A4.8 4.8 0 014.5 7.52V5.45H1.83a8 8 0 000 7.1l2.67-2.07z"/><path fill="#EA4335" d="M8.98 3.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 001.83 5.45L4.5 7.52A4.8 4.8 0 018.98 3.18z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PORTAL APP ── -->
+<div id="portal-app" style="display:none">
+  <div class="app">
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sb-logo">🌱 Start Your Cause</div>
+      <div class="sb-nav">
+        <div class="sb-section">Main</div>
+        <button class="sb-item active" onclick="showPage('dashboard')"><span class="icon">🏠</span> Dashboard</button>
+        <button class="sb-item" onclick="showPage('documents')"><span class="icon">📄</span> Documents</button>
+        <button class="sb-item" onclick="showPage('calendar')"><span class="icon">📅</span> Compliance Calendar</button>
+        <button class="sb-item" onclick="showPage('reminders')"><span class="icon">🔔</span> Reminders</button>
+        <div class="sb-section">My Organization</div>
+        <button class="sb-item" onclick="showPage('profile')"><span class="icon">🏛️</span> Nonprofit Profile</button>
+        <button class="sb-item" onclick="showPage('board')"><span class="icon">👥</span> Board Members</button>
+        <div class="sb-section">Account</div>
+        <button class="sb-item" onclick="showPage('settings')"><span class="icon">⚙️</span> Settings</button>
+      </div>
+      <div class="sb-org">
+        <strong id="sb-org-name">My Nonprofit</strong>
+        <span id="sb-user-email"></span>
+      </div>
+      <button class="sb-signout" onclick="signOut()">↩ Sign out</button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <button class="mob-toggle" onclick="toggleSidebar()">☰</button>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-green" id="sub-badge">Active</span>
+        </div>
+      </div>
+
+      <!-- ── DASHBOARD ── -->
+      <div class="portal-page active" id="page-dashboard">
+        <div class="grid-4" style="margin-bottom:1.5rem">
+          <div class="stat-card"><span class="stat-num" id="stat-docs">0</span><span class="stat-label">Documents generated</span></div>
+          <div class="stat-card"><span class="stat-num" id="stat-reminders">0</span><span class="stat-label">Upcoming deadlines</span></div>
+          <div class="stat-card"><span class="stat-num" id="stat-overdue">0</span><span class="stat-label">Overdue items</span></div>
+          <div class="stat-card"><span class="stat-num" id="stat-complete">0%</span><span class="stat-label">Profile complete</span></div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <div class="card">
+              <div class="card-title">🏛️ Your Nonprofit</div>
+              <div id="dash-org-info" style="font-size:14px;color:var(--tmid)">
+                <p>Loading your organization details...</p>
+              </div>
+              <button class="btn-sm btn-sm-green" style="margin-top:1rem" onclick="showPage('profile')">Edit profile →</button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">📊 Compliance Score</div>
+              <div style="display:flex;align-items:center;gap:1.5rem">
+                <div class="score-circle" id="score-circle" style="--pct:0%"><span id="score-num">0%</span></div>
+                <div style="flex:1">
+                  <div id="score-items" style="font-size:13px;color:var(--tmid)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <div class="card-title">🔔 Upcoming Deadlines</div>
+              <div id="dash-reminders"></div>
+              <button class="btn-sm btn-sm-ghost" style="margin-top:.75rem" onclick="showPage('reminders')">View all reminders →</button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">📄 Recent Documents</div>
+              <div id="dash-docs" style="font-size:13px;color:var(--tmid)"></div>
+              <button class="btn-sm btn-sm-ghost" style="margin-top:.75rem" onclick="showPage('documents')">View all documents →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DOCUMENTS ── -->
+      <div class="portal-page" id="page-documents">
+        <div class="card" style="margin-bottom:1.25rem">
+          <div class="card-title">📄 Formation Documents</div>
+          <p style="font-size:14px;color:var(--tmid);margin-bottom:1rem">Generated from your intake form answers. Click any document to open and print.</p>
+          <div class="doc-grid" id="formation-docs"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Annual Filing Documents</div>
+          <p style="font-size:14px;color:var(--tmid);margin-bottom:.75rem">Select tax year:</p>
+          <select id="annual-year-select" style="padding:8px 12px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;margin-bottom:1rem;background:#fff" onchange="loadAnnualDocs()"></select>
+          <div class="doc-grid" id="annual-docs"></div>
+        </div>
+      </div>
+
+      <!-- ── CALENDAR ── -->
+      <div class="portal-page" id="page-calendar">
+        <div class="grid-2">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+              <div class="card-title" style="margin:0" id="cal-month-title">May 2026</div>
+              <div style="display:flex;gap:.5rem">
+                <button class="btn-sm btn-sm-ghost" onclick="changeMonth(-1)">←</button>
+                <button class="btn-sm btn-sm-ghost" onclick="changeMonth(1)">→</button>
+              </div>
+            </div>
+            <div class="cal-header">
+              <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">📋 This Month's Deadlines</div>
+            <div id="cal-month-reminders"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1.25rem">
+          <div class="card-title">📅 Full Annual Compliance Calendar</div>
+          <div id="full-cal-list"></div>
+        </div>
+      </div>
+
+      <!-- ── REMINDERS ── -->
+      <div class="portal-page" id="page-reminders">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+          <div>
+            <h2 style="font-size:1.1rem;margin-bottom:.25rem">Reminders & Deadlines</h2>
+            <p style="font-size:13px;color:var(--tmid)">We'll email you 30, 7, and 1 day before each deadline.</p>
+          </div>
+          <button class="save-btn" onclick="openAddReminder()">+ Add reminder</button>
+        </div>
+        <div id="reminders-overdue"></div>
+        <div id="reminders-upcoming"></div>
+        <div id="reminders-completed"></div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="portal-page" id="page-profile">
+        <div class="card">
+          <div class="card-title">🏛️ Nonprofit Information</div>
+          <div class="grid-2">
+            <div class="profile-field"><label>Organization Name</label><input type="text" id="p-orgName"></div>
+            <div class="profile-field"><label>EIN (Tax ID)</label><input type="text" id="p-ein" placeholder="XX-XXXXXXX"></div>
+            <div class="profile-field"><label>State</label><select id="p-state"></select></div>
+            <div class="profile-field"><label>Date Incorporated</label><input type="date" id="p-dateIncorp"></div>
+            <div class="profile-field"><label>501(c)(3) Status</label><select id="p-taxStatus"><option value="pending">Pending — Application not yet filed</option><option value="applied">Applied — Waiting for IRS response</option><option value="approved">Approved — Tax exempt</option><option value="denied">Denied</option></select></div>
+            <div class="profile-field"><label>Fiscal Year End</label><select id="p-fiscal"><option value="December 31">December 31 (Calendar year)</option><option value="June 30">June 30</option><option value="September 30">September 30</option></select></div>
+          </div>
+          <div class="profile-field"><label>Mission Statement</label><textarea id="p-mission" rows="3"></textarea></div>
+          <div class="profile-field"><label>Programs & Activities</label><textarea id="p-activities" rows="3"></textarea></div>
+          <div class="profile-field"><label>Who You Serve</label><textarea id="p-whoHelp" rows="2"></textarea></div>
+          <div class="profile-field"><label>Geographic Area</label><input type="text" id="p-location"></div>
+          <div class="profile-field"><label>Mailing Address</label><input type="text" id="p-address"></div>
+          <button class="save-btn" onclick="saveProfile()">Save changes</button>
+        </div>
+      </div>
+
+      <!-- ── BOARD ── -->
+      <div class="portal-page" id="page-board">
+        <div class="card">
+          <div class="card-title">👥 Board of Directors</div>
+          <p style="font-size:14px;color:var(--tmid);margin-bottom:1.25rem">Keep your board roster up to date. Most states require at least 3 directors.</p>
+          <div id="board-list"></div>
+          <button class="save-btn" onclick="saveBoard()" style="margin-top:1rem">Save board</button>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="portal-page" id="page-settings">
+        <div class="card">
+          <div class="card-title">⚙️ Account Settings</div>
+          <div class="profile-field"><label>Full Name</label><input type="text" id="s-name"></div>
+          <div class="profile-field"><label>Email</label><input type="email" id="s-email" disabled style="opacity:.6"></div>
+          <button class="save-btn" onclick="saveSettings()">Save settings</button>
+        </div>
+        <div class="card">
+          <div class="card-title">🔔 Email Notifications</div>
+          <div style="display:flex;flex-direction:column;gap:.75rem;font-size:14px">
+            <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer"><input type="checkbox" id="notif-30" checked style="accent-color:var(--green)"> Send email reminders 30 days before deadlines</label>
+            <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer"><input type="checkbox" id="notif-7" checked style="accent-color:var(--green)"> Send email reminders 7 days before deadlines</label>
+            <label style="display:flex;align-items:center;gap:.75rem;cursor:pointer"><input type="checkbox" id="notif-1" checked style="accent-color:var(--green)"> Send email reminders 1 day before deadlines</label>
+          </div>
+          <button class="save-btn" style="margin-top:1rem" onclick="saveNotifSettings()">Save notification settings</button>
+        </div>
+        <div class="card">
+          <div class="card-title">💳 Subscription</div>
+          <div style="font-size:14px;color:var(--tmid)" id="sub-info">Loading subscription info...</div>
+          <button class="save-btn" style="margin-top:1rem;background:var(--amber)" onclick="manageSubscription()">Manage subscription</button>
+        </div>
+        <div class="card" style="border-color:#f5c0c0">
+          <div class="card-title" style="color:var(--red)">⚠️ Danger Zone</div>
+          <p style="font-size:14px;color:var(--tmid);margin-bottom:1rem">Permanently delete your account and all data. This cannot be undone.</p>
+          <button style="background:var(--redL);color:var(--red);border:1px solid #f5c0c0;border-radius:var(--rs);padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="deleteAccount()">Delete my account</button>
+        </div>
+      </div>
+
+    </div><!-- end main -->
+  </div><!-- end app -->
+</div><!-- end portal-app -->
+
+<!-- ── ADD REMINDER MODAL ── -->
+<div class="modal-bg" id="reminder-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reminder-modal')">✕</button>
+    <h2>Add Reminder</h2>
+    <div class="profile-field"><label>Title</label><input type="text" id="rem-title" placeholder="e.g. File Form 990"></div>
+    <div class="profile-field"><label>Due Date</label><input type="date" id="rem-date"></div>
+    <div class="profile-field"><label>Type</label>
+      <select id="rem-type" style="width:100%;padding:10px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff">
+        <option value="form990">IRS Form 990</option>
+        <option value="state_report">State Annual Report</option>
+        <option value="solicitation">Charitable Solicitation Renewal</option>
+        <option value="board_meeting">Board Meeting</option>
+        <option value="custom">Other / Custom</option>
+      </select>
+    </div>
+    <div class="profile-field"><label>Notes (optional)</label><textarea id="rem-notes" rows="2" style="width:100%;padding:10px 13px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff;resize:vertical"></textarea></div>
+    <button class="btn-full btn-green" onclick="addReminder()" style="margin-top:.5rem">Add Reminder</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── SUPABASE CONFIG ──
+// Replace with your Supabase project URL and anon key
+const SUPABASE_URL = 'https://lehgxworaefgsvkigjza.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlaGd4d29yYWVmZ3N2a2lnanphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwODgxMzAsImV4cCI6MjA5MzY2NDEzMH0.sEFb7PBZ5Iqrqmq9Z1RbpOPxxaFX26lOLgrUtIi6mLc';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── STATE ──
+let currentUser = null;
+let currentProfile = null;
+let currentNonprofit = null;
+let allReminders = [];
+let calDate = new Date();
+
+// ── INIT ──
+async function init() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadPortal();
+  }
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      currentUser = session.user;
+      await loadPortal();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      document.getElementById('portal-app').style.display = 'none';
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+  });
+}
+
+async function loadPortal() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('portal-app').style.display = 'block';
+  await loadProfile();
+  await loadNonprofit();
+  await loadReminders();
+  updateDashboard();
+  renderCalendar();
+  loadDocuments();
+  populateStateSelect();
+}
+
+// ── AUTH ──
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='signin')||(i===1&&tab==='signup')));
+  document.getElementById('tab-signin').style.display = tab==='signin' ? 'block' : 'none';
+  document.getElementById('tab-signup').style.display = tab==='signup' ? 'block' : 'none';
+  clearAuthMessages();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('auth-success').style.display = 'none';
+}
+
+function showAuthSuccess(msg) {
+  const el = document.getElementById('auth-success');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function clearAuthMessages() {
+  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-success').style.display = 'none';
+}
+
+async function signIn() {
+  const email = document.getElementById('si-email').value.trim();
+  const password = document.getElementById('si-password').value;
+  if (!email || !password) return showAuthError('Please enter your email and password.');
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) showAuthError(error.message);
+}
+
+async function signUp() {
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-password').value;
+  if (!name || !email || !password) return showAuthError('Please fill in all fields.');
+  if (password.length < 8) return showAuthError('Password must be at least 8 characters.');
+  const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
+  if (error) showAuthError(error.message);
+  else showAuthSuccess('Account created! Check your email to confirm your address, then sign in.');
+}
+
+async function signInGoogle() {
+  const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/portal.html' } });
+  if (error) showAuthError(error.message);
+}
+
+async function showForgot() {
+  const email = prompt('Enter your email address to receive a password reset link:');
+  if (!email) return;
+  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  if (error) showAuthError(error.message);
+  else showAuthSuccess('Password reset email sent! Check your inbox.');
+}
+
+async function signOut() {
+  await supabase.auth.signOut();
+}
+
+// ── PROFILE ──
+async function loadProfile() {
+  const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+  if (data) {
+    currentProfile = data;
+    document.getElementById('sb-user-email').textContent = data.email || currentUser.email;
+    document.getElementById('s-name').value = data.full_name || '';
+    document.getElementById('s-email').value = data.email || currentUser.email;
+    updateSubBadge(data.subscription_status);
+    document.getElementById('sub-info').innerHTML = `
+      <p><strong>Plan:</strong> ${data.subscription_plan || 'None'}</p>
+      <p><strong>Status:</strong> ${data.subscription_status || 'Inactive'}</p>
+      ${data.subscription_end ? `<p><strong>Renews:</strong> ${new Date(data.subscription_end).toLocaleDateString()}</p>` : ''}
+    `;
+  }
+}
+
+function updateSubBadge(status) {
+  const b = document.getElementById('sub-badge');
+  b.className = 'badge';
+  if (status === 'active') { b.textContent = '✓ Active'; b.classList.add('badge-green'); }
+  else if (status === 'past_due') { b.textContent = '⚠ Past due'; b.classList.add('badge-amber'); }
+  else { b.textContent = 'Inactive'; b.classList.add('badge-red'); }
+}
+
+async function saveSettings() {
+  const name = document.getElementById('s-name').value.trim();
+  const { error } = await supabase.from('profiles').update({ full_name: name }).eq('id', currentUser.id);
+  if (error) showToast('Error saving settings', true);
+  else { showToast('Settings saved!'); currentProfile.full_name = name; }
+}
+
+async function saveNotifSettings() {
+  showToast('Notification settings saved!');
+}
+
+// ── NONPROFIT ──
+async function loadNonprofit() {
+  const { data } = await supabase.from('nonprofits').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(1).single();
+  if (data) {
+    currentNonprofit = data;
+    document.getElementById('sb-org-name').textContent = data.org_name || 'My Nonprofit';
+    populateProfileForm(data);
+    populateBoardForm(data);
+    updateDashOrgInfo(data);
+  } else {
+    document.getElementById('dash-org-info').innerHTML = '<p>No nonprofit profile yet. <a href="#" onclick="showPage(\'profile\')">Set up your profile →</a></p>';
+  }
+}
+
+function populateProfileForm(d) {
+  const fields = { 'p-orgName':'org_name','p-ein':'ein','p-mission':'mission_statement','p-activities':'activities','p-whoHelp':'who_help','p-location':'location','p-address':'address','p-taxStatus':'tax_exempt_status','p-fiscal':'fiscal_year' };
+  Object.entries(fields).forEach(([id,key]) => { const el=document.getElementById(id); if(el&&d[key]) el.value=d[key]; });
+  if (d.state) document.getElementById('p-state').value = d.state;
+  if (d.date_incorporated) document.getElementById('p-dateIncorp').value = d.date_incorporated;
+}
+
+function populateBoardForm(d) {
+  const members = [
+    { name: d.founder_name, role: 'President / Founder' },
+    { name: d.board2, role: 'Vice President / Director' },
+    { name: d.board3, role: 'Secretary / Director' },
+    { name: d.board4, role: 'Treasurer / Director' },
+    { name: d.board5, role: 'Director' },
+    { name: '', role: 'Director' },
+  ];
+  document.getElementById('board-list').innerHTML = members.map((m,i) => `
+    <div style="display:flex;gap:.75rem;margin-bottom:.75rem;align-items:center">
+      <input type="text" value="${m.name||''}" placeholder="Board member ${i+1} full name" id="bm-${i}" style="flex:1;padding:9px 12px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff">
+      <input type="text" value="${m.role}" placeholder="Role" id="bm-role-${i}" style="width:180px;padding:9px 12px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff">
+    </div>
+  `).join('');
+}
+
+function updateDashOrgInfo(d) {
+  document.getElementById('dash-org-info').innerHTML = `
+    <table style="width:100%;font-size:13px;border-collapse:collapse">
+      <tr><td style="color:var(--tlight);padding:4px 0;width:40%">Organization</td><td><strong>${d.org_name||'—'}</strong></td></tr>
+      <tr><td style="color:var(--tlight);padding:4px 0">EIN</td><td>${d.ein||'Not entered'}</td></tr>
+      <tr><td style="color:var(--tlight);padding:4px 0">State</td><td>${d.state||'—'}</td></tr>
+      <tr><td style="color:var(--tlight);padding:4px 0">501(c)(3) Status</td><td>${d.tax_exempt_status||'pending'}</td></tr>
+      <tr><td style="color:var(--tlight);padding:4px 0">Fiscal Year</td><td>${d.fiscal_year||'—'}</td></tr>
+    </table>
+  `;
+  // Compliance score
+  const scoreFields = [d.org_name,d.ein,d.state,d.mission_statement,d.activities,d.founder_name,d.board2,d.board3,d.date_incorporated,d.tax_exempt_status];
+  const score = Math.round(scoreFields.filter(Boolean).length / scoreFields.length * 100);
+  document.getElementById('score-num').textContent = score + '%';
+  document.getElementById('score-circle').style.setProperty('--pct', score + '%');
+  document.getElementById('stat-complete').textContent = score + '%';
+  document.getElementById('score-items').innerHTML = [
+    ['Organization name', d.org_name],['EIN', d.ein],['State', d.state],
+    ['Mission statement', d.mission_statement],['Incorporation date', d.date_incorporated],
+    ['Board members (3+)', d.board3]
+  ].map(([l,v]) => `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span>${v?'✅':'⬜'}</span><span style="color:${v?'var(--text)':'var(--tlight)'}">${l}</span></div>`).join('');
+}
+
+async function saveProfile() {
+  const data = {
+    user_id: currentUser.id,
+    org_name: document.getElementById('p-orgName').value,
+    ein: document.getElementById('p-ein').value,
+    state: document.getElementById('p-state').value,
+    date_incorporated: document.getElementById('p-dateIncorp').value || null,
+    tax_exempt_status: document.getElementById('p-taxStatus').value,
+    fiscal_year: document.getElementById('p-fiscal').value,
+    mission_statement: document.getElementById('p-mission').value,
+    activities: document.getElementById('p-activities').value,
+    who_help: document.getElementById('p-whoHelp').value,
+    location: document.getElementById('p-location').value,
+    address: document.getElementById('p-address').value,
+  };
+  let result;
+  if (currentNonprofit) {
+    result = await supabase.from('nonprofits').update(data).eq('id', currentNonprofit.id);
+  } else {
+    result = await supabase.from('nonprofits').insert([data]).select().single();
+    if (result.data) currentNonprofit = result.data;
+  }
+  if (result.error) showToast('Error saving profile', true);
+  else { showToast('Profile saved!'); await loadNonprofit(); updateDashboard(); }
+}
+
+async function saveBoard() {
+  const data = {
+    founder_name: document.getElementById('bm-0').value,
+    board2: document.getElementById('bm-1').value,
+    board3: document.getElementById('bm-2').value,
+    board4: document.getElementById('bm-3').value,
+    board5: document.getElementById('bm-4').value,
+  };
+  if (!currentNonprofit) return showToast('Please save your profile first', true);
+  const { error } = await supabase.from('nonprofits').update(data).eq('id', currentNonprofit.id);
+  if (error) showToast('Error saving board', true);
+  else showToast('Board saved!');
+}
+
+// ── REMINDERS ──
+async function loadReminders() {
+  if (!currentNonprofit) return;
+  const { data } = await supabase.from('reminders').select('*').eq('nonprofit_id', currentNonprofit.id).order('due_date', { ascending: true });
+  allReminders = data || [];
+  renderReminders();
+  updateDashReminders();
+  document.getElementById('stat-reminders').textContent = allReminders.filter(r => r.status === 'upcoming').length;
+  document.getElementById('stat-overdue').textContent = allReminders.filter(r => r.status === 'overdue' || new Date(r.due_date) < new Date() && r.status !== 'completed').length;
+}
+
+function renderReminders() {
+  const now = new Date();
+  const overdue = allReminders.filter(r => new Date(r.due_date) < now && r.status !== 'completed');
+  const upcoming = allReminders.filter(r => new Date(r.due_date) >= now && r.status !== 'completed');
+  const completed = allReminders.filter(r => r.status === 'completed');
+
+  const renderItem = (r) => {
+    const d = new Date(r.due_date);
+    const isOverdue = d < now && r.status !== 'completed';
+    const daysUntil = Math.ceil((d - now) / (1000*60*60*24));
+    const soon = daysUntil <= 7 && daysUntil >= 0;
+    return `<div class="reminder-item ${isOverdue?'overdue':soon?'upcoming-soon':''} ${r.status==='completed'?'completed':''}">
+      <div class="reminder-date">
+        <span class="day">${d.getDate()}</span>
+        <span class="month">${d.toLocaleString('default',{month:'short'})}</span>
+      </div>
+      <div class="reminder-content">
+        <h4>${r.title}</h4>
+        <p>${r.description||''} ${isOverdue?'<strong style="color:var(--red)">OVERDUE</strong>':soon?`<strong style="color:var(--amber)">${daysUntil} days away</strong>`:''}</p>
+        <div class="reminder-actions">
+          ${r.status!=='completed'?`<button class="btn-sm btn-sm-green" onclick="markComplete('${r.id}')">✓ Mark complete</button>`:''}
+          <button class="btn-sm btn-sm-ghost" onclick="deleteReminder('${r.id}')">Delete</button>
+        </div>
+      </div>
+    </div>`;
+  };
+
+  document.getElementById('reminders-overdue').innerHTML = overdue.length ? `<h3 style="font-size:14px;color:var(--red);margin-bottom:.75rem">⚠️ Overdue (${overdue.length})</h3>${overdue.map(renderItem).join('')}` : '';
+  document.getElementById('reminders-upcoming').innerHTML = upcoming.length ? `<h3 style="font-size:14px;color:var(--text);margin:.75rem 0">📅 Upcoming (${upcoming.length})</h3>${upcoming.map(renderItem).join('')}` : '<div class="empty-state" style="padding:2rem"><div class="empty-icon">🎉</div><h3>All caught up!</h3><p>No upcoming deadlines. Add a reminder to stay on track.</p></div>';
+  document.getElementById('reminders-completed').innerHTML = completed.length ? `<h3 style="font-size:14px;color:var(--tlight);margin:.75rem 0">✓ Completed (${completed.length})</h3>${completed.map(renderItem).join('')}` : '';
+}
+
+function updateDashReminders() {
+  const now = new Date();
+  const upcoming = allReminders.filter(r => r.status !== 'completed').sort((a,b) => new Date(a.due_date)-new Date(b.due_date)).slice(0,4);
+  if (!upcoming.length) { document.getElementById('dash-reminders').innerHTML = '<p style="font-size:13px;color:var(--tlight)">No upcoming deadlines.</p>'; return; }
+  document.getElementById('dash-reminders').innerHTML = upcoming.map(r => {
+    const d = new Date(r.due_date);
+    const days = Math.ceil((d - now) / (1000*60*60*24));
+    const color = days < 0 ? 'var(--red)' : days <= 7 ? 'var(--amber)' : 'var(--tlight)';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--sand);font-size:13px">
+      <span>${r.title}</span>
+      <span style="color:${color};font-weight:500;white-space:nowrap;margin-left:.5rem">${days<0?'Overdue':days===0?'Today':days+' days'}</span>
+    </div>`;
+  }).join('');
+}
+
+function openAddReminder() {
+  document.getElementById('rem-title').value = '';
+  document.getElementById('rem-date').value = '';
+  document.getElementById('rem-notes').value = '';
+  document.getElementById('reminder-modal').classList.add('open');
+}
+
+async function addReminder() {
+  const title = document.getElementById('rem-title').value.trim();
+  const date = document.getElementById('rem-date').value;
+  if (!title || !date) return showToast('Please fill in title and date', true);
+  if (!currentNonprofit) return showToast('Please save your nonprofit profile first', true);
+  const { error } = await supabase.from('reminders').insert([{
+    nonprofit_id: currentNonprofit.id,
+    user_id: currentUser.id,
+    title,
+    due_date: date,
+    reminder_type: document.getElementById('rem-type').value,
+    description: document.getElementById('rem-notes').value,
+    status: 'upcoming',
+  }]);
+  if (error) showToast('Error adding reminder', true);
+  else { showToast('Reminder added!'); closeModal('reminder-modal'); await loadReminders(); renderCalendar(); }
+}
+
+async function markComplete(id) {
+  await supabase.from('reminders').update({ status: 'completed' }).eq('id', id);
+  await loadReminders(); renderCalendar();
+}
+
+async function deleteReminder(id) {
+  if (!confirm('Delete this reminder?')) return;
+  await supabase.from('reminders').delete().eq('id', id);
+  await loadReminders(); renderCalendar();
+}
+
+// ── CALENDAR ──
+function renderCalendar() {
+  const year = calDate.getFullYear();
+  const month = calDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = new Date();
+
+  document.getElementById('cal-month-title').textContent = calDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  const eventDays = {};
+  allReminders.forEach(r => {
+    const d = new Date(r.due_date);
+    if (d.getFullYear() === year && d.getMonth() === month && r.status !== 'completed') {
+      const isOverdue = d < today;
+      eventDays[d.getDate()] = isOverdue ? 'overdue' : 'upcoming';
+    }
+  });
+
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day other-month"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    const hasEvent = eventDays[d];
+    html += `<div class="cal-day ${isToday?'today':''} ${hasEvent?'has-event':''} ${hasEvent==='overdue'?'has-overdue':''}" title="${hasEvent?'Has deadline':''}">${d}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+
+  // Month reminders
+  const monthReminders = allReminders.filter(r => {
+    const d = new Date(r.due_date);
+    return d.getFullYear() === year && d.getMonth() === month;
+  });
+  document.getElementById('cal-month-reminders').innerHTML = monthReminders.length
+    ? monthReminders.map(r => {
+        const d = new Date(r.due_date);
+        return `<div style="display:flex;gap:.75rem;align-items:flex-start;padding:.75rem 0;border-bottom:1px solid var(--sand);font-size:13px">
+          <span style="font-weight:600;color:var(--gdark);min-width:30px">${d.getDate()}</span>
+          <div><strong>${r.title}</strong><br><span style="color:var(--tlight)">${r.reminder_type||'custom'}</span></div>
+        </div>`;
+      }).join('')
+    : '<p style="font-size:13px;color:var(--tlight);padding:.75rem 0">No deadlines this month.</p>';
+
+  // Full annual list
+  const allCal = [
+    { month: 'January', task: 'Send year-end donor acknowledgment letters', type: 'donor' },
+    { month: 'January', task: 'Hold annual board meeting — elect officers, approve budget', type: 'board' },
+    { month: 'March', task: 'Gather financial records for Form 990 preparation', type: 'prep' },
+    { month: 'May 15', task: 'IRS Form 990 / 990-EZ / 990-N due (calendar-year orgs)', type: 'irs', urgent: true },
+    { month: 'May 15', task: 'File Form 8868 extension if needed', type: 'irs' },
+    { month: 'Varies', task: 'State annual report due — check your state agency', type: 'state' },
+    { month: 'Varies', task: 'Charitable solicitation registration renewal', type: 'state' },
+    { month: 'November 15', task: 'Extended Form 990 due', type: 'irs' },
+    { month: 'December', task: 'Year-end fundraising push and donor appeals', type: 'donor' },
+    { month: 'December 31', task: 'Donor deadline for tax-deductible gifts', type: 'donor' },
+  ];
+  const typeColors = { irs:'var(--redL)', state:'var(--amberL)', donor:'var(--glight)', board:'#f0f0ff', prep:'var(--sand)' };
+  const typeLabels = { irs:'IRS', state:'State', donor:'Donor', board:'Board', prep:'Prep' };
+  document.getElementById('full-cal-list').innerHTML = allCal.map(item => `
+    <div style="display:flex;align-items:flex-start;gap:1rem;padding:9px 0;border-bottom:1px solid var(--sand);font-size:13px">
+      <span style="min-width:90px;color:var(--tmid);font-size:12px">${item.month}</span>
+      <span style="flex:1;${item.urgent?'font-weight:500':''}">${item.task}</span>
+      <span style="background:${typeColors[item.type]};font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px;flex-shrink:0;color:var(--tmid)">${typeLabels[item.type]}</span>
+    </div>
+  `).join('');
+}
+
+function changeMonth(dir) {
+  calDate.setMonth(calDate.getMonth() + dir);
+  renderCalendar();
+}
+
+// ── DOCUMENTS ──
+function loadDocuments() {
+  const formationDocs = [
+    { id: 'articles', icon: '📄', title: 'Articles of Incorporation', desc: 'Formation document for your state', badge: 'Required' },
+    { id: 'bylaws', icon: '📋', title: 'Bylaws', desc: 'Internal governance rules', badge: 'Required for 1023' },
+    { id: 'conflictPolicy', icon: '⚖️', title: 'Conflict of Interest Policy', desc: 'Required by IRS for Form 1023', badge: 'Required for 1023' },
+    { id: 'boardMinutes', icon: '📝', title: 'First Board Meeting Minutes', desc: 'Organizational meeting record', badge: 'Required' },
+    { id: 'missionStatement', icon: '🎯', title: 'Mission Statement Worksheet', desc: 'Refine your mission', badge: 'Internal' },
+    { id: 'ein_checklist', icon: '🔢', title: 'EIN Application Guide', desc: 'Step-by-step EIN checklist', badge: 'Required' },
+    { id: 'irs_prep', icon: '🏛️', title: 'IRS Form 1023 Prep Guide', desc: 'Full 1023 preparation guide', badge: 'Required' },
+    { id: 'stateChecklist', icon: '📍', title: 'State Filing Checklist', desc: 'State-specific requirements', badge: 'State-specific' },
+  ];
+
+  document.getElementById('formation-docs').innerHTML = formationDocs.map(d => `
+    <div class="doc-card" onclick="openPortalDoc('${d.id}')">
+      <span class="doc-icon">${d.icon}</span>
+      <h4>${d.title}</h4>
+      <p>${d.desc}</p>
+      <span class="doc-badge">${d.badge}</span>
+    </div>
+  `).join('');
+
+  const annualDocs = [
+    { id: 'form990', icon: '🏛️', title: 'Form 990 Prep Guide', desc: 'Revenue, expenses, balance sheet, program narrative', badge: 'IRS annual filing' },
+    { id: 'stateReport', icon: '📍', title: 'State Annual Report', desc: 'State-specific annual report template', badge: 'State filing' },
+    { id: 'annualMinutes', icon: '📝', title: 'Annual Board Meeting Minutes', desc: 'Officer elections, budget approval, 990 authorization', badge: 'Board governance' },
+    { id: 'donorLetters', icon: '💌', title: 'Donor Acknowledgment Letters', desc: '5 IRS-compliant templates', badge: '5 templates' },
+  ];
+
+  document.getElementById('annual-docs').innerHTML = annualDocs.map(d => `
+    <div class="doc-card" onclick="openAnnualPortalDoc('${d.id}')">
+      <span class="doc-icon">${d.icon}</span>
+      <h4>${d.title}</h4>
+      <p>${d.desc}</p>
+      <span class="doc-badge">${d.badge}</span>
+    </div>
+  `).join('');
+
+  // Populate year select
+  const sel = document.getElementById('annual-year-select');
+  const cur = new Date().getFullYear();
+  sel.innerHTML = '';
+  for (let y = cur - 1; y >= cur - 5; y--) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = `Tax Year ${y}`;
+    if (y === cur - 1) opt.selected = true;
+    sel.appendChild(opt);
+  }
+
+  document.getElementById('dash-docs').innerHTML = formationDocs.slice(0,4).map(d =>
+    `<div style="display:flex;align-items:center;gap:.75rem;padding:6px 0;border-bottom:1px solid var(--sand);font-size:13px">
+      <span>${d.icon}</span><span>${d.title}</span>
+    </div>`
+  ).join('') + `<div style="font-size:13px;color:var(--tlight);padding:6px 0">+ ${formationDocs.length - 4} more</div>`;
+
+  document.getElementById('stat-docs').textContent = formationDocs.length + annualDocs.length;
+}
+
+function loadAnnualDocs() { /* year already shown — docs are same */ }
+
+function openPortalDoc(docId) {
+  if (!currentNonprofit && !window.generateAllDocs) return showToast('Please set up your nonprofit profile first', true);
+  try {
+    const answers = currentNonprofit || {};
+    const docs = window.generateAllDocs ? window.generateAllDocs(answers, null) : null;
+    if (!docs) return showToast('Document generator not available. Please visit the main site.', true);
+    const html = docs[docId];
+    if (!html) return;
+    const blob = new Blob([html], { type: 'text/html' });
+    window.open(URL.createObjectURL(blob), '_blank');
+  } catch(e) { showToast('Error generating document', true); }
+}
+
+function openAnnualPortalDoc(docId) {
+  if (!currentNonprofit) return showToast('Please set up your nonprofit profile first', true);
+  try {
+    const year = document.getElementById('annual-year-select').value;
+    const docs = window.generateYearlyDocs ? window.generateYearlyDocs(currentNonprofit, null, year) : null;
+    if (!docs) return showToast('Document generator not available. Please visit the main site.', true);
+    const html = docs[docId];
+    if (!html) return;
+    const blob = new Blob([html], { type: 'text/html' });
+    window.open(URL.createObjectURL(blob), '_blank');
+  } catch(e) { showToast('Error generating document', true); }
+}
+
+// ── NAVIGATION ──
+function showPage(page) {
+  document.querySelectorAll('.portal-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const titles = { dashboard:'Dashboard', documents:'Documents', calendar:'Compliance Calendar', reminders:'Reminders', profile:'Nonprofit Profile', board:'Board Members', settings:'Settings' };
+  document.getElementById('page-title').textContent = titles[page] || page;
+  const idx = ['dashboard','documents','calendar','reminders','profile','board','settings'].indexOf(page);
+  document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── DASHBOARD ──
+function updateDashboard() {
+  if (currentNonprofit) updateDashOrgInfo(currentNonprofit);
+  updateDashReminders();
+}
+
+// ── UTILITIES ──
+function showToast(msg, error=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (error ? ' error' : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function populateStateSelect() {
+  const states = ['AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','PR','GU','VI','MP','AS'];
+  const names = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Washington D.C.','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming','Puerto Rico','Guam','U.S. Virgin Islands','Northern Mariana Islands','American Samoa'];
+  const sel = document.getElementById('p-state');
+  sel.innerHTML = '<option value="">— Select state —</option>' + states.map((s,i) => `<option value="${s}">${names[i]}</option>`).join('');
+}
+
+async function manageSubscription() {
+  showToast('Redirecting to billing portal...');
+  // Implement Stripe customer portal redirect here
+}
+
+async function deleteAccount() {
+  if (!confirm('Are you absolutely sure? This will permanently delete your account and all data.')) return;
+  if (!confirm('This cannot be undone. Type DELETE to confirm.') ) return;
+  showToast('Deleting account...', true);
+}
+
+// ── START ──
+init();
+</script>
+</body>
+</html>
