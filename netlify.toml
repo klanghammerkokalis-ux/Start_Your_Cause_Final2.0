@@ -2,7 +2,13 @@
   publish = "."
 
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "paywall.js,index.html"
+  SECRETS_SCAN_OMIT_PATHS = "paywall.js,index.html,portal.html"
 
 [[plugins]]
   package = "@netlify/plugin-functions-install-core"
+
+[functions]
+  directory = "netlify/functions"
+
+[functions.send-reminders]
+  schedule = "0 8 * * *"
