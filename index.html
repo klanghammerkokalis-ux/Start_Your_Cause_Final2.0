@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BE983T68NN"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE983T68NN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BE983T68NN');
+  </script>
 
-  gtag('config', 'G-BE983T68NN');
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Start Your Cause — Build Your 501(c)(3) Nonprofit</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary SEO -->
+  <title>Start Your Cause | Start a 501(c)(3) Nonprofit Online</title>
+  <meta id="meta-description" name="description" content="Start your 501(c)(3) nonprofit with guided tools, state-specific filing information, customizable checklists, and step-by-step support from Start Your Cause.">
+  <meta name="author" content="Start Your Cause">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://startyourcause.org/">
+
+  <!-- Social sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Start Your Cause">
+  <meta id="og-title" property="og:title" content="Start Your Cause | Start a 501(c)(3) Nonprofit Online">
+  <meta id="og-description" property="og:description" content="Launch your nonprofit with guided tools, state-specific information, and easy-to-follow checklists.">
+  <meta property="og:url" content="https://startyourcause.org/">
+
+  <meta name="twitter:card" content="summary">
+  <meta id="twitter-title" name="twitter:title" content="Start Your Cause | Start a 501(c)(3) Nonprofit Online">
+  <meta id="twitter-description" name="twitter:description" content="Guided nonprofit formation made simple.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
 --cream:#fdf8f2;--warm:#fff9f4;--sand:#f0e9de;--sand2:#e2d5c6;
@@ -1015,12 +1036,66 @@ if (typeof startCheckout === 'undefined') {
 <script>
 // ── NAV ──
 const PAGES = ['home','what','states','checklist','faq','form','annual','pricing'];
+
+const PAGE_SEO = {
+  home: {
+    title: 'Start Your Cause | Start a 501(c)(3) Nonprofit Online',
+    description: 'Start your 501(c)(3) nonprofit with guided tools, state-specific filing information, customizable checklists, and step-by-step support from Start Your Cause.'
+  },
+  what: {
+    title: 'What Is a 501(c)(3)? | Start Your Cause',
+    description: 'Learn what a 501(c)(3) nonprofit is, how tax-exempt status works, and the basic rules nonprofit founders need to understand.'
+  },
+  states: {
+    title: 'State Nonprofit Filing Guide | Start Your Cause',
+    description: 'Review nonprofit formation requirements, filing fees, forms, and state-specific rules across all 50 states and U.S. territories.'
+  },
+  checklist: {
+    title: 'Nonprofit Startup Checklist | Start Your Cause',
+    description: 'Follow a practical step-by-step checklist for planning, incorporating, applying for tax-exempt status, and operating your nonprofit.'
+  },
+  faq: {
+    title: 'Frequently Asked Questions | Start Your Cause',
+    description: 'Get plain-language answers to common questions about starting, filing, funding, and maintaining a 501(c)(3) nonprofit.'
+  },
+  form: {
+    title: 'Start My Nonprofit | Start Your Cause',
+    description: 'Complete the guided Start Your Cause intake form to prepare your nonprofit formation information and customized documents.'
+  },
+  annual: {
+    title: 'Annual Nonprofit Filing Guide | Start Your Cause',
+    description: 'Understand annual IRS and state filing responsibilities that help keep your nonprofit active and compliant.'
+  },
+  pricing: {
+    title: 'Nonprofit Formation Pricing | Start Your Cause',
+    description: 'Compare Start Your Cause nonprofit formation plans, included documents, ongoing compliance tools, and transparent pricing.'
+  }
+};
+
+function updatePageSEO(id) {
+  const seo = PAGE_SEO[id] || PAGE_SEO.home;
+  document.title = seo.title;
+
+  const description = document.getElementById('meta-description');
+  const ogTitle = document.getElementById('og-title');
+  const ogDescription = document.getElementById('og-description');
+  const twitterTitle = document.getElementById('twitter-title');
+  const twitterDescription = document.getElementById('twitter-description');
+
+  if (description) description.setAttribute('content', seo.description);
+  if (ogTitle) ogTitle.setAttribute('content', seo.title);
+  if (ogDescription) ogDescription.setAttribute('content', seo.description);
+  if (twitterTitle) twitterTitle.setAttribute('content', seo.title);
+  if (twitterDescription) twitterDescription.setAttribute('content', seo.description);
+}
+
 function go(id) {
   PAGES.forEach(p => {
     document.getElementById('page-'+p).classList.toggle('active', p===id);
     const b = document.getElementById('nb-'+p);
     if(b) b.classList.toggle('active', p===id);
   });
+  updatePageSEO(id);
   window.scrollTo(0,0);
   if(id==='states') buildStateQuickGrid();
   if(id==='annual') initAnnualPage();
