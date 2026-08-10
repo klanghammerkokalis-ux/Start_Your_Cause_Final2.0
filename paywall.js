@@ -32,48 +32,106 @@ const PAYWALL_CONFIG = {
   checkoutUrl: '/.netlify/functions/create-checkout',
 };
 
-const SESSION_KEY = 'syc_access';
-const SESSION_EXPIRY_KEY = 'syc_access_expiry';
+const CHECKOUT_SESSION_KEY = 'syc_checkout_session_id';
+const PLAN_KEY = 'syc_plan';
+let verifiedAccess = null;
+let verificationPromise = null;
 
 function hasAccess() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('subscribed') === 'true') {
-    const planId = params.get('plan') || 'monthly';
-    const sessionId = params.get('session_id') || '';
-    grantAccess(planId);
-    const purchaseKey = 'syc_purchase_tracked_' + (sessionId || planId);
-    if (!sessionStorage.getItem(purchaseKey)) {
-      const plan = PAYWALL_CONFIG.plans[planId] || PAYWALL_CONFIG.plans.monthly;
-      if (typeof window.trackSycEvent === 'function') {
-        window.trackSycEvent('purchase', {
-          transaction_id: sessionId || ('stripe_' + planId + '_' + Date.now()),
-          currency: 'USD',
-          value: plan.price,
-          items: [{ item_id: planId, item_name: plan.name + ' subscription', price: plan.price, quantity: 1 }]
-        });
-      }
-      sessionStorage.setItem(purchaseKey, 'true');
-    }
-    window.history.replaceState({}, document.title, window.location.pathname);
-    return true;
-  }
-  const token = sessionStorage.getItem(SESSION_KEY);
-  const expiry = sessionStorage.getItem(SESSION_EXPIRY_KEY);
-  if (token && token.indexOf('paid_') === 0 && expiry && Date.now() < parseInt(expiry)) return true;
-  return false;
+  return Boolean(verifiedAccess && verifiedAccess.verified);
 }
 
-function grantAccess(plan) {
-  const duration = plan === 'annual' ? 365*24*60*60*1000 : 31*24*60*60*1000;
-  sessionStorage.setItem(SESSION_KEY, 'paid_' + Date.now());
-  sessionStorage.setItem(SESSION_EXPIRY_KEY, (Date.now() + duration).toString());
-  sessionStorage.setItem('syc_plan', plan);
+function clearStoredAccess() {
+  verifiedAccess = null;
+  localStorage.removeItem(CHECKOUT_SESSION_KEY);
+  localStorage.removeItem(PLAN_KEY);
+}
+
+async function verifyAccess(sessionId) {
+  if (!sessionId) return false;
+
+  const response = await fetch('/.netlify/functions/verify-checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId }),
+  });
+
+  const result = await response.json();
+  if (!response.ok || !result.verified) {
+    clearStoredAccess();
+    return false;
+  }
+
+  verifiedAccess = result;
+  localStorage.setItem(CHECKOUT_SESSION_KEY, sessionId);
+  localStorage.setItem(PLAN_KEY, result.planId);
+  return true;
+}
+
+async function restoreVerifiedAccess() {
+  if (verificationPromise) return verificationPromise;
+
+  verificationPromise = (async () => {
+    const params = new URLSearchParams(window.location.search);
+    const returnedSessionId = params.get('checkout_session_id');
+    const canceled = params.get('checkout_canceled') === 'true';
+    const storedSessionId = localStorage.getItem(CHECKOUT_SESSION_KEY);
+    const sessionId = returnedSessionId || storedSessionId;
+
+    if (canceled && typeof window.trackSycEvent === 'function') {
+      window.trackSycEvent('checkout_cancel', {});
+    }
+
+    if (!sessionId) {
+      if (returnedSessionId || canceled) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      return false;
+    }
+
+    try {
+      const verified = await verifyAccess(sessionId);
+      if (verified && returnedSessionId) {
+        const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
+        const purchaseKey = 'syc_purchase_tracked_' + sessionId;
+        if (!localStorage.getItem(purchaseKey) && typeof window.trackSycEvent === 'function') {
+          window.trackSycEvent('purchase', {
+            transaction_id: sessionId,
+            currency: 'USD',
+            value: plan.price,
+            items: [{
+              item_id: verifiedAccess.planId,
+              item_name: plan.name + ' subscription',
+              price: plan.price,
+              quantity: 1
+            }]
+          });
+          localStorage.setItem(purchaseKey, 'true');
+        }
+        showAccessGranted(plan);
+      }
+      return verified;
+    } catch (error) {
+      console.error('Unable to verify access:', error);
+      clearStoredAccess();
+      return false;
+    } finally {
+      if (returnedSessionId || canceled) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      if (document.getElementById('page-annual')?.classList.contains('active')) {
+        initAnnualPage();
+      }
+    }
+  })();
+
+  const result = await verificationPromise;
+  verificationPromise = null;
+  return result;
 }
 
 function revokeAccess() {
-  sessionStorage.removeItem(SESSION_KEY);
-  sessionStorage.removeItem(SESSION_EXPIRY_KEY);
-  sessionStorage.removeItem('syc_plan');
+  clearStoredAccess();
 }
 
 async function startCheckout(planId) {
@@ -94,10 +152,7 @@ async function startCheckout(planId) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        priceId: plan.stripePriceId,
         planId: planId,
-        successUrl: window.location.origin + '/?subscribed=true&plan=' + planId + '&session_id={CHECKOUT_SESSION_ID}',
-        cancelUrl: window.location.origin + '/?canceled=true',
       }),
     });
     if (!res.ok) throw new Error('Checkout request failed with status ' + res.status);
@@ -180,15 +235,20 @@ function showAccessGranted(plan) {
   setTimeout(() => banner.remove(), 4000);
 }
 
-function paywallGate(callback, context) {
-  const token = sessionStorage.getItem(SESSION_KEY);
-  if (token && !token.startsWith('paid_')) {
-    sessionStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(SESSION_EXPIRY_KEY);
+async function paywallGate(callback, context) {
+  const verified = hasAccess() || await restoreVerifiedAccess();
+  if (verified) {
+    callback();
+  } else {
+    showPricingModal(context);
   }
-  if (hasAccess()) { callback(); } else { showPricingModal(context); }
 }
 
 function renderPricingSection(containerId) {
   // Pricing cards are now hardcoded in index.html — nothing to do here
 }
+
+
+window.addEventListener('load', function() {
+  restoreVerifiedAccess();
+});
