@@ -133,6 +133,44 @@ function revokeAccess() {
   clearStoredAccess();
 }
 
+async function openBillingPortal(btn) {
+  const originalText = btn ? btn.textContent : '';
+  try {
+    if (btn) {
+      btn.textContent = 'Opening billing...';
+      btn.disabled = true;
+    }
+
+    const verified = hasAccess() || await restoreVerifiedAccess();
+    const sessionId = localStorage.getItem(CHECKOUT_SESSION_KEY);
+    if (!verified || !sessionId) {
+      throw new Error('Verified subscription not found on this browser');
+    }
+
+    if (typeof window.trackSycEvent === 'function') {
+      window.trackSycEvent('manage_subscription', {});
+    }
+
+    const response = await fetch('/.netlify/functions/create-portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    });
+    const result = await response.json();
+    if (!response.ok || !result.url) {
+      throw new Error(result.error || 'Billing portal unavailable');
+    }
+    window.location.href = result.url;
+  } catch (error) {
+    console.error('Unable to open billing management:', error);
+    if (btn) {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+    alert('We could not open billing management. Email hello@startyourcause.org for help.');
+  }
+}
+
 async function startCheckout(planId) {
   const plan = PAYWALL_CONFIG.plans[planId];
   if (!plan) return;
