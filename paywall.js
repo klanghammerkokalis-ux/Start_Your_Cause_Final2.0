@@ -38,7 +38,22 @@ const SESSION_EXPIRY_KEY = 'syc_access_expiry';
 function hasAccess() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('subscribed') === 'true') {
-    grantAccess(params.get('plan') || 'monthly');
+    const planId = params.get('plan') || 'monthly';
+    const sessionId = params.get('session_id') || '';
+    grantAccess(planId);
+    const purchaseKey = 'syc_purchase_tracked_' + (sessionId || planId);
+    if (!sessionStorage.getItem(purchaseKey)) {
+      const plan = PAYWALL_CONFIG.plans[planId] || PAYWALL_CONFIG.plans.monthly;
+      if (typeof window.trackSycEvent === 'function') {
+        window.trackSycEvent('purchase', {
+          transaction_id: sessionId || ('stripe_' + planId + '_' + Date.now()),
+          currency: 'USD',
+          value: plan.price,
+          items: [{ item_id: planId, item_name: plan.name + ' subscription', price: plan.price, quantity: 1 }]
+        });
+      }
+      sessionStorage.setItem(purchaseKey, 'true');
+    }
     window.history.replaceState({}, document.title, window.location.pathname);
     return true;
   }
@@ -64,28 +79,52 @@ function revokeAccess() {
 async function startCheckout(planId) {
   const plan = PAYWALL_CONFIG.plans[planId];
   if (!plan) return;
+  const btn = document.getElementById('checkout-btn-' + planId);
   try {
-    const btn = document.getElementById('checkout-btn-' + planId);
     if (btn) { btn.textContent = 'Redirecting to payment...'; btn.disabled = true; }
+    if (typeof window.trackSycEvent === 'function') {
+      window.trackSycEvent('begin_checkout', {
+        currency: 'USD',
+        value: plan.price,
+        items: [{ item_id: planId, item_name: plan.name + ' subscription', price: plan.price, quantity: 1 }],
+        checkout_source: 'paywall_modal'
+      });
+    }
     const res = await fetch(PAYWALL_CONFIG.checkoutUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         priceId: plan.stripePriceId,
         planId: planId,
-        successUrl: window.location.origin + '/?subscribed=true&plan=' + planId,
+        successUrl: window.location.origin + '/?subscribed=true&plan=' + planId + '&session_id={CHECKOUT_SESSION_ID}',
         cancelUrl: window.location.origin + '/?canceled=true',
       }),
     });
-    const { url } = await res.json();
-    if (url) window.location.href = url;
+    if (!res.ok) throw new Error('Checkout request failed with status ' + res.status);
+    const data = await res.json();
+    if (!data.url) throw new Error(data.error || 'Checkout URL missing');
+    window.location.href = data.url;
   } catch (err) {
     console.error('Checkout error:', err);
+    if (typeof window.trackSycEvent === 'function') {
+      window.trackSycEvent('checkout_error', {
+        plan_id: planId,
+        checkout_source: 'paywall_modal',
+        error_message: err.message
+      });
+    }
+    if (btn) {
+      btn.textContent = planId === 'annual' ? 'Start annual plan →' : 'Start monthly plan';
+      btn.disabled = false;
+    }
     alert('Payment system unavailable. Please try again later.');
   }
 }
 
 function showPricingModal(context) {
+  if (typeof window.trackSycEvent === 'function') {
+    window.trackSycEvent('paywall_view', { paywall_context: context || 'unknown' });
+  }
   let existing = document.getElementById('pricing-modal');
   if (existing) { existing.style.display = 'flex'; return; }
   const monthly = PAYWALL_CONFIG.plans.monthly;
