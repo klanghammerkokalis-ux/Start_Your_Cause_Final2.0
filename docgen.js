@@ -485,8 +485,6 @@ function generateEINChecklist(a, sd) {
 
 // ── 7. IRS FORM 1023 PREP GUIDE ──
 function generateIRSPrep(a, sd) {
-  const totalRevenue = a.budget ? a.budget : "unknown";
-  const use1023EZ = a.budgetAmount && parseInt(a.budgetAmount) < 50000;
   return docHeader("IRS Form 1023 Preparation Guide", `${a.orgName || "Your Nonprofit"} | Apply for 501(c)(3) Tax-Exempt Status`) + `
 <div class="section">
 <h2>Which Form Do You Need?</h2>
