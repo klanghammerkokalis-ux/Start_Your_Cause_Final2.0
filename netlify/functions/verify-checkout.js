@@ -65,7 +65,6 @@ exports.handler = async (event) => {
       planId,
       subscriptionStatus,
       currentPeriodEnd,
-      customerId: typeof session.customer === 'string' ? session.customer : session.customer && session.customer.id,
     });
   } catch (error) {
     console.error('Unable to verify Stripe Checkout Session:', error.message);
