@@ -194,7 +194,7 @@ function showPricingModal(context) {
         <h2 style="font-family:Lora,serif;font-size:1.75rem;color:#2c2418;margin-bottom:.5rem">Unlock all documents</h2>
         <p style="color:#6b5c4c;font-size:15px;max-width:440px;margin:0 auto">Get access to all formation documents, yearly filing templates, and state-specific guides.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+      <div class="mobile-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
         <div style="background:#fff;border:1.5px solid #e2d5c6;border-radius:12px;padding:1.5rem">
           <div style="font-size:13px;font-weight:500;color:#9e8e7e;margin-bottom:.25rem;text-transform:uppercase">Monthly</div>
           <div style="font-size:2.2rem;font-family:Lora,serif;font-weight:600;color:#2c2418;line-height:1">$${monthly.price}</div>
