@@ -72,7 +72,7 @@ function generateForm990Prep(a, sd, year) {
 <tr><td>Tax year</td><td>January 1 – December 31, ${taxYear}</td></tr>
 <tr><td>Address</td><td>${a.address||'<span class="blank">&nbsp;</span>'}</td></tr>
 <tr><td>State of formation</td><td>${sd?sd.name:(a.state||'<span class="blank">&nbsp;</span>')}</td></tr>
-<tr><td>Website</td><td>https://startyourcause.org</td></tr>
+<tr><td>Website</td><td><span class="blank" style="min-width:260px">&nbsp;</span></td></tr>
 <tr><td>Mission statement</td><td>${a.missionStatement||a.activities||'<span class="blank" style="min-width:350px">&nbsp;</span>'}</td></tr>
 <tr><td>Number of voting board members</td><td>${[a.founderName,a.board2,a.board3,a.board4,a.board5].filter(Boolean).length}</td></tr>
 <tr><td>Number of employees</td><td><span class="blank" style="min-width:60px">&nbsp;</span></td></tr>
@@ -217,7 +217,7 @@ ${sd.unique&&sd.unique.length?`<div class="warn-box"><strong>⚠️ ${sd.name}-s
 <tr><td>Principal office address</td><td>${a.address||'<span class="blank" style="min-width:300px">&nbsp;</span>'}</td></tr>
 <tr><td>Phone number</td><td><span class="blank">&nbsp;</span></td></tr>
 <tr><td>Email</td><td>${a.founderEmail||'<span class="blank">&nbsp;</span>'}</td></tr>
-<tr><td>Website</td><td>https://startyourcause.org</td></tr>
+<tr><td>Website</td><td><span class="blank" style="min-width:260px">&nbsp;</span></td></tr>
 <tr><td>Date incorporated</td><td><span class="blank">&nbsp;</span></td></tr>
 <tr><td>State of incorporation</td><td>${stateName}</td></tr>
 <tr><td>Fiscal year end</td><td>${a.fiscal||'December 31'}</td></tr>
