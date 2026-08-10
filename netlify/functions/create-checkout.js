@@ -20,11 +20,10 @@ function json(statusCode, body) {
   };
 }
 
-function getSiteUrl(event) {
+function getSiteUrl() {
   const configured = process.env.SITE_URL || process.env.URL;
-  const candidate = configured || event.headers.origin;
-  if (!candidate) throw new Error('SITE_URL is not configured');
-  const url = new URL(candidate);
+  if (!configured) throw new Error('SITE_URL is not configured');
+  const url = new URL(configured);
   if (url.protocol !== 'https:' && url.protocol !== 'http:') {
     throw new Error('SITE_URL must use HTTP or HTTPS');
   }
@@ -45,7 +44,7 @@ exports.handler = async (event) => {
       return json(400, { error: 'Invalid subscription plan' });
     }
 
-    const siteUrl = getSiteUrl(event);
+    const siteUrl = getSiteUrl();
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
