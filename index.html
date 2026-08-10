@@ -8,6 +8,12 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-BE983T68NN');
+
+    // Centralized GA4 event helper. Calls are safe if analytics is blocked or unavailable.
+    window.trackSycEvent = function(name, params) {
+      if (typeof window.gtag !== 'function') return;
+      window.gtag('event', name, params || {});
+    };
   </script>
 
   <meta charset="UTF-8">
@@ -932,7 +938,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Unlimited document regeneration</li>
               <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Email support</li>
             </ul>
-            <button onclick="doCheckout('monthly')"  style="width:100%;padding:11px;border-radius:8px;background:transparent;border:1.5px solid #c4e8d8;color:#1d6b52;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start monthly — $12/mo</button>
+            <button onclick="doCheckout('monthly', this)"  style="width:100%;padding:11px;border-radius:8px;background:transparent;border:1.5px solid #c4e8d8;color:#1d6b52;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start monthly — $12/mo</button>
           </div>
           <!-- Annual -->
           <div style="background:var(--warm);border:2px solid var(--green);border-radius:var(--r);padding:1.75rem;position:relative">
@@ -947,7 +953,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Annual compliance reminder emails</li>
               <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Save $65 vs monthly</li>
             </ul>
-            <button onclick="doCheckout('annual')"  style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan → $79/yr</button>
+            <button onclick="doCheckout('annual', this)"  style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan → $79/yr</button>
           </div>
         </div>
         <p style="text-align:center;font-size:12px;color:var(--tlight)">🔒 Secure payment via Stripe &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; 7-day money-back guarantee</p>
@@ -1090,6 +1096,16 @@ function updatePageSEO(id) {
 }
 
 function go(id) {
+  if (id === 'pricing') {
+    window.trackSycEvent('pricing_view', { page_location: window.location.href });
+  }
+  if (id === 'form') {
+    if (!sessionStorage.getItem('syc_form_started')) {
+      sessionStorage.setItem('syc_form_started', 'true');
+      window.trackSycEvent('form_start', { form_id: 'nonprofit_intake', form_name: 'Nonprofit intake' });
+    }
+    window.trackSycEvent('form_step_view', { form_id: 'nonprofit_intake', step_number: fCur + 1, step_total: F_TOTAL });
+  }
   PAGES.forEach(p => {
     document.getElementById('page-'+p).classList.toggle('active', p===id);
     const b = document.getElementById('nb-'+p);
@@ -1242,6 +1258,20 @@ window.addEventListener('load', function() { setTimeout(restoreFormData, 150); }
 
 function fNav(dir){
   saveFormData();
+  if (dir === 1 && fCur === F_TOTAL - 1) {
+    const answers = getAnswers();
+    window.trackSycEvent('form_complete', {
+      form_id: 'nonprofit_intake',
+      form_name: 'Nonprofit intake',
+      step_total: F_TOTAL
+    });
+    window.trackSycEvent('generate_lead', {
+      form_id: 'nonprofit_intake',
+      lead_source: 'nonprofit_intake',
+      has_email: Boolean(answers.founderEmail)
+    });
+    return;
+  }
   if(dir===1 && fCur===F_TOTAL-2) buildSummary();
   document.getElementById('fs'+(fCur+1)).classList.remove('active');
   fCur=Math.max(0,Math.min(F_TOTAL-1,fCur+dir));
@@ -1249,6 +1279,17 @@ function fNav(dir){
   document.getElementById('fpf').style.width=Math.round((fCur+1)/F_TOTAL*100)+'%';
   document.getElementById('fb-back').style.visibility=fCur===0?'hidden':'visible';
   document.getElementById('fb-next').textContent=fCur===F_TOTAL-1?'✓ Done':'Next →';
+  window.trackSycEvent('form_progress', {
+    form_id: 'nonprofit_intake',
+    step_number: fCur + 1,
+    step_total: F_TOTAL,
+    direction: dir === 1 ? 'forward' : 'back'
+  });
+  window.trackSycEvent('form_step_view', {
+    form_id: 'nonprofit_intake',
+    step_number: fCur + 1,
+    step_total: F_TOTAL
+  });
   buildDots();
   window.scrollTo(0,0);
 }
@@ -1567,28 +1608,53 @@ function initPricingPage() {
 }
 
 
-function doCheckout(planId) {
+function doCheckout(planId, btn) {
   var priceId = planId === 'annual' ? 'price_1TMAyDRyNZ1TUldSuM557LTK' : 'price_1TMAwiRyNZ1TUldSZ7tIW7wi';
-  var btn = event.currentTarget;
-  var orig = btn.textContent;
-  btn.textContent = 'Redirecting...';
-  btn.disabled = true;
+  var value = planId === 'annual' ? 79 : 12;
+  var orig = btn ? btn.textContent : '';
+  if (btn) {
+    btn.textContent = 'Redirecting...';
+    btn.disabled = true;
+  }
+  window.trackSycEvent('begin_checkout', {
+    currency: 'USD',
+    value: value,
+    items: [{ item_id: planId, item_name: planId + ' subscription', price: value, quantity: 1 }],
+    checkout_source: 'pricing_page'
+  });
   fetch('/.netlify/functions/create-checkout', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
       priceId: priceId,
       planId: planId,
-      successUrl: location.origin + '/?subscribed=true&plan=' + planId,
+      successUrl: location.origin + '/?subscribed=true&plan=' + planId + '&session_id={CHECKOUT_SESSION_ID}',
       cancelUrl: location.origin + '/?canceled=true'
     })
   })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.url) { location.href = d.url; }
-    else { btn.textContent = orig; btn.disabled = false; alert('Payment error. Please try again.'); }
+  .then(function(r) {
+    if (!r.ok) throw new Error('Checkout request failed with status ' + r.status);
+    return r.json();
   })
-  .catch(function() { btn.textContent = orig; btn.disabled = false; alert('Payment system unavailable. Please try again later.'); });
+  .then(function(d) {
+    if (d.url) {
+      location.href = d.url;
+      return;
+    }
+    throw new Error(d.error || 'Checkout URL missing');
+  })
+  .catch(function(err) {
+    window.trackSycEvent('checkout_error', {
+      plan_id: planId,
+      checkout_source: 'pricing_page',
+      error_message: err.message
+    });
+    if (btn) {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }
+    alert('Payment system unavailable. Please try again later.');
+  });
 }
 
 </script>
