@@ -1026,12 +1026,7 @@ if (typeof startCheckout === 'undefined') {
     fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        priceId: planId === 'annual' ? 'price_1TMAyDRyNZ1TUldSuM557LTK' : 'price_1TMAwiRyNZ1TUldSZ7tIW7wi',
-        planId: planId,
-        successUrl: window.location.origin + '/?subscribed=true&plan=' + planId,
-        cancelUrl: window.location.origin + '/?canceled=true',
-      }),
+      body: JSON.stringify({ planId: planId }),
     })
     .then(r => r.json())
     .then(data => { if (data.url) window.location.href = data.url; })
