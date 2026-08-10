@@ -830,6 +830,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <!-- Access banner -->
     <div id="annual-access-banner" style="display:none;background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:14px;color:var(--gdark)">
       ✓ <strong>Subscription active.</strong> All annual filing documents are unlocked.
+      <button onclick="openBillingPortal(this)" style="margin-left:10px;padding:6px 10px;border:1px solid var(--gmid);border-radius:6px;background:#fff;color:var(--gdark);font:inherit;cursor:pointer">Manage billing</button>
     </div>
 
     <!-- Paywall teaser (shown when not subscribed) -->
@@ -926,6 +927,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
           </div>
         </div>
         <p style="text-align:center;font-size:12px;color:var(--tlight)">🔒 Secure subscription payment via Stripe &nbsp;·&nbsp; Billing help: hello@startyourcause.org</p>
+        <div style="text-align:center;margin-top:.75rem"><button onclick="openBillingPortal(this)" class="btn btn-s" style="padding:8px 14px;font-size:13px">Manage an existing subscription</button></div>
       </div>
     </div>
 
@@ -1545,7 +1547,7 @@ function initPricingPage() {
   const pf = document.getElementById('pricing-faq');
   if (pf && pf.children.length === 0) {
     const pfaqs = [
-      { q: 'How do I request cancellation?', a: 'Email hello@startyourcause.org with the email used at checkout. We will confirm the cancellation and its effective date.' },
+      { q: 'How do I request cancellation?', a: 'Use the Manage billing button on this browser after a verified purchase. If it is unavailable, email hello@startyourcause.org with the email used at checkout.' },
       { q: 'Do you offer a free trial?', a: 'No free trial is currently offered. Review the included documents and features before purchasing.' },
       { q: 'Does this cover multiple nonprofits?', a: 'Yes — one subscription covers all the nonprofits you manage. Generate documents for as many organizations as you need.' },
       { q: 'What payment methods are accepted?', a: 'All major credit and debit cards via Stripe. Stripe is used by millions of businesses and is fully PCI-compliant.' },
