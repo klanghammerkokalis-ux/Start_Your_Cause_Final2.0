@@ -16,11 +16,10 @@ function json(statusCode, body) {
   };
 }
 
-function getSiteUrl(event) {
+function getSiteUrl() {
   const configured = process.env.SITE_URL || process.env.URL;
-  const candidate = configured || event.headers.origin;
-  if (!candidate) throw new Error('SITE_URL is not configured');
-  const url = new URL(candidate);
+  if (!configured) throw new Error('SITE_URL is not configured');
+  const url = new URL(configured);
   if (url.protocol !== 'https:' && url.protocol !== 'http:') {
     throw new Error('SITE_URL must use HTTP or HTTPS');
   }
@@ -61,7 +60,7 @@ exports.handler = async (event) => {
 
     const portal = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: getSiteUrl(event) + '/?billing_return=true',
+      return_url: getSiteUrl() + '/?billing_return=true',
     });
 
     return json(200, { url: portal.url });
