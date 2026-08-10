@@ -22,9 +22,8 @@ const PAYWALL_CONFIG = {
       badge: 'Best value — save 45%',
       features: [
         'Everything in Monthly',
-        'Priority email support',
-        'New documents added automatically',
-        'Annual compliance reminder emails',
+        'All document updates included',
+        'Annual compliance calendar',
         'Save $65 vs monthly',
       ],
     },
@@ -216,7 +215,7 @@ function showPricingModal(context) {
           <button id="checkout-btn-annual" onclick="startCheckout('annual')" style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan →</button>
         </div>
       </div>
-      <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure payment via Stripe · Cancel anytime · 7-day money-back guarantee</p>
+      <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure subscription payment via Stripe · Billing help: hello@startyourcause.org</p>
     </div>`;
   modal.addEventListener('click', e => { if (e.target === modal) hidePricingModal(); });
   document.body.appendChild(modal);
