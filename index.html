@@ -1026,12 +1026,7 @@ if (typeof startCheckout === 'undefined') {
     fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        priceId: planId === 'annual' ? 'price_1TMAyDRyNZ1TUldSuM557LTK' : 'price_1TMAwiRyNZ1TUldSZ7tIW7wi',
-        planId: planId,
-        successUrl: window.location.origin + '/?subscribed=true&plan=' + planId,
-        cancelUrl: window.location.origin + '/?canceled=true',
-      }),
+      body: JSON.stringify({ planId: planId }),
     })
     .then(r => r.json())
     .then(data => { if (data.url) window.location.href = data.url; })
@@ -1609,7 +1604,6 @@ function initPricingPage() {
 
 
 function doCheckout(planId, btn) {
-  var priceId = planId === 'annual' ? 'price_1TMAyDRyNZ1TUldSuM557LTK' : 'price_1TMAwiRyNZ1TUldSZ7tIW7wi';
   var value = planId === 'annual' ? 79 : 12;
   var orig = btn ? btn.textContent : '';
   if (btn) {
@@ -1625,12 +1619,7 @@ function doCheckout(planId, btn) {
   fetch('/.netlify/functions/create-checkout', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      priceId: priceId,
-      planId: planId,
-      successUrl: location.origin + '/?subscribed=true&plan=' + planId + '&session_id={CHECKOUT_SESSION_ID}',
-      cancelUrl: location.origin + '/?canceled=true'
-    })
+    body: JSON.stringify({ planId: planId })
   })
   .then(function(r) {
     if (!r.ok) throw new Error('Checkout request failed with status ' + r.status);
