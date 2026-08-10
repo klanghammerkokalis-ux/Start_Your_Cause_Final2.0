@@ -135,6 +135,12 @@ function generateBylaws(a, sd) {
   const orgName = a.orgName || "[Organization Name]";
   const stState = a.state || "[State]";
   const minBoard = sd ? sd.minBoardMembers : 3;
+  const meetingFrequency = a.meetFreq || "Quarterly (4 times per year)";
+  const fiscalYear = a.fiscal || "January 1 – December 31 (Calendar Year)";
+  const spendingLimit = a.spendLimit || '<span class="blank" style="min-width:60px">&nbsp;</span>';
+  const directorCompensation = a.comp === "Yes — some board members compensated"
+    ? "Directors may receive reasonable compensation for services only when approved by disinterested directors, supported by appropriate comparability information, and documented in the meeting minutes. Directors may also be reimbursed for reasonable expenses."
+    : "Directors shall serve without compensation. Directors may be reimbursed for reasonable expenses incurred in the performance of their duties with approval of the Board.";
 
   return docHeader(`Bylaws of ${orgName}`, `A Nonprofit Corporation | State of ${stState}`) + `
 
@@ -171,7 +177,7 @@ ${a.board4 ? `<li>${a.board4}</li>` : ''}
 ${a.board5 ? `<li>${a.board5}</li>` : ''}
 </ol>
 <h3>Section 3.4 — Regular Meetings</h3>
-<p>The Board of Directors shall hold at least four (4) regular meetings per year. The time and place of meetings shall be determined by the President or by resolution of the Board.</p>
+<p>The Board of Directors shall meet <strong>${meetingFrequency}</strong>. The time and place of meetings shall be determined by the President or by resolution of the Board.</p>
 <h3>Section 3.5 — Special Meetings</h3>
 <p>Special meetings of the Board may be called by the President or by any two directors. Notice of special meetings shall be given at least five (5) days prior to the meeting.</p>
 <h3>Section 3.6 — Quorum</h3>
@@ -179,7 +185,7 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 <h3>Section 3.7 — Vacancies</h3>
 <p>Any vacancy occurring on the Board of Directors may be filled by the affirmative vote of the majority of the remaining directors.</p>
 <h3>Section 3.8 — Compensation</h3>
-<p>Directors shall serve without compensation. Directors may be reimbursed for reasonable expenses incurred in the performance of their duties with approval of the Board.</p>
+<p>${directorCompensation}</p>
 <h3>Section 3.9 — Removal</h3>
 <p>Any director may be removed with or without cause by the vote of two-thirds (2/3) of the directors then in office at any regular or special meeting of the Board, provided that notice of such proposed removal was included in the notice of the meeting.</p>
 </div>
@@ -208,11 +214,11 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 <div class="section">
 <h2>Article VI — Finances</h2>
 <h3>Section 6.1 — Fiscal Year</h3>
-<p>The fiscal year of the Corporation shall begin on January 1 and end on December 31 of each year, unless changed by the Board.</p>
+<p>The fiscal year of the Corporation shall be <strong>${fiscalYear}</strong>, unless changed by the Board.</p>
 <h3>Section 6.2 — Budget</h3>
 <p>The Treasurer shall prepare an annual budget for Board approval prior to the start of each fiscal year.</p>
 <h3>Section 6.3 — Checks and Expenditures</h3>
-<p>All checks or demands for money shall require the signature of the Treasurer and one other authorized officer. Expenditures over $<span class="blank" style="min-width:60px">&nbsp;</span> must be approved in advance by the Board.</p>
+<p>All checks or demands for money shall require the signature of the Treasurer and one other authorized officer. Expenditures over <strong>${spendingLimit}</strong> must be approved in advance by the Board.</p>
 <h3>Section 6.4 — Audit</h3>
 <p>The Board shall arrange for an annual review or audit of the Corporation's financial accounts as required by applicable law or as deemed necessary by the Board.</p>
 </div>
@@ -368,7 +374,7 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 
 <div class="section">
 <h2>VI. Banking Resolution</h2>
-<p>Upon motion duly made and seconded, the Board resolved to open a bank account in the name of <strong>${orgName}</strong>. The Treasurer was authorized to open such account and shall require dual signatures for withdrawals over $<span class="blank" style="min-width:60px">&nbsp;</span>.</p>
+<p>Upon motion duly made and seconded, the Board resolved to open a bank account in the name of <strong>${orgName}</strong>. The Treasurer was authorized to open such account and shall require dual signatures for withdrawals over <strong>${a.spendLimit || "[amount to be approved by the Board]"}</strong>.</p>
 <p><strong>Vote:</strong> Ayes: <span class="blank" style="min-width:40px">&nbsp;</span> &nbsp; Nays: <span class="blank" style="min-width:40px">&nbsp;</span></p>
 </div>
 
@@ -485,6 +491,11 @@ function generateEINChecklist(a, sd) {
 
 // ── 7. IRS FORM 1023 PREP GUIDE ──
 function generateIRSPrep(a, sd) {
+  const specialItems = (a.specialCircumstances || []).filter(item => item !== "None of the above");
+  const fiscalYear = a.fiscal || "January 1 – December 31 (Calendar Year)";
+  const volunteerOrStaffingPlan = a.employees || "Not answered";
+  const compensationPlan = a.comp || "Not answered";
+
   return docHeader("IRS Form 1023 Preparation Guide", `${a.orgName || "Your Nonprofit"} | Apply for 501(c)(3) Tax-Exempt Status`) + `
 <div class="section">
 <h2>Which Form Do You Need?</h2>
@@ -505,8 +516,8 @@ function generateIRSPrep(a, sd) {
 <table style="width:100%; border-collapse:collapse">
 <tr style="border-bottom:1px solid #eee"><td style="padding:7px 0; width:55%">Legal name of organization</td><td>${a.orgName || "[Name]"}</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">EIN</td><td>Obtain before filing (see EIN checklist)</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Mailing address</td><td><span class="blank" style="min-width:200px">&nbsp;</span></td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Month tax year ends</td><td>December (recommended)</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Mailing address</td><td>${a.address || '<span class="blank" style="min-width:200px">&nbsp;</span>'}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Fiscal year</td><td>${fiscalYear}</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Date incorporated</td><td><span class="blank">&nbsp;</span></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">State of formation</td><td>${a.state || "[State]"}</td></tr>
 <tr><td style="padding:7px 0">Contact person</td><td>${a.founderName || "[Name]"} — ${a.founderEmail || "[Email]"}</td></tr>
@@ -516,7 +527,8 @@ function generateIRSPrep(a, sd) {
 <table style="width:100%; border-collapse:collapse">
 <tr style="border-bottom:1px solid #eee"><td style="padding:7px 0; width:55%">Type of entity</td><td>Nonprofit Corporation</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Copy of Articles of Incorporation</td><td>Must be attached</td></tr>
-<tr><td style="padding:7px 0">Copy of Bylaws</td><td>Must be attached</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Copy of Bylaws</td><td>Must be attached</td></tr>
+<tr><td style="padding:7px 0">Intended classification</td><td>${a.orgType || "Not answered"}</td></tr>
 </table>
 
 <h3>Part IV — Narrative Description of Activities (Most Important!)</h3>
@@ -530,7 +542,11 @@ function generateIRSPrep(a, sd) {
 </div>
 
 <h3>Part V — Compensation and Other Financial Arrangements</h3>
-<p>You will need to list all officers, directors, and highly compensated employees and their compensation. If starting out with all volunteers, state that.</p>
+<p>You will need to list all officers, directors, and highly compensated employees and their compensation.</p>
+<table style="width:100%; border-collapse:collapse">
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0; width:55%">Year-one staffing plan</td><td>${volunteerOrStaffingPlan}</td></tr>
+<tr><td style="padding:7px 0">Board compensation plan</td><td>${compensationPlan}</td></tr>
+</table>
 
 <h3>Part IX — Financial Data</h3>
 <p>Projected budget for first 3 years:</p>
@@ -543,6 +559,18 @@ function generateIRSPrep(a, sd) {
 <tr style="background:#f0f8f4"><td style="padding:8px"><strong>TOTAL Revenue</strong></td><td style="padding:8px">${a.budget || "<span class='blank'>&nbsp;</span>"}</td><td style="padding:8px"><span class="blank">&nbsp;</span></td><td style="padding:8px"><span class="blank">&nbsp;</span></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px">Total Expenses</td><td style="padding:8px"><span class="blank">&nbsp;</span></td><td style="padding:8px"><span class="blank">&nbsp;</span></td><td style="padding:8px"><span class="blank">&nbsp;</span></td></tr>
 </table>
+<p><strong>Planned year-one expenses:</strong> ${a.expenses || "[Describe expected expenses]"}</p>
+</div>
+
+<div class="section">
+<h2>Application Readiness Notes</h2>
+<table style="width:100%; border-collapse:collapse">
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0; width:55%">Professional help</td><td>${a.lawyer || "Not answered"}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Filing-fee readiness</td><td>${a.filingFee || "Not answered"}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:7px 0">Special organization/activity flags</td><td>${specialItems.length ? specialItems.join(", ") : "None identified"}</td></tr>
+<tr><td style="padding:7px 0">Questions or concerns</td><td>${a.notes || "None noted"}</td></tr>
+</table>
+${specialItems.length ? '<div class="warn"><strong>Review required:</strong> These selections may affect Form 1023-EZ eligibility or require additional schedules. Confirm the current IRS instructions or consult a qualified professional before filing.</div>' : ""}
 </div>
 
 <div class="section">
