@@ -101,6 +101,10 @@ nav{position:sticky;top:0;z-index:200;background:var(--warm);border-bottom:1px s
 .sec-hd p{color:var(--tmid);max-width:520px;margin:0 auto;font-size:15px}
 .stag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
 
+/* ── PRICING CARDS ── */
+.pricing-plan-card{display:flex;flex-direction:column;border-width:2px!important}
+.pricing-plan-card .pricing-feature-list{flex:1}
+
 /* ── STEPS GRID ── */
 .steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.25rem}
 .step-card{background:var(--warm);border-radius:var(--r);padding:1.5rem 1.25rem;border:1px solid var(--sand2);transition:box-shadow .2s}
@@ -894,11 +898,11 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
       <div style="max-width:700px;margin:0 auto 2rem">
         <div class="mobile-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem">
           <!-- Monthly -->
-          <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.75rem">
+          <div class="pricing-plan-card" style="background:var(--warm);border:2px solid var(--sand2);border-radius:var(--r);padding:1.75rem">
             <div class="stag" style="color:var(--tlight)">Monthly</div>
             <div style="font-size:2.5rem;font-family:'Lora',serif;font-weight:600;color:var(--text);line-height:1;margin:.25rem 0">$12</div>
             <div style="font-size:13px;color:var(--tlight);margin-bottom:1.25rem">per month</div>
-            <ul style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
+            <ul class="pricing-feature-list" style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All 8 formation documents</li>
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All 4 yearly filing documents</li>
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Form 990 / 990-EZ / 990-N prep guide</li>
@@ -912,12 +916,12 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
             <button onclick="doCheckout('monthly', this)"  style="width:100%;padding:11px;border-radius:8px;background:transparent;border:1.5px solid #c4e8d8;color:#1d6b52;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start monthly — $12/mo</button>
           </div>
           <!-- Annual -->
-          <div style="background:var(--warm);border:2px solid var(--green);border-radius:var(--r);padding:1.75rem;position:relative">
+          <div class="pricing-plan-card" style="background:var(--warm);border:2px solid var(--green);border-radius:var(--r);padding:1.75rem;position:relative">
             <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;white-space:nowrap">Best value — save 45%</div>
             <div class="stag">Annual</div>
             <div style="font-size:2.5rem;font-family:'Lora',serif;font-weight:600;color:var(--text);line-height:1;margin:.25rem 0">$79</div>
             <div style="font-size:13px;color:var(--tlight);margin-bottom:1.25rem">per year — just $6.58/month</div>
-            <ul style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
+            <ul class="pricing-feature-list" style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Everything in Monthly</li>
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All document updates included</li>
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Annual compliance calendar</li>
