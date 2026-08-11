@@ -16,12 +16,26 @@ function json(statusCode, body) {
   };
 }
 
+function assertSafeStripeMode() {
+  const context = process.env.CONTEXT || 'production';
+  const secretKey = process.env.STRIPE_SECRET_KEY || '';
+  const isPreview = context === 'deploy-preview' || context === 'branch-deploy';
+
+  if (isPreview && secretKey.startsWith('sk_live_')) {
+    throw new Error('Deploy previews require a Stripe test secret key');
+  }
+  if (context === 'production' && secretKey.startsWith('sk_test_')) {
+    throw new Error('Production requires a Stripe live secret key');
+  }
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return json(405, { error: 'Method not allowed' });
   }
 
   try {
+    assertSafeStripeMode();
     const body = JSON.parse(event.body || '{}');
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
 
