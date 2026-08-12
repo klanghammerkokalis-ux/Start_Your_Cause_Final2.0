@@ -241,6 +241,10 @@ async function requestAccessEmail(email, statusElement, button) {
 }
 
 function showAccessRecovery() {
+  if (typeof showAccountModal === 'function') {
+    showAccountModal('login');
+    return;
+  }
   let existing = document.getElementById('access-recovery-modal');
   if (existing) { existing.style.display = 'flex'; return; }
 
@@ -325,6 +329,11 @@ async function openBillingPortal(btn) {
 async function startCheckout(planId) {
   const plan = PAYWALL_CONFIG.plans[planId];
   if (!plan) return;
+  const accountToken = localStorage.getItem(AUTH_TOKEN_KEY);
+  if (!accountToken) {
+    if (typeof showAccountModal === 'function') showAccountModal('signup');
+    return;
+  }
   const btn = document.getElementById('checkout-btn-' + planId);
   try {
     if (btn) { btn.textContent = 'Redirecting to payment...'; btn.disabled = true; }
@@ -338,7 +347,7 @@ async function startCheckout(planId) {
     }
     const res = await fetch(PAYWALL_CONFIG.checkoutUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accountToken },
       body: JSON.stringify({
         planId: planId,
       }),
@@ -404,7 +413,7 @@ function showPricingModal(context) {
           <button id="checkout-btn-annual" onclick="startCheckout('annual')" style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan →</button>
         </div>
       </div>
-      <div style="text-align:center;margin-bottom:.75rem"><button type="button" onclick="hidePricingModal();showAccessRecovery()" style="background:none;border:0;color:#1d6b52;text-decoration:underline;font-size:14px;cursor:pointer">Already subscribed? Restore access</button></div>
+      <div style="text-align:center;margin-bottom:.75rem"><button type="button" onclick="hidePricingModal();showAccessRecovery()" style="background:none;border:0;color:#1d6b52;text-decoration:underline;font-size:14px;cursor:pointer">Already subscribed? Log in</button></div>
       <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure subscription payment via Stripe · Billing help: hello@startyourcause.org</p>
     </div>`;
   modal.addEventListener('click', e => { if (e.target === modal) hidePricingModal(); });

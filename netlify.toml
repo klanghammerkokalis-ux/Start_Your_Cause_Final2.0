@@ -2,7 +2,7 @@
   publish = "."
 
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "paywall.js,index.html,portal.html,netlify/functions/auth-config.js,netlify/functions/create-portal.js,netlify/functions/verify-customer-access.js"
+  SECRETS_SCAN_OMIT_PATHS = "paywall.js,index.html,portal.html,netlify/functions/auth-config.js,netlify/functions/create-checkout.js,netlify/functions/create-portal.js,netlify/functions/verify-customer-access.js"
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY"
 
 [[plugins]]

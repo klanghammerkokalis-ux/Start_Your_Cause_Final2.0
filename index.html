@@ -286,6 +286,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <button id="nb-faq" onclick="go('faq')">FAQ</button>
     <button id="nb-annual" onclick="go('annual')">Annual Filing</button>
     <button id="nb-pricing" onclick="go('pricing')">Pricing</button>
+    <button data-account-button onclick="showAccountModal(accountUser?'login':'login')">Log in</button>
     <button id="nb-form" class="ncta" onclick="go('form')">Start My Nonprofit →</button>
   </div>
   <button class="nmb" onclick="toggleMob()">☰</button>
@@ -382,7 +383,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
             <tr style="border-bottom:1px solid var(--sand)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Form 990 prep guide</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
             <tr style="border-bottom:1px solid var(--sand);background:var(--cream)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Compliance calendar</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
             <tr style="border-bottom:1px solid var(--sand)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Unlimited document regeneration</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
-            <tr style="background:var(--cream)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Questionnaire answers saved in this browser</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
+            <tr style="background:var(--cream)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Questionnaire answers saved to your account</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
           </tbody>
         </table>
       </div>
@@ -416,7 +417,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
           </div>
           <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem;display:flex;align-items:flex-start;gap:.875rem">
             <span style="font-size:24px">🔒</span>
-            <div><h4 style="font-size:14px;font-weight:500;margin-bottom:2px">Privacy first</h4><p style="font-size:13px;color:var(--tlight)">Questionnaire answers and document contents stay in your browser. Stripe processes payments, and limited account, subscription, hosting, and analytics data is handled as described in our Privacy Policy.</p></div>
+            <div><h4 style="font-size:14px;font-weight:500;margin-bottom:2px">Secure customer accounts</h4><p style="font-size:13px;color:var(--tlight)">Supabase securely manages login credentials and stores questionnaire answers in a user-restricted account. Stripe processes payments as described in our Privacy Policy.</p></div>
           </div>
           <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem;display:flex;align-items:flex-start;gap:.875rem">
             <span style="font-size:24px">⚖️</span>
@@ -623,6 +624,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
   <div class="form-body">
     <div class="f-prog-bar"><div class="f-prog-f" id="fpf" style="width:12.5%"></div></div>
     <div class="f-dots" id="fdots"></div>
+    <div id="account-save-status" style="font-size:12px;text-align:right;color:var(--tlight);margin:-1rem 0 1rem"></div>
     <div class="f-error-summary" id="f-error-summary" role="alert" aria-live="polite"></div>
 
     <!-- STEP 1: CAUSE -->
@@ -942,7 +944,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
           </div>
         </div>
         <p style="text-align:center;font-size:12px;color:var(--tlight)">🔒 Secure subscription payment via Stripe &nbsp;·&nbsp; Billing help: hello@startyourcause.org</p>
-        <div style="text-align:center;margin-top:.75rem"><button onclick="openBillingPortal(this)" class="btn btn-s" style="padding:8px 14px;font-size:13px">Restore access / manage subscription</button></div>
+        <div style="text-align:center;margin-top:.75rem"><button onclick="openBillingPortal(this)" class="btn btn-s" style="padding:8px 14px;font-size:13px">Log in / manage subscription</button></div>
       </div>
     </div>
 
@@ -1005,6 +1007,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
 <script src="docgen.js"></script>
 <script src="yearly-docs.js"></script>
 <script src="paywall.js"></script>
+<script src="account.js"></script>
 <script>
 // Safety wrapper — ensures startCheckout always works even if paywall.js loads late
 if (typeof startCheckout === 'undefined') {
@@ -1077,6 +1080,10 @@ function updatePageSEO(id) {
 }
 
 function go(id) {
+  if (id === 'form' && typeof hasAccountSession === 'function' && !hasAccountSession()) {
+    showAccountModal('login');
+    return;
+  }
   if (id === 'pricing') {
     window.trackSycEvent('pricing_view', { page_location: window.location.href });
   }
@@ -1211,6 +1218,10 @@ function toggleFAQ(i){ document.querySelectorAll('.faq-item')[i].classList.toggl
 // ── CHECKLIST ──
 function toggleCL(el){
   el.classList.toggle('chk');
+  updateChecklistProgress();
+  saveFormData();
+}
+function updateChecklistProgress(){
   const all=document.querySelectorAll('.cl-item').length;
   const done=document.querySelectorAll('.cl-item.chk').length;
   const pct=Math.round(done/all*100);
@@ -1390,6 +1401,7 @@ function saveFormData() {
       checkboxes: {},
       // Current step
       step: fCur,
+      checklist: Array.from(document.querySelectorAll('.cl-item')).map((item,index) => item.classList.contains('chk') ? index : null).filter(index => index !== null),
     };
     // Save all text inputs and textareas
     const ids = ['f_orgName','f_problem','f_activities','f_mission','f_whoHelp','f_howMany',
@@ -1413,6 +1425,7 @@ function saveFormData() {
       data.checkboxes[cls] = Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value);
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    if (typeof saveAccountProject === 'function' && hasAccountSession()) saveAccountProject(data);
   } catch(e) { /* localStorage may be unavailable */ }
 }
 
@@ -1421,6 +1434,10 @@ function restoreFormData() {
     const saved = localStorage.getItem(SAVE_KEY);
     if (!saved) return;
     const data = JSON.parse(saved);
+    if (Array.isArray(data.checklist)) {
+      document.querySelectorAll('.cl-item').forEach((item,index) => item.classList.toggle('chk', data.checklist.includes(index)));
+      updateChecklistProgress();
+    }
     // Restore text fields
     if (data.fields) {
       Object.entries(data.fields).forEach(([id, val]) => {
@@ -1657,11 +1674,11 @@ function initPricingPage() {
   const pf = document.getElementById('pricing-faq');
   if (pf && pf.children.length === 0) {
     const pfaqs = [
-      { q: 'How do I request cancellation?', a: 'Choose “Restore access / manage subscription.” If needed, use the one-time email sign-in link, then open Stripe billing management to cancel. You can also email hello@startyourcause.org using the email associated with checkout.' },
+      { q: 'How do I request cancellation?', a: 'Choose “Log in / manage subscription,” sign in to your account, then open Stripe billing management to cancel. You can also email hello@startyourcause.org using the email associated with checkout.' },
       { q: 'Do you offer a free trial?', a: 'No free trial is currently offered. Review the included documents and features before purchasing.' },
       { q: 'Does this cover multiple nonprofits?', a: 'Yes — one subscription covers all the nonprofits you manage. Generate documents for as many organizations as you need.' },
       { q: 'What payment methods are accepted?', a: 'All major credit and debit cards via Stripe. Stripe is used by millions of businesses and is fully PCI-compliant.' },
-      { q: 'Do you store my nonprofit\'s information?', a: 'Questionnaire answers and generated document contents remain in your browser and are not intentionally sent to our servers. Stripe processes payment information, and limited subscription, hosting, support, and analytics data is handled as described in our Privacy Policy.' },
+      { q: 'Do you store my nonprofit\'s information?', a: 'Yes. Questionnaire answers are securely stored in your Supabase account so you can continue on another device. Row-level security restricts each project to its account owner. Generated documents are created in your browser.' },
     ];
     pf.innerHTML = pfaqs.map((f,i) => `
       <div style="border-bottom:1px solid var(--sand2)">
@@ -1687,6 +1704,11 @@ function initPricingPage() {
 
 
 function doCheckout(planId, btn) {
+  var accountToken = localStorage.getItem('syc_auth_access_token');
+  if (!accountToken) {
+    showAccountModal('signup');
+    return;
+  }
   var value = planId === 'annual' ? 79 : 12;
   var orig = btn ? btn.textContent : '';
   if (btn) {
@@ -1701,7 +1723,7 @@ function doCheckout(planId, btn) {
   });
   fetch('/.netlify/functions/create-checkout', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accountToken},
     body: JSON.stringify({ planId: planId })
   })
   .then(function(r) {
