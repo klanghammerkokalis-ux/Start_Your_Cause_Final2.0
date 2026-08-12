@@ -1,0 +1,50 @@
+name: Add social share metadata
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-social-share-meta.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Add Open Graph and Twitter image metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          marker = '  <meta property="og:url" content="https://startyourcause.org/">\n'
+          block = '''  <meta property="og:url" content="https://startyourcause.org/">\n  <meta property="og:image" content="https://startyourcause.org/.netlify/images?url=/social-share.svg&amp;w=1200&amp;h=630&amp;fit=cover&amp;fm=png">\n  <meta property="og:image:width" content="1200">\n  <meta property="og:image:height" content="630">\n  <meta property="og:image:alt" content="Start Your Cause — guided tools for starting a 501(c)(3) nonprofit">\n'''
+          if 'property="og:image"' not in s:
+              if marker not in s:
+                  raise SystemExit('Open Graph URL marker not found; refusing to patch.')
+              s = s.replace(marker, block, 1)
+          twitter_marker = '  <meta name="twitter:card" content="summary">\n'
+          twitter_block = '  <meta name="twitter:card" content="summary_large_image">\n  <meta name="twitter:image" content="https://startyourcause.org/.netlify/images?url=/social-share.svg&amp;w=1200&amp;h=630&amp;fit=cover&amp;fm=png">\n'
+          if 'name="twitter:image"' not in s:
+              if twitter_marker not in s:
+                  raise SystemExit('Twitter card marker not found; refusing to patch.')
+              s = s.replace(twitter_marker, twitter_block, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Validate diff
+        run: |
+          git diff --check
+          grep -q 'property="og:image"' index.html
+          grep -q 'name="twitter:image"' index.html
+      - name: Commit metadata
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Add social sharing image metadata'
+          git push origin main
