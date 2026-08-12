@@ -33,6 +33,8 @@ const PAYWALL_CONFIG = {
 
 const CHECKOUT_SESSION_KEY = 'syc_checkout_session_id';
 const PLAN_KEY = 'syc_plan';
+const AUTH_TOKEN_KEY = 'syc_auth_access_token';
+const AUTH_REFRESH_KEY = 'syc_auth_refresh_token';
 let verifiedAccess = null;
 let verificationPromise = null;
 
@@ -44,6 +46,66 @@ function clearStoredAccess() {
   verifiedAccess = null;
   localStorage.removeItem(CHECKOUT_SESSION_KEY);
   localStorage.removeItem(PLAN_KEY);
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem(AUTH_REFRESH_KEY);
+}
+
+async function verifyCustomerToken(token) {
+  if (!token) return false;
+  try {
+    const response = await fetch('/.netlify/functions/verify-customer-access', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token },
+    });
+    const result = await response.json();
+    if (!response.ok || !result.verified) {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      return false;
+    }
+    verifiedAccess = result;
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    localStorage.setItem(PLAN_KEY, result.planId);
+    return true;
+  } catch (error) {
+    console.error('Unable to verify recovered access:', error);
+    return false;
+  }
+}
+
+function consumeAuthTokenFromUrl() {
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  const token = hash.get('access_token');
+  const refreshToken = hash.get('refresh_token');
+  if (refreshToken) localStorage.setItem(AUTH_REFRESH_KEY, refreshToken);
+  if (token) window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+  return token;
+}
+
+async function refreshCustomerToken() {
+  const refreshToken = localStorage.getItem(AUTH_REFRESH_KEY);
+  if (!refreshToken) return null;
+  try {
+    const configResponse = await fetch('/.netlify/functions/auth-config');
+    const config = await configResponse.json();
+    if (!configResponse.ok) return null;
+    const response = await fetch(config.supabaseUrl + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: {
+        apikey: config.supabasePublishableKey,
+        Authorization: 'Bearer ' + config.supabasePublishableKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+    if (!response.ok) return null;
+    const session = await response.json();
+    if (!session.access_token) return null;
+    localStorage.setItem(AUTH_TOKEN_KEY, session.access_token);
+    if (session.refresh_token) localStorage.setItem(AUTH_REFRESH_KEY, session.refresh_token);
+    return session.access_token;
+  } catch (error) {
+    return null;
+  }
 }
 
 async function verifyAccess(sessionId) {
@@ -75,10 +137,26 @@ async function restoreVerifiedAccess() {
     const returnedSessionId = params.get('checkout_session_id');
     const canceled = params.get('checkout_canceled') === 'true';
     const storedSessionId = localStorage.getItem(CHECKOUT_SESSION_KEY);
+    const returnedAuthToken = consumeAuthTokenFromUrl();
+    const storedAuthToken = localStorage.getItem(AUTH_TOKEN_KEY);
     const sessionId = returnedSessionId || storedSessionId;
 
     if (canceled && typeof window.trackSycEvent === 'function') {
       window.trackSycEvent('checkout_cancel', {});
+    }
+
+    const authToken = returnedAuthToken || storedAuthToken;
+    if (!sessionId && authToken) {
+      let verified = await verifyCustomerToken(authToken);
+      if (!verified && storedAuthToken && !returnedAuthToken) {
+        const refreshedToken = await refreshCustomerToken();
+        if (refreshedToken) verified = await verifyCustomerToken(refreshedToken);
+      }
+      if (verified && returnedAuthToken) {
+        const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
+        showAccessGranted(plan);
+      }
+      return verified;
     }
 
     if (!sessionId) {
@@ -129,6 +207,70 @@ async function restoreVerifiedAccess() {
   return result;
 }
 
+async function requestAccessEmail(email, statusElement, button) {
+  const originalText = button.textContent;
+  try {
+    button.disabled = true;
+    button.textContent = 'Sending link...';
+    statusElement.textContent = '';
+    const configResponse = await fetch('/.netlify/functions/auth-config');
+    const config = await configResponse.json();
+    if (!configResponse.ok) throw new Error(config.error || 'Account recovery is unavailable');
+
+    const redirectTo = window.location.origin + '/';
+    const response = await fetch(config.supabaseUrl + '/auth/v1/otp?redirect_to=' + encodeURIComponent(redirectTo), {
+      method: 'POST',
+      headers: {
+        apikey: config.supabasePublishableKey,
+        Authorization: 'Bearer ' + config.supabasePublishableKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, create_user: true }),
+    });
+    if (!response.ok) throw new Error('Unable to send the sign-in link');
+    statusElement.style.color = '#1d6b52';
+    statusElement.textContent = 'Check your email for a one-time access link. It may take a few minutes.';
+    button.textContent = 'Link sent';
+  } catch (error) {
+    console.error('Unable to send access link:', error);
+    statusElement.style.color = '#8a2525';
+    statusElement.textContent = 'We could not send the access link. Please try again or email hello@startyourcause.org.';
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+function showAccessRecovery() {
+  let existing = document.getElementById('access-recovery-modal');
+  if (existing) { existing.style.display = 'flex'; return; }
+
+  const modal = document.createElement('div');
+  modal.id = 'access-recovery-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(44,36,24,.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;font-family:DM Sans,sans-serif';
+  modal.innerHTML = `
+    <div style="background:#fff9f4;border-radius:16px;max-width:470px;width:100%;padding:2rem;position:relative">
+      <button type="button" aria-label="Close" data-close-access style="position:absolute;right:1rem;top:1rem;background:none;border:0;font-size:21px;cursor:pointer;color:#9e8e7e">✕</button>
+      <div style="font-size:12px;color:#2d8f6f;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem">Returning customer</div>
+      <h2 style="font-family:Lora,serif;font-size:1.55rem;margin:0 0 .5rem;color:#2c2418">Restore document access</h2>
+      <p style="font-size:14px;color:#6b5c4c;line-height:1.6;margin:0 0 1rem">Enter the email used at Stripe checkout. We’ll email a one-time sign-in link, then confirm that the subscription is active.</p>
+      <label for="access-email" style="display:block;font-size:14px;font-weight:500;margin-bottom:4px">Checkout email</label>
+      <input id="access-email" type="email" autocomplete="email" required style="width:100%;padding:11px 12px;border:1.5px solid #e2d5c6;border-radius:8px;font-size:15px;margin-bottom:.75rem">
+      <button type="button" data-send-access style="width:100%;padding:11px;border:0;border-radius:8px;background:#2d8f6f;color:#fff;font-size:14px;font-weight:500;cursor:pointer">Email my access link</button>
+      <p data-access-status aria-live="polite" style="font-size:13px;line-height:1.5;margin:.75rem 0 0"></p>
+      <p style="font-size:12px;color:#9e8e7e;line-height:1.5;margin:1rem 0 0">Your questionnaire answers remain on the browser and device where you entered them; restoring access does not transfer those answers.</p>
+    </div>`;
+  const close = () => { modal.style.display = 'none'; };
+  modal.querySelector('[data-close-access]').addEventListener('click', close);
+  modal.addEventListener('click', event => { if (event.target === modal) close(); });
+  modal.querySelector('[data-send-access]').addEventListener('click', () => {
+    const input = modal.querySelector('#access-email');
+    if (!input.reportValidity()) return;
+    requestAccessEmail(input.value.trim().toLowerCase(), modal.querySelector('[data-access-status]'), modal.querySelector('[data-send-access]'));
+  });
+  document.body.appendChild(modal);
+  modal.querySelector('#access-email').focus();
+}
+
 function revokeAccess() {
   clearStoredAccess();
 }
@@ -143,9 +285,15 @@ async function openBillingPortal(btn) {
 
     const verified = hasAccess() || await restoreVerifiedAccess();
     const sessionId = localStorage.getItem(CHECKOUT_SESSION_KEY);
-    if (!verified || !sessionId) {
-      throw new Error('Verified subscription not found on this browser');
+    if (!verified) {
+      showAccessRecovery();
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      return;
     }
+    const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
 
     if (typeof window.trackSycEvent === 'function') {
       window.trackSycEvent('manage_subscription', {});
@@ -153,7 +301,10 @@ async function openBillingPortal(btn) {
 
     const response = await fetch('/.netlify/functions/create-portal', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authToken ? { Authorization: 'Bearer ' + authToken } : {}),
+      },
       body: JSON.stringify({ sessionId }),
     });
     const result = await response.json();
@@ -253,6 +404,7 @@ function showPricingModal(context) {
           <button id="checkout-btn-annual" onclick="startCheckout('annual')" style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan →</button>
         </div>
       </div>
+      <div style="text-align:center;margin-bottom:.75rem"><button type="button" onclick="hidePricingModal();showAccessRecovery()" style="background:none;border:0;color:#1d6b52;text-decoration:underline;font-size:14px;cursor:pointer">Already subscribed? Restore access</button></div>
       <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure subscription payment via Stripe · Billing help: hello@startyourcause.org</p>
     </div>`;
   modal.addEventListener('click', e => { if (e.target === modal) hidePricingModal(); });
