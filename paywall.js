@@ -319,3 +319,44 @@ function applyLaunchCopyAccuracyFixes() {
 }
 
 document.addEventListener('DOMContentLoaded', applyLaunchCopyAccuracyFixes);
+
+// Remove stale or unverified launch claims without changing product behavior.
+function applyLaunchIntegrityFixes() {
+  const replacements = [
+    ['Trusted by nonprofit founders across all 50 states', 'Guidance for all 50 states and U.S. territories'],
+    ['Priority email support', 'Email support'],
+    ['Annual compliance reminder emails', 'Annual compliance calendar'],
+    ['Compliance calendar & reminders', 'Compliance calendar'],
+    ['Email deadline alerts', 'Self-managed filing reminders'],
+    ['Nonprofit owner portal', 'Questionnaire answers saved in this browser'],
+    ['New documents added automatically', 'New documents as we add them'],
+    ['7-day money-back guarantee', 'Cancel anytime through Stripe'],
+  ];
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  nodes.forEach(node => {
+    let value = node.nodeValue;
+    replacements.forEach(([from, to]) => {
+      if (value.includes(from)) value = value.replace(from, to);
+    });
+    node.nodeValue = value;
+  });
+
+  // Remove the unverified beta testimonial block if it is present.
+  const all = Array.from(document.querySelectorAll('body *'));
+  const testimonialMarker = all.find(el => /Testimonials from beta users/i.test(el.textContent || ''));
+  if (testimonialMarker) {
+    let block = testimonialMarker;
+    for (let i = 0; i < 6 && block.parentElement; i++) {
+      const text = block.textContent || '';
+      if (/Sarah T\./.test(text) && /Marcus R\./.test(text) && /Diane M\./.test(text)) break;
+      block = block.parentElement;
+    }
+    if (block && block !== document.body) block.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', applyLaunchIntegrityFixes);
