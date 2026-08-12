@@ -1483,6 +1483,22 @@ function clearFormData() {
   try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
 }
 
+function resetFormFields() {
+  document.querySelectorAll('#page-form input[type="text"],#page-form input[type="email"],#page-form textarea').forEach(el => { el.value=''; });
+  document.querySelectorAll('#page-form input[type="checkbox"],#page-form input[type="radio"]').forEach(el => { el.checked=false; });
+  document.querySelectorAll('.cl-item').forEach(el => el.classList.remove('chk'));
+  const state=document.getElementById('f_stateSelect'); if(state) state.value='';
+  const fiscal=document.querySelector('input[name="f_fiscal"][value^="January"]'); if(fiscal) fiscal.checked=true;
+  const meetings=document.querySelector('input[name="f_meetFreq"][value^="Quarterly"]'); if(meetings) meetings.checked=true;
+  document.querySelectorAll('.fsec').forEach((section,index) => section.classList.toggle('active',index===0));
+  fCur=0;
+  document.getElementById('fpf').style.width='12.5%';
+  document.getElementById('fb-back').style.visibility='hidden';
+  document.getElementById('fb-next').textContent='Next →';
+  document.getElementById('f_stateBanner').style.display='none';
+  buildDots(); updateChecklistProgress();
+}
+
 // Auto-save on any input change
 document.addEventListener('input', function(e) {
   if (e.target.closest('#page-form')) saveFormData();

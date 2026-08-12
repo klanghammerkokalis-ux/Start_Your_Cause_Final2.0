@@ -46,8 +46,6 @@ function clearStoredAccess() {
   verifiedAccess = null;
   localStorage.removeItem(CHECKOUT_SESSION_KEY);
   localStorage.removeItem(PLAN_KEY);
-  localStorage.removeItem(AUTH_TOKEN_KEY);
-  localStorage.removeItem(AUTH_REFRESH_KEY);
 }
 
 async function verifyCustomerToken(token) {
@@ -59,7 +57,6 @@ async function verifyCustomerToken(token) {
     });
     const result = await response.json();
     if (!response.ok || !result.verified) {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
       return false;
     }
     verifiedAccess = result;
@@ -76,6 +73,8 @@ function consumeAuthTokenFromUrl() {
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
   const token = hash.get('access_token');
   const refreshToken = hash.get('refresh_token');
+  if (hash.get('type') === 'recovery') sessionStorage.setItem('syc_password_recovery', 'true');
+  if (token) localStorage.setItem(AUTH_TOKEN_KEY, token);
   if (refreshToken) localStorage.setItem(AUTH_REFRESH_KEY, refreshToken);
   if (token) window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
   return token;
