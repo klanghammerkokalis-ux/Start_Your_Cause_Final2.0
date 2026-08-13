@@ -16,12 +16,32 @@ function json(statusCode, body) {
   };
 }
 
+function assertSafeStripeMode() {
+  const context = process.env.CONTEXT || 'production';
+  const secretKey = process.env.STRIPE_SECRET_KEY || '';
+  const isPreview = context === 'deploy-preview' || context === 'branch-deploy';
+
+  if (isPreview && secretKey.startsWith('sk_live_')) {
+    throw new Error('Deploy previews require a Stripe test secret key');
+  }
+  if (context === 'production' && secretKey.startsWith('sk_test_')) {
+    throw new Error('Production requires a Stripe live secret key');
+  }
+}
+
 function getSiteUrl() {
-  const configured = process.env.SITE_URL || process.env.URL;
-  if (!configured) throw new Error('SITE_URL is not configured');
+  const context = process.env.CONTEXT || 'production';
+  const isPreview = context === 'deploy-preview' || context === 'branch-deploy';
+  const configured = isPreview
+    ? process.env.DEPLOY_PRIME_URL
+    : process.env.SITE_URL || process.env.URL;
+
+  if (!configured) {
+    throw new Error(isPreview ? 'DEPLOY_PRIME_URL is not configured' : 'SITE_URL is not configured');
+  }
   const url = new URL(configured);
   if (url.protocol !== 'https:' && url.protocol !== 'http:') {
-    throw new Error('SITE_URL must use HTTP or HTTPS');
+    throw new Error('Site URL must use HTTP or HTTPS');
   }
   return url.origin;
 }
@@ -32,6 +52,7 @@ exports.handler = async (event) => {
   }
 
   try {
+    assertSafeStripeMode();
     const body = JSON.parse(event.body || '{}');
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
 
