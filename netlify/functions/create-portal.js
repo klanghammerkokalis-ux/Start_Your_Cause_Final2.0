@@ -5,6 +5,39 @@ const ALLOWED_PRICES = new Set([
   process.env.STRIPE_ANNUAL_PRICE_ID || 'price_1TMAyDRyNZ1TUldSuM557LTK',
 ]);
 
+async function getVerifiedEmail(token) {
+  const supabaseUrl = process.env.SUPABASE_URL || 'https://lehgxworaefgsvkigjza.supabase.co';
+  const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY
+    || process.env.SUPABASE_ANON_KEY
+    || 'sb_publishable_jm2MRb0rbT2pJ72EMflT1Q_pEeZJBiG';
+  if (!token || !supabaseUrl || !supabasePublishableKey) return null;
+  const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    headers: { apikey: supabasePublishableKey, Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) return null;
+  const user = await response.json();
+  return user && user.email ? user.email.trim().toLowerCase() : null;
+}
+
+async function findActiveCustomer(email) {
+  const customers = await stripe.customers.list({ email, limit: 100 });
+  for (const customer of customers.data) {
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customer.id,
+      status: 'all',
+      limit: 100,
+      expand: ['data.items.data.price'],
+    });
+    const active = subscriptions.data.some(subscription => {
+      if (!['active', 'trialing'].includes(subscription.status)) return false;
+      const price = subscription.items.data[0] && subscription.items.data[0].price;
+      return price && ALLOWED_PRICES.has(price.id);
+    });
+    if (active) return customer.id;
+  }
+  return null;
+}
+
 function json(statusCode, body) {
   return {
     statusCode,
@@ -34,27 +67,36 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || '{}');
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
+    const authorization = event.headers.authorization || event.headers.Authorization || '';
+    const token = authorization.startsWith('Bearer ') ? authorization.slice(7).trim() : '';
+    let customerId = null;
 
-    if (!sessionId.startsWith('cs_')) {
-      return json(400, { error: 'Invalid checkout session' });
+    if (sessionId.startsWith('cs_')) {
+      const checkout = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ['line_items.data.price', 'subscription'],
+      });
+      const purchasedPriceId = checkout.line_items
+        && checkout.line_items.data
+        && checkout.line_items.data[0]
+        && checkout.line_items.data[0].price
+        ? checkout.line_items.data[0].price.id
+        : null;
+      const subscription = checkout.subscription;
+      const active = subscription && typeof subscription === 'object'
+        && ['active', 'trialing'].includes(subscription.status);
+      const paidCheckout = checkout.payment_status === 'paid'
+        || checkout.payment_status === 'no_payment_required';
+      if (paidCheckout && active && ALLOWED_PRICES.has(purchasedPriceId)) {
+        customerId = typeof checkout.customer === 'string'
+          ? checkout.customer
+          : checkout.customer && checkout.customer.id;
+      }
+    } else if (token) {
+      const email = await getVerifiedEmail(token);
+      if (email) customerId = await findActiveCustomer(email);
     }
 
-    const checkout = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['line_items.data.price'],
-    });
-    const purchasedPriceId = checkout.line_items
-      && checkout.line_items.data
-      && checkout.line_items.data[0]
-      && checkout.line_items.data[0].price
-      ? checkout.line_items.data[0].price.id
-      : null;
-    const paidCheckout = checkout.payment_status === 'paid'
-      || checkout.payment_status === 'no_payment_required';
-    const customerId = typeof checkout.customer === 'string'
-      ? checkout.customer
-      : checkout.customer && checkout.customer.id;
-
-    if (!paidCheckout || !customerId || !ALLOWED_PRICES.has(purchasedPriceId)) {
+    if (!customerId) {
       return json(403, { error: 'Verified customer access is required' });
     }
 

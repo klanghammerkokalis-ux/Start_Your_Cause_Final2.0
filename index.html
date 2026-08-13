@@ -221,6 +221,10 @@ nav{position:sticky;top:0;z-index:200;background:var(--warm);border-bottom:1px s
 .fb-back:hover{background:var(--sand)}
 .fb-next{background:var(--green);color:#fff;border:none}
 .fb-next:hover{background:var(--gdark);transform:translateY(-1px)}
+.f-error-summary{display:none;background:#fff0f0;border:1px solid #e6aaaa;border-radius:var(--rs);padding:11px 13px;margin:0 0 1rem;color:#8a2525;font-size:14px;line-height:1.5}
+.f-error-summary.visible{display:block}
+.field.has-error input,.field.has-error textarea,.field.has-error select,.field.has-error .rgroup,.field.has-error .cgroup{border-color:#c43d3d}
+.field-error{color:#a52d2d;font-size:12px;margin-top:5px}
 
 /* State-specific banner in form */
 .state-banner{background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1rem;font-size:14px;color:#5a3010;line-height:1.6}
@@ -282,6 +286,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <button id="nb-faq" onclick="go('faq')">FAQ</button>
     <button id="nb-annual" onclick="go('annual')">Annual Filing</button>
     <button id="nb-pricing" onclick="go('pricing')">Pricing</button>
+    <button data-account-button onclick="showAccountModal(accountUser?'login':'login')">Log in</button>
     <button id="nb-form" class="ncta" onclick="go('form')">Start My Nonprofit →</button>
   </div>
   <button class="nmb" onclick="toggleMob()">☰</button>
@@ -310,7 +315,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <div class="hero-stats">
       <div class="stat text-center"><span class="stat-n">1.5M+</span><span class="stat-l">Nonprofits in the U.S.</span></div>
       <div class="stat text-center"><span class="stat-n">56</span><span class="stat-l">States &amp; territories covered</span></div>
-      <div class="stat text-center"><span class="stat-n">12</span><span class="stat-l">Documents generated for you</span></div>
+      <div class="stat text-center"><span class="stat-n">12</span><span class="stat-l">Documents included with membership</span></div>
       <div class="stat text-center"><span class="stat-n">$275</span><span class="stat-l">Minimum IRS filing fee</span></div>
     </div>
     <!-- Trust bar -->
@@ -348,7 +353,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;text-align:center">
       <div><div style="font-family:'Lora',serif;font-size:2.2rem;font-weight:600;color:var(--gdark)">1.5M+</div><div style="font-size:14px;color:var(--tlight);margin-top:4px">Nonprofits in the U.S.</div></div>
       <div><div style="font-family:'Lora',serif;font-size:2.2rem;font-weight:600;color:var(--gdark)">56</div><div style="font-size:14px;color:var(--tlight);margin-top:4px">States & territories covered</div></div>
-      <div><div style="font-family:'Lora',serif;font-size:2.2rem;font-weight:600;color:var(--gdark)">12</div><div style="font-size:14px;color:var(--tlight);margin-top:4px">Documents generated for you</div></div>
+      <div><div style="font-family:'Lora',serif;font-size:2.2rem;font-weight:600;color:var(--gdark)">12</div><div style="font-size:14px;color:var(--tlight);margin-top:4px">Documents included with membership</div></div>
       <div><div style="font-family:'Lora',serif;font-size:2.2rem;font-weight:600;color:var(--gdark)">$275</div><div style="font-size:14px;color:var(--tlight);margin-top:4px">Minimum IRS filing fee</div></div>
     </div>
   </div>
@@ -378,7 +383,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
             <tr style="border-bottom:1px solid var(--sand)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Form 990 prep guide</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
             <tr style="border-bottom:1px solid var(--sand);background:var(--cream)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Compliance calendar</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
             <tr style="border-bottom:1px solid var(--sand)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Unlimited document regeneration</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
-            <tr style="background:var(--cream)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Questionnaire answers saved in this browser</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
+            <tr style="background:var(--cream)"><td style="padding:.875rem 1.25rem;color:var(--tmid)">Questionnaire answers saved to your account</td><td style="text-align:center;color:var(--tlight)">—</td><td style="text-align:center;color:var(--green);font-size:18px">✓</td></tr>
           </tbody>
         </table>
       </div>
@@ -396,11 +401,12 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <div style="max-width:860px;margin:0 auto">
       <div style="text-align:center;margin-bottom:2.5rem">
         <div class="stag">about us</div>
-        <h2 style="font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:.75rem">Built by people who believe in your mission</h2>
+        <h2 style="font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:.75rem">Built by a compliance professional who believes in your mission</h2>
       </div>
       <div class="mobile-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
         <div>
           <p style="color:var(--tmid);font-size:15px;line-height:1.8;margin-bottom:1rem">Start Your Cause was built in Illinois to help mission-driven people navigate a formation process that can feel overwhelming, expensive, and inaccessible.</p>
+          <p style="color:var(--tmid);font-size:15px;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Founded by Kristin Kokalis, SHRM-CP, PMP,</strong> the service draws on her experience supporting HR, benefits, and compliance work across multi-state and federally regulated environments. That background shaped the site’s step-by-step approach, plain-language guidance, and focus on careful documentation.</p>
           <p style="color:var(--tmid);font-size:15px;line-height:1.8;margin-bottom:1rem">The service is designed to provide a clearer, more affordable path through nonprofit formation in plain language, covering all 50 states and U.S. territories.</p>
           <p style="color:var(--tmid);font-size:15px;line-height:1.8">Our document templates are based on IRS Form 1023 requirements, state incorporation statutes, and nonprofit governance best practices.</p>
         </div>
@@ -411,7 +417,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
           </div>
           <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem;display:flex;align-items:flex-start;gap:.875rem">
             <span style="font-size:24px">🔒</span>
-            <div><h4 style="font-size:14px;font-weight:500;margin-bottom:2px">Privacy first</h4><p style="font-size:13px;color:var(--tlight)">Your data is never sold. Documents are generated in your browser and never stored on our servers.</p></div>
+            <div><h4 style="font-size:14px;font-weight:500;margin-bottom:2px">Secure customer accounts</h4><p style="font-size:13px;color:var(--tlight)">Supabase securely manages login credentials and stores questionnaire answers in a user-restricted account. Stripe processes payments as described in our Privacy Policy.</p></div>
           </div>
           <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem;display:flex;align-items:flex-start;gap:.875rem">
             <span style="font-size:24px">⚖️</span>
@@ -618,6 +624,8 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
   <div class="form-body">
     <div class="f-prog-bar"><div class="f-prog-f" id="fpf" style="width:12.5%"></div></div>
     <div class="f-dots" id="fdots"></div>
+    <div id="account-save-status" style="font-size:12px;text-align:right;color:var(--tlight);margin:-1rem 0 1rem"></div>
+    <div class="f-error-summary" id="f-error-summary" role="alert" aria-live="polite"></div>
 
     <!-- STEP 1: CAUSE -->
     <div class="fsec active" id="fs1">
@@ -936,7 +944,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
           </div>
         </div>
         <p style="text-align:center;font-size:12px;color:var(--tlight)">🔒 Secure subscription payment via Stripe &nbsp;·&nbsp; Billing help: hello@startyourcause.org</p>
-        <div style="text-align:center;margin-top:.75rem"><button onclick="openBillingPortal(this)" class="btn btn-s" style="padding:8px 14px;font-size:13px">Manage an existing subscription</button></div>
+        <div style="text-align:center;margin-top:.75rem"><button onclick="openBillingPortal(this)" class="btn btn-s" style="padding:8px 14px;font-size:13px">Log in / manage subscription</button></div>
       </div>
     </div>
 
@@ -999,6 +1007,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
 <script src="docgen.js"></script>
 <script src="yearly-docs.js"></script>
 <script src="paywall.js"></script>
+<script src="account.js"></script>
 <script>
 // Safety wrapper — ensures startCheckout always works even if paywall.js loads late
 if (typeof startCheckout === 'undefined') {
@@ -1071,6 +1080,10 @@ function updatePageSEO(id) {
 }
 
 function go(id) {
+  if (id === 'form' && typeof hasAccountSession === 'function' && !hasAccountSession()) {
+    showAccountModal('login');
+    return;
+  }
   if (id === 'pricing') {
     window.trackSycEvent('pricing_view', { page_location: window.location.href });
   }
@@ -1205,6 +1218,10 @@ function toggleFAQ(i){ document.querySelectorAll('.faq-item')[i].classList.toggl
 // ── CHECKLIST ──
 function toggleCL(el){
   el.classList.toggle('chk');
+  updateChecklistProgress();
+  saveFormData();
+}
+function updateChecklistProgress(){
   const all=document.querySelectorAll('.cl-item').length;
   const done=document.querySelectorAll('.cl-item.chk').length;
   const pct=Math.round(done/all*100);
@@ -1234,6 +1251,7 @@ buildDots();
 window.addEventListener('load', function() { setTimeout(restoreFormData, 150); });
 
 function fNav(dir){
+  if(dir===1 && !validateCurrentStep()) return;
   saveFormData();
   if (dir === 1 && fCur === F_TOTAL - 1) {
     const answers = getAnswers();
@@ -1271,6 +1289,100 @@ function fNav(dir){
   window.scrollTo(0,0);
 }
 
+const REQUIRED_BY_STEP = [
+  [
+    {id:'f_orgName', message:'Enter the nonprofit name.'},
+    {id:'f_problem', message:'Describe the problem your nonprofit will address.'},
+    {id:'f_activities', message:'Describe the programs or services your nonprofit will provide.'},
+  ],
+  [
+    {id:'f_whoHelp', message:'Describe who or what your nonprofit will serve.'},
+    {id:'f_location', message:'Enter where your nonprofit will operate.'},
+    {name:'f_type', message:'Choose the type of nonprofit, or select “Not sure yet.”'},
+  ],
+  [
+    {id:'f_stateSelect', message:'Select the state or territory where you will incorporate.'},
+    {id:'f_address', message:'Enter the nonprofit mailing address.'},
+  ],
+  [
+    {id:'f_founderName', message:'Enter the founder or president’s full name.'},
+    {id:'f_founderEmail', message:'Enter a valid email address.'},
+    {id:'f_board2', message:'Enter the second board member’s name.'},
+    {id:'f_board3', message:'Enter the third board member’s name.'},
+  ],
+  [
+    {className:'f_funding', message:'Select at least one planned funding source.'},
+    {id:'f_budget', message:'Enter an estimated first-year budget.'},
+    {id:'f_expenses', message:'Describe what the nonprofit expects to spend money on.'},
+    {name:'f_employees', message:'Select whether you expect to pay employees or contractors.'},
+  ],
+  [
+    {name:'f_lawyer', message:'Select whether you have professional help.'},
+    {name:'f_fee', message:'Select your readiness for the IRS filing fee.'},
+    {className:'f_special', message:'Select any special circumstances, or choose “None of the above.”'},
+  ],
+  [
+    {id:'f_spendLimit', message:'Enter the spending amount that requires board approval.'},
+    {name:'f_comp', message:'Select the board compensation arrangement.'},
+  ],
+  [],
+];
+
+function clearStepErrors() {
+  document.querySelectorAll('#page-form .has-error').forEach(el => el.classList.remove('has-error'));
+  document.querySelectorAll('#page-form .field-error').forEach(el => el.remove());
+  const summary = document.getElementById('f-error-summary');
+  summary.classList.remove('visible');
+  summary.textContent = '';
+}
+
+function requirementElement(rule) {
+  if(rule.id) return document.getElementById(rule.id);
+  if(rule.name) return document.querySelector('input[name="'+rule.name+'"]');
+  if(rule.className) return document.querySelector('.'+rule.className);
+  return null;
+}
+
+function requirementMet(rule) {
+  if(rule.id) {
+    const el=document.getElementById(rule.id);
+    if(!el || !el.value.trim()) return false;
+    return el.type !== 'email' || el.checkValidity();
+  }
+  if(rule.name) return Boolean(document.querySelector('input[name="'+rule.name+'"]:checked'));
+  if(rule.className) return Boolean(document.querySelector('.'+rule.className+':checked'));
+  return true;
+}
+
+function validateCurrentStep() {
+  clearStepErrors();
+  const failures=(REQUIRED_BY_STEP[fCur]||[]).filter(rule => !requirementMet(rule));
+  if(!failures.length) return true;
+
+  failures.forEach(rule => {
+    const el=requirementElement(rule);
+    const field=el && el.closest('.field');
+    if(!field) return;
+    field.classList.add('has-error');
+    const message=document.createElement('div');
+    message.className='field-error';
+    message.textContent=rule.message;
+    field.appendChild(message);
+  });
+
+  const summary=document.getElementById('f-error-summary');
+  summary.textContent=failures.length===1
+    ? failures[0].message
+    : `Please complete ${failures.length} required items before continuing.`;
+  summary.classList.add('visible');
+  const first=requirementElement(failures[0]);
+  if(first) {
+    first.focus({preventScroll:true});
+    first.closest('.field')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return false;
+}
+
 function fv(id){ const e=document.getElementById(id); return e&&e.value.trim()?e.value.trim():''; }
 function fr(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:''; }
 function fchk(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value); }
@@ -1289,6 +1401,7 @@ function saveFormData() {
       checkboxes: {},
       // Current step
       step: fCur,
+      checklist: Array.from(document.querySelectorAll('.cl-item')).map((item,index) => item.classList.contains('chk') ? index : null).filter(index => index !== null),
     };
     // Save all text inputs and textareas
     const ids = ['f_orgName','f_problem','f_activities','f_mission','f_whoHelp','f_howMany',
@@ -1312,6 +1425,7 @@ function saveFormData() {
       data.checkboxes[cls] = Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value);
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    if (typeof saveAccountProject === 'function' && hasAccountSession()) saveAccountProject(data);
   } catch(e) { /* localStorage may be unavailable */ }
 }
 
@@ -1320,6 +1434,10 @@ function restoreFormData() {
     const saved = localStorage.getItem(SAVE_KEY);
     if (!saved) return;
     const data = JSON.parse(saved);
+    if (Array.isArray(data.checklist)) {
+      document.querySelectorAll('.cl-item').forEach((item,index) => item.classList.toggle('chk', data.checklist.includes(index)));
+      updateChecklistProgress();
+    }
     // Restore text fields
     if (data.fields) {
       Object.entries(data.fields).forEach(([id, val]) => {
@@ -1363,6 +1481,22 @@ function restoreFormData() {
 
 function clearFormData() {
   try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+}
+
+function resetFormFields() {
+  document.querySelectorAll('#page-form input[type="text"],#page-form input[type="email"],#page-form textarea').forEach(el => { el.value=''; });
+  document.querySelectorAll('#page-form input[type="checkbox"],#page-form input[type="radio"]').forEach(el => { el.checked=false; });
+  document.querySelectorAll('.cl-item').forEach(el => el.classList.remove('chk'));
+  const state=document.getElementById('f_stateSelect'); if(state) state.value='';
+  const fiscal=document.querySelector('input[name="f_fiscal"][value^="January"]'); if(fiscal) fiscal.checked=true;
+  const meetings=document.querySelector('input[name="f_meetFreq"][value^="Quarterly"]'); if(meetings) meetings.checked=true;
+  document.querySelectorAll('.fsec').forEach((section,index) => section.classList.toggle('active',index===0));
+  fCur=0;
+  document.getElementById('fpf').style.width='12.5%';
+  document.getElementById('fb-back').style.visibility='hidden';
+  document.getElementById('fb-next').textContent='Next →';
+  document.getElementById('f_stateBanner').style.display='none';
+  buildDots(); updateChecklistProgress();
 }
 
 // Auto-save on any input change
@@ -1556,11 +1690,11 @@ function initPricingPage() {
   const pf = document.getElementById('pricing-faq');
   if (pf && pf.children.length === 0) {
     const pfaqs = [
-      { q: 'How do I request cancellation?', a: 'Use the Manage billing button on this browser after a verified purchase. If it is unavailable, email hello@startyourcause.org with the email used at checkout.' },
+      { q: 'How do I request cancellation?', a: 'Choose “Log in / manage subscription,” sign in to your account, then open Stripe billing management to cancel. You can also email hello@startyourcause.org using the email associated with checkout.' },
       { q: 'Do you offer a free trial?', a: 'No free trial is currently offered. Review the included documents and features before purchasing.' },
       { q: 'Does this cover multiple nonprofits?', a: 'Yes — one subscription covers all the nonprofits you manage. Generate documents for as many organizations as you need.' },
       { q: 'What payment methods are accepted?', a: 'All major credit and debit cards via Stripe. Stripe is used by millions of businesses and is fully PCI-compliant.' },
-      { q: 'Do you store my nonprofit\'s information?', a: 'No — all document generation happens in your browser. We don\'t store or transmit your nonprofit data to our servers.' },
+      { q: 'Do you store my nonprofit\'s information?', a: 'Yes. Questionnaire answers are securely stored in your Supabase account so you can continue on another device. Row-level security restricts each project to its account owner. Generated documents are created in your browser.' },
     ];
     pf.innerHTML = pfaqs.map((f,i) => `
       <div style="border-bottom:1px solid var(--sand2)">
@@ -1586,6 +1720,11 @@ function initPricingPage() {
 
 
 function doCheckout(planId, btn) {
+  var accountToken = localStorage.getItem('syc_auth_access_token');
+  if (!accountToken) {
+    showAccountModal('signup');
+    return;
+  }
   var value = planId === 'annual' ? 79 : 12;
   var orig = btn ? btn.textContent : '';
   if (btn) {
@@ -1600,7 +1739,7 @@ function doCheckout(planId, btn) {
   });
   fetch('/.netlify/functions/create-checkout', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accountToken},
     body: JSON.stringify({ planId: planId })
   })
   .then(function(r) {
