@@ -110,9 +110,18 @@ async function refreshCustomerToken() {
 async function verifyAccess(sessionId) {
   if (!sessionId) return false;
 
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
+  if (!token) {
+    clearStoredAccess();
+    return false;
+  }
+
   const response = await fetch('/.netlify/functions/verify-checkout', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
     body: JSON.stringify({ sessionId }),
   });
 
