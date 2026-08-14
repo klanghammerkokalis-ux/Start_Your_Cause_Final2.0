@@ -2,6 +2,7 @@
 // Generates actual nonprofit formation documents as text/HTML for download
 
 function generateAllDocs(answers, stateData) {
+  answers = sanitizeGeneratedAnswers(answers);
   return {
     articles: generateArticles(answers, stateData),
     bylaws: generateBylaws(answers, stateData),
@@ -12,6 +13,19 @@ function generateAllDocs(answers, stateData) {
     irs_prep: generateIRSPrep(answers, stateData),
     stateChecklist: generateStateChecklist(answers, stateData),
   };
+}
+
+function escapeGeneratedHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]);
+}
+
+function sanitizeGeneratedAnswers(answers) {
+  return Object.fromEntries(Object.entries(answers || {}).map(([key, value]) => [
+    key,
+    Array.isArray(value) ? value.map(escapeGeneratedHtml) : escapeGeneratedHtml(value),
+  ]));
 }
 
 function today() {
@@ -256,7 +270,7 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 // ── 3. CONFLICT OF INTEREST POLICY ──
 function generateConflictPolicy(a) {
   const orgName = a.orgName || "[Organization Name]";
-  return docHeader(`Conflict of Interest Policy`, `${orgName} | Required for IRS Form 1023`) + `
+  return docHeader(`Conflict of Interest Policy`, `${orgName} | Recommended governance practice`) + `
 
 <div class="section">
 <p>This Conflict of Interest Policy is adopted to protect the interests of <strong>${orgName}</strong> (the "Corporation") when it is contemplating entering into a transaction or arrangement that might benefit the private interests of an officer or director of the Corporation or might result in a possible excess benefit transaction.</p>
