@@ -2,12 +2,26 @@
 // Generates annual filing and compliance documents
 
 function generateYearlyDocs(answers, stateData, year) {
+  answers = sanitizeYearlyAnswers(answers);
   return {
     form990:        generateForm990Prep(answers, stateData, year),
     stateReport:    generateStateAnnualReport(answers, stateData, year),
     annualMinutes:  generateAnnualMinutes(answers, stateData, year),
     donorLetters:   generateDonorLetters(answers, year),
   };
+}
+
+function escapeYearlyHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]);
+}
+
+function sanitizeYearlyAnswers(answers) {
+  return Object.fromEntries(Object.entries(answers || {}).map(([key, value]) => [
+    key,
+    Array.isArray(value) ? value.map(escapeYearlyHtml) : escapeYearlyHtml(value),
+  ]));
 }
 
 function ydocHeader(title, subtitle) {
