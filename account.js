@@ -93,6 +93,7 @@ async function getAccountUser() {
   const token = localStorage.getItem(ACCOUNT_ACCESS_KEY);
   if (!token) return null;
   try {
+    await getAccountConfig();
     const data = await accountRequest('/auth/v1/user', {
       headers: accountHeaders(token),
     });

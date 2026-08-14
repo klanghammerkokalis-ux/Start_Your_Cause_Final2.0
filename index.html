@@ -307,7 +307,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
   <section class="hero">
     <div class="badge">🌱 Guided nonprofit tools for all 50 states and U.S. territories</div>
     <h1>The easiest way for everyday people<br>to launch a <em>real nonprofit.</em></h1>
-    <p class="hero-sub">Start Your Cause guides you through every step of forming a 501(c)(3) — in plain language anyone can understand — and generates your actual legal documents.</p>
+    <p class="hero-sub">Start Your Cause guides you through every step of forming a 501(c)(3) — in plain language anyone can understand — and generates customizable formation document templates.</p>
     <div class="hero-btns">
       <button class="btn btn-p" onclick="go('form')">Build my nonprofit now →</button>
       <button class="btn btn-s" onclick="go('what')">Learn the basics first</button>
@@ -331,7 +331,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <div class="sec-hd">
       <div class="stag">how it works</div>
       <h2>From idea to 501(c)(3) in 7 steps</h2>
-      <p>Here's the big picture. Fill out our intake form and we'll generate the actual documents you need.</p>
+      <p>Here's the big picture. Fill out our intake form and we'll generate customizable document templates for your review.</p>
     </div>
     <div class="steps-grid">
       <div class="step-card"><span class="step-num">01</span><h3>Define your mission</h3><p>What problem do you want to solve? Who will you help?</p></div>
@@ -433,7 +433,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
   </div>
 
   <div class="cta-strip">
-    <h2>We generate your actual formation documents</h2>
+    <h2>We generate customizable formation document templates</h2>
     <p>Articles of incorporation, bylaws, conflict of interest policy, board minutes, and more — all filled in with your answers.</p>
     <button class="btn btn-s" style="background:#fff;border-color:#fff;color:var(--gdark)" onclick="go('form')">Start the intake form →</button>
   </div>
@@ -577,7 +577,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
       <div class="cl-items">
         <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Apply for an EIN (Employer Identification Number)</h4><p>Free, online, instant. Go to IRS.gov. You need this before opening a bank account or filing Form 1023.</p></div></div>
         <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Hold your first official board meeting</h4><p>Adopt bylaws, elect officers, document everything with minutes.</p></div></div>
-        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Adopt Conflict of Interest Policy</h4><p>Required for IRS Form 1023. We generate this for you.</p></div></div>
+        <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Adopt Conflict of Interest Policy</h4><p>Recommended governance practice and addressed in Form 1023. We generate a template for you.</p></div></div>
         <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>File IRS Form 1023 or 1023-EZ</h4><p>Form 1023-EZ ($275) is available only to organizations that satisfy all IRS eligibility requirements, including financial thresholds. Organizations that are not eligible use Form 1023 ($600).</p></div></div>
         <div class="cl-item" onclick="toggleCL(this)"><div class="cl-box">✓</div><div class="cl-content"><h4>Apply for state tax exemption</h4><p>Most states require a separate application after IRS approval.</p></div></div>
       </div>
@@ -881,7 +881,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
       <div class="doc-card" onclick="openAnnualDoc('donorLetters')">
         <span class="doc-icon">💌</span>
         <h4>Donor Acknowledgment Letters</h4>
-        <p>5 IRS-compliant templates: cash gifts, recurring donors, in-kind, events, year-end summary</p>
+        <p>5 IRS-informed templates: cash gifts, recurring donors, in-kind, events, year-end summary</p>
         <span class="doc-badge">5 templates</span>
       </div>
     </div>
@@ -1199,7 +1199,7 @@ const FAQS = [
   {q:"What is charitable solicitation registration?",a:"About 40 states require nonprofits to register with a state agency before they can publicly solicit donations from that state's residents. Fees range from free to $100+. Our State Guide shows which states require it and the fees for all 56 jurisdictions."},
   {q:"What is Form 990 and when do I file it?",a:"Form 990 is an annual informational return filed with the IRS. Most 501(c)(3)s must file it each year. Organizations with gross receipts under $50,000 can file the simpler Form 990-N (the 'e-Postcard'). Failing to file for 3 consecutive years automatically revokes your tax-exempt status."},
   {q:"What if I operate in multiple states?",a:"If you incorporate in one state but operate in others, you'll typically need to register as a 'foreign nonprofit' in each operating state. Charitable solicitation registration is usually required state-by-state wherever you actively fundraise, regardless of where you're incorporated."},
-  {q:"What are bylaws and why do I need them?",a:"Bylaws are your organization's internal rulebook — they cover how the board operates, how officers are elected, how decisions are made, and what happens if someone needs to be removed. The IRS requires a copy of your bylaws with your 1023 application. We generate them for you based on your intake form answers."},
+  {q:"What are bylaws and why do I need them?",a:"Bylaws are your organization's internal rulebook — they cover how the board operates, how officers are elected, how decisions are made, and what happens if someone needs to be removed. Form 1023 instructions call for bylaws to be included if your organization has adopted them. We generate a template based on your intake form answers."},
   {q:"What is a Conflict of Interest Policy?",a:"The IRS specifically asks if you have a conflict of interest policy in Form 1023. This policy prevents board members and officers from making decisions that benefit them personally at the expense of the nonprofit. We generate this document for you automatically."},
   {q:"What's different about nonprofits in U.S. territories like Puerto Rico or Guam?",a:"U.S. territories follow federal 501(c)(3) rules for IRS purposes, but each has its own state-equivalent requirements. Puerto Rico has its own tax code and requires a separate local exemption from the PR Treasury (Hacienda). Territories like Guam, USVI, and CNMI generally have longer processing times due to limited agency capacity. Our State Guide covers all territories in detail."},
   {q:"Can I start a nonprofit for a religious cause?",a:"Yes — religious organizations are one of the oldest categories of 501(c)(3). Churches are technically auto-exempt and don't need to apply, but many choose to for formal recognition and donor trust. Religious orgs that aren't churches (religious schools, camps, social service orgs with a faith basis) typically do need to apply. Note: churches and religious orgs cannot use Form 1023-EZ and must use the full Form 1023."},
@@ -1562,7 +1562,7 @@ function buildSummary(){
   const docs=[
     {id:'articles',icon:'📄',title:'Articles of Incorporation',desc:'Formation document for your state',badge:'Required — file with state'},
     {id:'bylaws',icon:'📋',title:'Bylaws',desc:'Internal governance rules for your organization',badge:'Required for IRS 1023'},
-    {id:'conflictPolicy',icon:'⚖️',title:'Conflict of Interest Policy',desc:'Required by IRS for Form 1023',badge:'Required for IRS 1023'},
+    {id:'conflictPolicy',icon:'⚖️',title:'Conflict of Interest Policy',desc:'Recommended governance practice addressed in Form 1023',badge:'Governance template'},
     {id:'boardMinutes',icon:'📝',title:'First Board Meeting Minutes',desc:'Official record of your organizational meeting',badge:'Required — keep in records'},
     {id:'missionStatement',icon:'🎯',title:'Mission Statement Worksheet',desc:'Your drafted mission with refinement checklist',badge:'Internal use'},
     {id:'ein_checklist',icon:'🔢',title:'EIN Application Guide',desc:'Step-by-step checklist for your IRS tax ID',badge:'Required before 1023'},
