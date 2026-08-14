@@ -65,36 +65,10 @@ exports.handler = async (event) => {
   }
 
   try {
-    const body = JSON.parse(event.body || '{}');
-    const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
     const authorization = event.headers.authorization || event.headers.Authorization || '';
     const token = authorization.startsWith('Bearer ') ? authorization.slice(7).trim() : '';
-    let customerId = null;
-
-    if (sessionId.startsWith('cs_')) {
-      const checkout = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ['line_items.data.price', 'subscription'],
-      });
-      const purchasedPriceId = checkout.line_items
-        && checkout.line_items.data
-        && checkout.line_items.data[0]
-        && checkout.line_items.data[0].price
-        ? checkout.line_items.data[0].price.id
-        : null;
-      const subscription = checkout.subscription;
-      const active = subscription && typeof subscription === 'object'
-        && ['active', 'trialing'].includes(subscription.status);
-      const paidCheckout = checkout.payment_status === 'paid'
-        || checkout.payment_status === 'no_payment_required';
-      if (paidCheckout && active && ALLOWED_PRICES.has(purchasedPriceId)) {
-        customerId = typeof checkout.customer === 'string'
-          ? checkout.customer
-          : checkout.customer && checkout.customer.id;
-      }
-    } else if (token) {
-      const email = await getVerifiedEmail(token);
-      if (email) customerId = await findActiveCustomer(email);
-    }
+    const email = await getVerifiedEmail(token);
+    const customerId = email ? await findActiveCustomer(email) : null;
 
     if (!customerId) {
       return json(403, { error: 'Verified customer access is required' });
