@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /.netlify/
+Disallow: /portal.html
+Sitemap: https://startyourcause.org/sitemap.xml

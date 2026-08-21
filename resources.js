@@ -1,0 +1,1 @@
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-BE983T68NN');document.addEventListener('click',function(e){const a=e.target.closest('[data-track]');if(!a)return;gtag('event',a.dataset.track,{resource_slug:document.body.dataset.slug||'',link_url:a.href||'',link_text:(a.textContent||'').trim().slice(0,80)});});
