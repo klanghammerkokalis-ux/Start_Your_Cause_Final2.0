@@ -1600,7 +1600,7 @@ function buildSummary(){
       <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
       <tr><td>Solicitation registration</td><td>${sd.solicitationReg?`Required — $${sd.solicitationFee||0}`:'Not required in your state'}</td></tr>
       <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
-      <tr><td>Estimated min. total cost</td><td><strong>${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
+      <tr><td>Estimated min. total cost</td><td><strong>&#36;${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
     </table>
     <div style="background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem;margin-bottom:.875rem;font-size:13px;color:var(--gdark);line-height:1.7">
       <strong>Your filing sequence:</strong><br>
