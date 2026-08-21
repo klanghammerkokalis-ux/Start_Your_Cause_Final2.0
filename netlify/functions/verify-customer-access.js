@@ -1,8 +1,8 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const ALLOWED_PRICES = {
-  monthly: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1TMAwiRyNZ1TUldSZ7tIW7wi',
-  annual: process.env.STRIPE_ANNUAL_PRICE_ID || 'price_1TMAyDRyNZ1TUldSuM557LTK',
+  monthly: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1U3daX0dD4h0E3se5Zo5Bne0',
+  annual: process.env.STRIPE_ANNUAL_PRICE_ID || 'price_1U3dbf0dD4h0E3seh4ZWKQmT',
 };
 
 function json(statusCode, body) {

@@ -3,7 +3,7 @@ const PAYWALL_CONFIG = {
   plans: {
     monthly: {
       id: 'monthly', name: 'Monthly', price: 12, period: 'month',
-      stripePriceId: 'price_1TMAwiRyNZ1TUldSZ7tIW7wi',
+      stripePriceId: 'price_1U3daX0dD4h0E3se5Zo5Bne0',
       features: [
         'All 8 formation documents',
         'All 4 yearly filing documents',
@@ -18,7 +18,7 @@ const PAYWALL_CONFIG = {
     },
     annual: {
       id: 'annual', name: 'Annual', price: 79, period: 'year',
-      stripePriceId: 'price_1TMAyDRyNZ1TUldSuM557LTK',
+      stripePriceId: 'price_1U3dbf0dD4h0E3seh4ZWKQmT',
       badge: 'Best value — save 45%',
       features: [
         'Everything in Monthly',

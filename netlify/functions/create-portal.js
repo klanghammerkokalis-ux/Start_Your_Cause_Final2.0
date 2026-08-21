@@ -1,8 +1,8 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const ALLOWED_PRICES = new Set([
-  process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1TMAwiRyNZ1TUldSZ7tIW7wi',
-  process.env.STRIPE_ANNUAL_PRICE_ID || 'price_1TMAyDRyNZ1TUldSuM557LTK',
+  process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1U3daX0dD4h0E3se5Zo5Bne0',
+  process.env.STRIPE_ANNUAL_PRICE_ID || 'price_1U3dbf0dD4h0E3seh4ZWKQmT',
 ]);
 
 async function getVerifiedEmail(token) {
