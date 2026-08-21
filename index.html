@@ -308,6 +308,9 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <div class="badge">🌱 Guided nonprofit tools for all 50 states and U.S. territories</div>
     <h1>The easiest way for everyday people<br>to launch a <em>real nonprofit.</em></h1>
     <p class="hero-sub">Start Your Cause guides you through every step of forming a 501(c)(3) — in plain language anyone can understand — and generates customizable formation document templates.</p>
+    <div style="max-width:650px;margin:0 auto 1.5rem;background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:.875rem 1rem;font-size:13px;color:#7a4010;line-height:1.6">
+      <strong>What we do:</strong> We generate document templates and step-by-step filing guidance. <strong>We do not submit filings or government fees to your state or the IRS for you.</strong>
+    </div>
     <div class="hero-btns">
       <button class="btn btn-p" onclick="go('form')">Build my nonprofit now →</button>
       <button class="btn btn-s" onclick="go('what')">Learn the basics first</button>
@@ -388,7 +391,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         </table>
       </div>
       <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#7a4010;line-height:1.6">
-        ⚠️ <strong>Government filing fees are separate from Start Your Cause.</strong> The IRS charges $275–$600 to apply for 501(c)(3) status. State incorporation fees range from $8 to $170 depending on your state. These fees go directly to the government — not to us.
+        ⚠️ <strong>Your subscription pays for document generation and guidance—not government filing.</strong> Start Your Cause does not submit filings or pay fees to your state or the IRS. You are responsible for reviewing, signing, and submitting the required filing to each government agency. The IRS charges $275–$600 to apply for 501(c)(3) status, and state fees vary. These fees go directly to the government—not to us.
       </div>
       <div style="text-align:center;margin-top:2rem">
         <button class="btn btn-p" onclick="go('pricing')">See subscription plans →</button>
@@ -619,7 +622,10 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
   <div class="form-hero">
     <div class="stag">intake form</div>
     <h1>Let's build your nonprofit</h1>
-    <p>Answer each question. We'll use your answers to generate your actual formation documents.</p>
+    <p>Answer each question. We'll use your answers to generate customizable formation document templates and a state-specific filing checklist.</p>
+    <div style="max-width:700px;margin:1rem auto 0;background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:.875rem 1rem;font-size:13px;color:#7a4010;line-height:1.6">
+      <strong>Before you begin:</strong> Completing this questionnaire does not submit anything to a government agency. After generating your documents, you must review, sign, and file the appropriate document with your state; request an EIN separately; and submit Form 1023 or 1023-EZ separately to the IRS.
+    </div>
   </div>
   <div class="form-body">
     <div class="f-prog-bar"><div class="f-prog-f" id="fpf" style="width:12.5%"></div></div>
@@ -803,12 +809,15 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
       <div class="fcard">
         <div class="fs-tag">Step 8 of 8 — Review &amp; Generate</div>
         <div class="fs-title">Here's your summary 🎉</div>
-        <div class="fs-desc">Review your answers below, then generate all your formation documents with one click.</div>
+        <div class="fs-desc">Review your answers below, then generate your formation document templates and filing instructions with one click. Generation does not submit any filing.</div>
         <table class="sum-table" id="sumTable"></table>
       </div>
       <div class="fcard" style="margin-top:.875rem">
         <div class="fs-title" style="font-size:18px;margin-bottom:.5rem">Your Formation Documents</div>
-        <p style="font-size:14px;color:var(--tmid);margin-bottom:1.25rem">Click any document to open it — filled in with your answers. Print it or save as PDF.</p>
+        <p style="font-size:14px;color:var(--tmid);margin-bottom:.75rem">Click any document to open it—filled in with your answers. Review it carefully, then print it or save it as a PDF.</p>
+        <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:.875rem 1rem;margin-bottom:1.25rem;font-size:13px;color:#7a4010;line-height:1.6">
+          <strong>These documents have not been filed.</strong> File only the required formation document with your state. Keep bylaws, policies, and board minutes in your organization’s records. Apply for an EIN and federal tax-exempt status separately with the IRS.
+        </div>
         <div class="docs-grid" id="docsGrid"></div>
       </div>
       <div class="fcard" style="margin-top:.875rem">
@@ -904,9 +913,12 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
   <div class="cl-hero">
     <div class="stag">pricing</div>
     <h1>Simple, transparent pricing</h1>
-    <p>One subscription. Every document your nonprofit needs — formation, yearly filings, state guides, and more.</p>
+    <p>One subscription for document templates, filing prep guides, state guidance, and more.</p>
   </div>
   <div style="max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 5rem">
+    <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--r);padding:1rem 1.25rem;margin:0 auto 1.5rem;font-size:14px;color:#7a4010;line-height:1.7">
+      <strong>Important before purchasing:</strong> Your subscription pays Start Your Cause for document generation, educational guidance, and account access. It does <strong>not</strong> include filing services or government fees. We do not submit documents to your state or the IRS. You are responsible for reviewing, signing, and submitting required filings.
+    </div>
     <div id="pricing-section-container">
       <div style="max-width:700px;margin:0 auto 2rem">
         <div class="mobile-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem">
@@ -1123,7 +1135,7 @@ const footerHTML = `<footer><div class="f-logo">🌱 Start Your Cause</div>
   <a href="/privacy.html" style="color:#b8a898;font-size:13px">Privacy</a>
   <a href="/terms.html" style="color:#b8a898;font-size:13px">Terms</a>
 </div>
-<p class="disclaimer">Start Your Cause is for informational purposes only and does not provide legal or tax advice. Documents generated are templates only — have a licensed attorney review before filing. State requirements change; always verify with your state agency.</p>
+<p class="disclaimer">Start Your Cause generates document templates and provides educational filing guidance; it does not submit filings, pay government fees, or act as a law firm, tax adviser, state agency, or the IRS. Generated documents are templates only—review them carefully and consider having a licensed attorney review them before filing. State and federal requirements change; always verify current instructions with the appropriate government agency.</p>
 </footer>`;
 ['home','what','states','checklist','faq','form','annual','pricing'].forEach(p => {
   const el = document.getElementById(p+'-footer');
@@ -1588,8 +1600,17 @@ function buildSummary(){
       <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
       <tr><td>Solicitation registration</td><td>${sd.solicitationReg?`Required — $${sd.solicitationFee||0}`:'Not required in your state'}</td></tr>
       <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
-      <tr><td>Estimated min. total cost</td><td><strong>$${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
+      <tr><td>Estimated min. total cost</td><td><strong>&#36;${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
     </table>
+    <div style="background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem;margin-bottom:.875rem;font-size:13px;color:var(--gdark);line-height:1.7">
+      <strong>Your filing sequence:</strong><br>
+      1. Review and file your Articles of Incorporation with ${sd.agency}.<br>
+      2. Keep your bylaws, conflict policy, and signed board minutes in your organization’s records.<br>
+      3. After state approval, request an EIN directly from the IRS.<br>
+      4. Submit Form 1023 or 1023-EZ and the IRS fee separately.<br>
+      5. Complete charitable solicitation registration if required in ${sd.name}.<br>
+      <strong>Start Your Cause does not complete or submit these filings for you.</strong>
+    </div>
     <p style="font-size:13px;color:var(--tmid);line-height:1.6">${sd.notes}</p>
     ${sd.unique&&sd.unique.length?`<ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;margin-top:.5rem;line-height:1.8">${sd.unique.map(u=>`<li>${u}</li>`).join('')}</ul>`:''}`;
   } else {
@@ -1690,6 +1711,8 @@ function initPricingPage() {
   const pf = document.getElementById('pricing-faq');
   if (pf && pf.children.length === 0) {
     const pfaqs = [
+      { q: 'Will Start Your Cause file my documents for me?', a: 'No. Your subscription provides document templates, filing prep guides, state-specific guidance, and account access. Start Your Cause does not submit documents or government fees to your state or the IRS. You must review, sign, and submit each required filing yourself.' },
+      { q: 'Which documents do I file?', a: 'Generally, your Articles of Incorporation are filed with your state. Bylaws, conflict policies, and board minutes are normally kept in your organization’s records. EIN registration and Form 1023 or 1023-EZ are separate IRS processes. Follow the state-specific checklist generated from your answers and verify current agency requirements before submitting.' },
       { q: 'How do I request cancellation?', a: 'Choose “Log in / manage subscription,” sign in to your account, then open Stripe billing management to cancel. You can also email hello@startyourcause.org using the email associated with checkout.' },
       { q: 'Do you offer a free trial?', a: 'No free trial is currently offered. Review the included documents and features before purchasing.' },
       { q: 'Does this cover multiple nonprofits?', a: 'Yes — one subscription covers all the nonprofits you manage. Generate documents for as many organizations as you need.' },
