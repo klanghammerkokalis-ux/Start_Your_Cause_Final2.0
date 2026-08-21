@@ -1108,6 +1108,14 @@ function updatePageSEO(id) {
   if (twitterDescription) twitterDescription.setAttribute('content', seo.description);
 }
 
+window.addEventListener('load', function() {
+  const requestedView = new URLSearchParams(window.location.search).get('view');
+  if (requestedView && PAGES.includes(requestedView)) {
+    window.trackSycEvent('resource_arrival', { requested_view: requestedView, page_location: window.location.href });
+    go(requestedView);
+  }
+});
+
 function go(id) {
   if (id === 'form' && typeof hasAccountSession === 'function' && !hasAccountSession()) {
     showAccountModal('login');
