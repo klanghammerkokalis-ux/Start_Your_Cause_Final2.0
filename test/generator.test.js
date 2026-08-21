@@ -1,0 +1,51 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+
+function load(file, names) {
+  const source = fs.readFileSync(file, 'utf8') + `\nthis.__exports = {${names.join(',')}};`;
+  const context = { console, Date };
+  vm.createContext(context);
+  vm.runInContext(source, context);
+  return context.__exports;
+}
+
+const answers = {
+  orgName: 'Bright River Youth Center', problem: 'Students lack safe after-school support.',
+  activities: 'Provide tutoring and meals.', missionStatement: 'Support students through tutoring and meals.',
+  whoHelp: 'Students ages 8–14', howMany: '120', location: 'Kane County, Illinois',
+  orgType: 'Public Charity', state: 'IL', address: '100 Test Street, St. Charles, IL 60174',
+  founderName: 'Jordan Founder', founderEmail: 'jordan@example.test', board2: 'Avery Director',
+  board3: 'Morgan Treasurer', board4: '', board5: '', fundingSources: ['Individual donations'],
+  budget: '$15,000', expenses: 'Tutoring supplies and meals', employees: 'No — all volunteers',
+  lawyer: 'No — doing it myself', filingFee: 'Yes', specialCircumstances: ['None of the above'],
+  notes: '', fiscal: 'January 1 – December 31 (Calendar Year)',
+  meetFreq: 'Quarterly (4 times per year)', spendLimit: '$500', comp: 'No — all volunteer board'
+};
+const state = { name: 'Illinois', form: 'Articles of Incorporation', fee: 50, agency: 'Illinois Secretary of State', agencyUrl: 'https://www.ilsos.gov/', processingDays: '10', solicitationReg: true, solicitationFee: 15, unique: [], notes: '' };
+
+test('all eight formation documents render customer data', () => {
+  const { generateAllDocs } = load('docgen.js', ['generateAllDocs']);
+  const docs = generateAllDocs(answers, state);
+  assert.equal(Object.keys(docs).length, 8);
+  for (const [name, html] of Object.entries(docs)) {
+    assert.ok(html.length > 500, `${name} should render substantive content`);
+    assert.match(html, /Bright River|Jordan Founder|Illinois/);
+    assert.doesNotMatch(html, /undefined|null/);
+  }
+});
+
+test('annual documents do not claim StartYourCause.org is the customer website', () => {
+  const { generateYearlyDocs } = load('yearly-docs.js', ['generateYearlyDocs']);
+  const docs = generateYearlyDocs(answers, state, 2025);
+  assert.equal(Object.keys(docs).length, 4);
+  assert.doesNotMatch(docs.form990, /<td>Website<\/td><td>\s*StartYourCause\.org/i);
+  assert.match(docs.form990, /<td>Website<\/td><td><span class="blank"/);
+});
+
+test('generated documents escape customer-supplied HTML', () => {
+  const { generateAllDocs } = load('docgen.js', ['generateAllDocs']);
+  const docs = generateAllDocs({...answers, orgName: '<script>alert(1)</script>'}, state);
+  assert.doesNotMatch(Object.values(docs).join(''), /<script>alert\(1\)<\/script>/);
+});

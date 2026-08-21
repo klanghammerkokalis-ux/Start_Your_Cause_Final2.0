@@ -148,7 +148,7 @@ ${a.board5 ? `<p>5. Name: <strong>${a.board5}</strong><br>&nbsp;&nbsp;&nbsp;Addr
 function generateBylaws(a, sd) {
   const orgName = a.orgName || "[Organization Name]";
   const stState = a.state || "[State]";
-  const minBoard = sd ? sd.minBoardMembers : 3;
+  const minBoard = sd && Number.isFinite(Number(sd.minBoardMembers)) ? Number(sd.minBoardMembers) : 3;
   const meetingFrequency = a.meetFreq || "Quarterly (4 times per year)";
   const fiscalYear = a.fiscal || "January 1 – December 31 (Calendar Year)";
   const spendingLimit = a.spendLimit || '<span class="blank" style="min-width:60px">&nbsp;</span>';
@@ -612,6 +612,7 @@ function generateStateChecklist(a, sd) {
   if (!sd) return docHeader("State Filing Checklist", "Select your state to see state-specific requirements") + "<p>State not found.</p>" + docFooter;
   const orgName = a.orgName || "[Organization Name]";
   const unique = sd.unique || [];
+  const minBoard = Number.isFinite(Number(sd.minBoardMembers)) ? Number(sd.minBoardMembers) : 3;
   return docHeader(`${sd.name} Nonprofit Filing Checklist`, `${orgName} | ${sd.name}-Specific Requirements`) + `
 <div class="section">
 <h2>Your State: ${sd.name}</h2>
@@ -620,7 +621,7 @@ function generateStateChecklist(a, sd) {
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Filing agency</td><td><a href="${sd.agencyUrl}" style="color:#2d8f6f">${sd.agency}</a></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Processing time</td><td>${sd.processingDays} business days</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Minimum board members</td><td>${sd.minBoardMembers}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Minimum board members</td><td>${minBoard}</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Charitable solicitation registration</td><td>${sd.solicitationReg ? `Required — Fee: $${sd.solicitationFee || 'Free'}` : 'Not required'}</td></tr>
 <tr><td style="padding:8px 0">State income tax exemption</td><td>${sd.incomeTaxExempt ? 'Available — apply separately' : 'N/A'}</td></tr>
 </table>
@@ -636,7 +637,7 @@ ${unique.length > 0 ? `<h3>Unique Requirements / Watch Out For:</h3><ul>${unique
 <h2>${sd.name} Step-by-Step Checklist</h2>
 <table style="width:100%; border-collapse:collapse">
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Choose and verify your nonprofit name is available in ${sd.name}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Recruit at least ${sd.minBoardMembers} board members</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Recruit at least ${minBoard} board members</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Identify a registered agent in ${sd.name}</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Prepare and sign your ${sd.form}</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> File ${sd.form} with the ${sd.agency} — Fee: $${sd.fee}</td></tr>
