@@ -416,6 +416,32 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     </div>
   </div>
 
+  <!-- ── EMAIL CHECKLIST + REFERRALS ── -->
+  <div style="background:var(--cream);padding:4rem 2rem;border-bottom:1px solid var(--sand2)">
+    <div class="mobile-grid-2" style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1.15fr .85fr;gap:1.25rem">
+      <div style="background:var(--glight);border:1px solid var(--gmid);border-radius:var(--r);padding:1.75rem">
+        <div class="stag">free founder checklist</div>
+        <h2 style="font-size:clamp(1.35rem,3vw,1.8rem);margin-bottom:.65rem">Keep the nonprofit steps in the right order</h2>
+        <p style="color:var(--tmid);font-size:14px;line-height:1.7;margin-bottom:1rem">Get the printable startup checklist plus occasional plain-language filing reminders. No account or purchase is required.</p>
+        <form name="founder-checklist" method="POST" data-netlify="true" action="/nonprofit-startup-checklist?signup=success" onsubmit="window.trackSycEvent('generate_lead',{lead_source:'founder_checklist'})">
+          <input type="hidden" name="form-name" value="founder-checklist">
+          <label for="checklist-email" style="display:block;font-size:13px;font-weight:600;margin-bottom:.4rem">Email address</label>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <input id="checklist-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" style="flex:1;min-width:210px;border:1px solid var(--sand2);border-radius:8px;padding:11px 12px;font:inherit">
+            <button class="btn btn-p" type="submit" style="border:0">Get the free checklist →</button>
+          </div>
+          <p style="font-size:11px;color:var(--tlight);margin-top:.7rem">Unsubscribe anytime. We never sell your email address. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+        </form>
+      </div>
+      <div id="partners" style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--r);padding:1.75rem">
+        <div class="stag">community partners</div>
+        <h2 style="font-size:1.45rem;margin-bottom:.65rem">Help a founder find a clearer path</h2>
+        <p style="color:var(--tmid);font-size:14px;line-height:1.7;margin-bottom:1rem">Libraries, advisers, attorneys, accountants, consultants, and community organizations may share our free guides. There is no paid endorsement requirement.</p>
+        <a class="btn btn-o" href="mailto:hello@startyourcause.org?subject=Start%20Your%20Cause%20resource%20partner&body=Organization%3A%0AWebsite%3A%0AAudience%20you%20serve%3A%0AResource%20you%20would%20like%20to%20share%3A" onclick="window.trackSycEvent('partner_interest',{source:'homepage'})">Become a resource partner →</a>
+      </div>
+    </div>
+  </div>
+
   <!-- ── ABOUT / CREDIBILITY ── -->
   <div style="background:var(--cream);padding:5rem 2rem">
     <div style="max-width:860px;margin:0 auto">
