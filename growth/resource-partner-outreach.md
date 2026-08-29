@@ -10,7 +10,7 @@ Subject: Free Illinois nonprofit startup resource for your clients
 
 Hello [Name],
 
-Iâm Kristin Kokalis, founder of Start Your Cause, an Illinois-based plain-language resource for people exploring nonprofit formation.
+Iâm reaching out from Start Your Cause, a plain-language resource for people exploring nonprofit formation.
 
 We recently published a free Illinois nonprofit startup guide, a nonprofit startup checklist, and a preliminary Form 1023 versus 1023-EZ screener. Each resource links directly to the relevant government sources and clearly explains that users are responsible for their own filings and should obtain professional advice when needed.
 
@@ -24,8 +24,7 @@ I thought these might be useful for people who contact [Organization] before the
 There is no referral arrangement required. If the resources are appropriate for your audience, you are welcome to share or link to them. I would also appreciate any corrections or gaps your team notices.
 
 Thank you,
-Kristin Kokalis, SHRM-CP, PMP
-Start Your Cause
+Start Your Cause Support
 hello@startyourcause.org
 
 ## Follow-up â 7 days later
@@ -39,7 +38,7 @@ I wanted to follow up once regarding the free Illinois nonprofit startup resourc
 If this is not relevant, no response is needed and I will not continue following up.
 
 Thank you,
-Kristin
+Start Your Cause Support
 
 ## Library variation
 
