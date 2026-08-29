@@ -65,6 +65,10 @@ exports.handler = async (event) => {
       });
     }
 
+    const isFormationPackage = session.mode === 'payment'
+      && session.metadata?.planId === 'annual'
+      && session.amount_total === 7900
+      && session.currency === 'usd';
     const subscription = session.subscription;
     const subscriptionStatus = subscription && typeof subscription === 'object'
       ? subscription.status
@@ -77,25 +81,28 @@ exports.handler = async (event) => {
       && session.line_items.data[0].price
       ? session.line_items.data[0].price.id
       : null;
-    const planId = Object.keys(ALLOWED_PRICES).find(
+    const recurringPlanId = Object.keys(ALLOWED_PRICES).find(
       (candidate) => ALLOWED_PRICES[candidate] === purchasedPriceId
     );
+    const planId = isFormationPackage ? 'annual' : recurringPlanId;
 
-    if (!paidCheckout || !activeSubscription || !planId) {
+    if (!paidCheckout || (!isFormationPackage && !activeSubscription) || !planId) {
       return json(403, {
         verified: false,
         error: 'No active subscription was found',
       });
     }
 
-    const currentPeriodEnd = subscription.current_period_end
+    const currentPeriodEnd = isFormationPackage
+      ? (session.created + (365 * 24 * 60 * 60)) * 1000
+      : subscription.current_period_end
       ? subscription.current_period_end * 1000
       : null;
 
     return json(200, {
       verified: true,
       planId,
-      subscriptionStatus,
+      subscriptionStatus: isFormationPackage ? 'formation_access' : subscriptionStatus,
       currentPeriodEnd,
     });
   } catch (error) {

@@ -4,6 +4,7 @@
 function generateAllDocs(answers, stateData) {
   answers = sanitizeGeneratedAnswers(answers);
   return {
+    filingCover: generateFilingCover(answers, stateData),
     articles: generateArticles(answers, stateData),
     bylaws: generateBylaws(answers, stateData),
     conflictPolicy: generateConflictPolicy(answers),
@@ -13,6 +14,25 @@ function generateAllDocs(answers, stateData) {
     irs_prep: generateIRSPrep(answers, stateData),
     stateChecklist: generateStateChecklist(answers, stateData),
   };
+}
+
+function generateFilingCover(a, sd) {
+  const stateName = sd ? sd.name : (a.state || '[State]');
+  const stateAgency = sd ? sd.agency : '[State filing agency]';
+  return docHeader('Your Nonprofit Filing Packet', `${a.orgName || '[Organization Name]'} | ${stateName}`) + `
+<div class="notice"><strong>This packet has not been filed.</strong> Review every document for completeness and accuracy. Submit only the items identified below, pay government fees directly to the agency, and retain internal governance records.</div>
+<h2>File with ${stateAgency}</h2>
+<p><strong>Articles of Incorporation:</strong> Review the official ${stateName} form and instructions before submitting. Confirm the name, registered agent, purpose, dissolution language, incorporator details, signatures, and filing fee.</p>
+<h2>Request separately from the IRS</h2>
+<p><strong>EIN:</strong> Apply free through IRS.gov after state formation. Start Your Cause does not request the EIN for you.</p>
+<p><strong>Form 1023 or Form 1023-EZ:</strong> Submit the appropriate application separately through Pay.gov after confirming eligibility and reviewing the current IRS instructions.</p>
+<h2>Keep in your nonprofit's records</h2>
+<ul><li>Bylaws</li><li>Conflict of Interest Policy</li><li>First Board Meeting Minutes</li><li>Mission Statement Worksheet</li></ul>
+<h2>Use as preparation guides</h2>
+<ul><li>EIN Application Guide</li><li>IRS Form 1023 Prep Guide</li><li>${stateName} Filing Checklist</li></ul>
+<h2>Before you submit anything</h2>
+<ul><li>Replace every bracketed placeholder.</li><li>Confirm officer and director names.</li><li>Confirm the registered agent has agreed to serve.</li><li>Compare the packet with current official agency instructions.</li><li>Consider review by a licensed attorney or qualified tax professional.</li></ul>
+` + docFooter;
 }
 
 function escapeGeneratedHtml(value) {
@@ -77,9 +97,8 @@ function generateArticles(a, sd) {
 <div class="section">
 <h2>Article II — Registered Agent</h2>
 <p>The registered agent of this corporation, who has an address in the State of ${stState}, is:</p>
-<p>Name: <span class="blank">&nbsp;</span></p>
-<p>Address: <span class="blank" style="min-width:300px">&nbsp;</span></p>
-<p>City, State, ZIP: <span class="blank" style="min-width:300px">&nbsp;</span></p>
+<p>Name: <strong>${a.agentName || "[Registered Agent Name]"}</strong></p>
+<p>Physical address: <strong>${a.agentAddress || "[Registered Agent Physical Address]"}</strong></p>
 </div>
 
 <div class="section">
@@ -108,21 +127,16 @@ function generateArticles(a, sd) {
 
 <div class="section">
 <h2>Article VII — Incorporators</h2>
-<p>The names and addresses of the incorporators are:</p>
-<p>1. Name: <strong>${a.founderName || "[Founder Name]"}</strong><br>
-&nbsp;&nbsp;&nbsp;Email: ${a.founderEmail || "[Email]"}<br>
-&nbsp;&nbsp;&nbsp;Address: <span class="blank" style="min-width:350px">&nbsp;</span></p>
-<p>2. Name: <strong>${a.board2 || "[Board Member 2]"}</strong><br>
-&nbsp;&nbsp;&nbsp;Address: <span class="blank" style="min-width:350px">&nbsp;</span></p>
-<p>3. Name: <strong>${a.board3 || "[Board Member 3]"}</strong><br>
-&nbsp;&nbsp;&nbsp;Address: <span class="blank" style="min-width:350px">&nbsp;</span></p>
-${a.board4 ? `<p>4. Name: <strong>${a.board4}</strong><br>&nbsp;&nbsp;&nbsp;Address: <span class="blank" style="min-width:350px">&nbsp;</span></p>` : ''}
-${a.board5 ? `<p>5. Name: <strong>${a.board5}</strong><br>&nbsp;&nbsp;&nbsp;Address: <span class="blank" style="min-width:350px">&nbsp;</span></p>` : ''}
+<p>The incorporator is:</p>
+<p>Name: <strong>${a.founderName || "[Founder Name]"}</strong><br>
+Address: <strong>${a.founderAddress || "[Incorporator Address]"}</strong></p>
 </div>
 
 <div class="section">
 <h2>Article VIII — Directors</h2>
-<p>The initial Board of Directors shall consist of ${[a.board2, a.board3, a.board4, a.board5].filter(Boolean).length + 1} members. The names and addresses of the persons who are to serve as directors until the first annual meeting of members (or until their successors are elected and qualified) are those listed as incorporators in Article VII.</p>
+<p>The proposed initial Board of Directors consists of ${[a.founderName, a.board2, a.board3, a.board4, a.board5].filter(Boolean).length} members:</p>
+<ol>${[a.founderName, a.board2, a.board3, a.board4, a.board5].filter(Boolean).map(name => `<li>${name}</li>`).join('')}</ol>
+<p>Confirm whether ${stState} requires director names or addresses in the official filing before submitting.</p>
 </div>
 
 <div class="section">
@@ -137,10 +151,7 @@ ${a.board5 ? `<p>5. Name: <strong>${a.board5}</strong><br>&nbsp;&nbsp;&nbsp;Addr
 
 <p style="margin-top:3em">IN WITNESS WHEREOF, the undersigned, being the incorporator(s) of the above-named corporation, have executed these Articles of Incorporation this <span class="blank" style="min-width:40px">&nbsp;</span> day of <span class="blank" style="min-width:80px">&nbsp;</span>, 20<span class="blank" style="min-width:30px">&nbsp;</span>.</p>
 
-<div style="margin-top:3em; display:flex; gap:4em; flex-wrap:wrap">
-<div><div class="sig-line">Signature of Incorporator 1</div><p>${a.founderName || "[Founder Name]"}</p></div>
-<div><div class="sig-line">Signature of Incorporator 2</div><p>${a.board2 || "[Board Member 2]"}</p></div>
-</div>
+<div style="margin-top:3em"><div class="sig-line">Signature of Incorporator</div><p>${a.founderName || "[Founder Name]"}</p></div>
 ` + docFooter;
 }
 
@@ -363,6 +374,9 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 <div class="section">
 <h2>III. Election of Officers</h2>
 <p>The following officers were elected to serve until the next annual meeting or until their successors are duly elected and qualified:</p>
+<p>President / Chair: <strong>${a.president || a.founderName || '[Name]'}</strong><br>
+Secretary: <strong>${a.secretary || '[Name]'}</strong><br>
+Treasurer: <strong>${a.treasurer || '[Name]'}</strong></p>
 <table style="width:100%; border-collapse:collapse; margin-top:0.5em">
 <tr style="border-bottom:1px solid #ccc"><td style="padding:6px 0"><strong>Office</strong></td><td><strong>Name</strong></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">President</td><td>${a.founderName || "[Name]"}</td></tr>

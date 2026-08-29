@@ -5,7 +5,7 @@ const PLANS = {
     priceId: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1U3daX0dD4h0E3se5Zo5Bne0',
   },
   annual: {
-    priceId: process.env.STRIPE_ANNUAL_PRICE_ID || 'price_1U3dbf0dD4h0E3seh4ZWKQmT',
+    amount: 7900,
   },
 };
 
@@ -64,17 +64,29 @@ exports.handler = async (event) => {
     if (!customerEmail) return json(401, { error: 'Log in before starting checkout' });
 
     const siteUrl = getSiteUrl();
+    const isFormationPackage = planId === 'annual';
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: isFormationPackage ? 'payment' : 'subscription',
       payment_method_types: ['card'],
-      line_items: [{ price: plan.priceId, quantity: 1 }],
+      line_items: [isFormationPackage ? {
+        price_data: {
+          currency: 'usd',
+          unit_amount: plan.amount,
+          product_data: {
+            name: 'Start Your Cause Formation Package',
+            description: 'Twelve months of formation-document access, updates, and regeneration. Does not renew automatically.',
+          },
+        },
+        quantity: 1,
+      } : { price: plan.priceId, quantity: 1 }],
       success_url: siteUrl + '/?checkout_session_id={CHECKOUT_SESSION_ID}',
       cancel_url: siteUrl + '/?checkout_canceled=true',
       billing_address_collection: 'auto',
       allow_promotion_codes: true,
       customer_email: customerEmail,
-      metadata: { planId },
-      subscription_data: { metadata: { planId } },
+      ...(isFormationPackage ? { customer_creation: 'always' } : {}),
+      metadata: { planId, accessMonths: isFormationPackage ? '12' : '' },
+      ...(isFormationPackage ? {} : { subscription_data: { metadata: { planId } } }),
     });
 
     return json(200, { url: session.url });

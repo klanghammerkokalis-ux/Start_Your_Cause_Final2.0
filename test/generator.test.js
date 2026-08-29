@@ -16,8 +16,10 @@ const answers = {
   activities: 'Provide tutoring and meals.', missionStatement: 'Support students through tutoring and meals.',
   whoHelp: 'Students ages 8–14', howMany: '120', location: 'Kane County, Illinois',
   orgType: 'Public Charity', state: 'IL', address: '100 Test Street, St. Charles, IL 60174',
-  founderName: 'Jordan Founder', founderEmail: 'jordan@example.test', board2: 'Avery Director',
+  agentName: 'Taylor Agent', agentAddress: '200 Agent Street, St. Charles, IL 60174',
+  founderName: 'Jordan Founder', founderEmail: 'jordan@example.test', founderAddress: '100 Test Street, St. Charles, IL 60174', board2: 'Avery Director',
   board3: 'Morgan Treasurer', board4: '', board5: '', fundingSources: ['Individual donations'],
+  president: 'Jordan Founder', secretary: 'Avery Director', treasurer: 'Morgan Treasurer',
   budget: '$15,000', expenses: 'Tutoring supplies and meals', employees: 'No — all volunteers',
   lawyer: 'No — doing it myself', filingFee: 'Yes', specialCircumstances: ['None of the above'],
   notes: '', fiscal: 'January 1 – December 31 (Calendar Year)',
@@ -25,15 +27,23 @@ const answers = {
 };
 const state = { name: 'Illinois', form: 'Articles of Incorporation', fee: 50, agency: 'Illinois Secretary of State', agencyUrl: 'https://www.ilsos.gov/', processingDays: '10', solicitationReg: true, solicitationFee: 15, unique: [], notes: '' };
 
-test('all eight formation documents render customer data', () => {
+test('all nine formation packet documents render customer data', () => {
   const { generateAllDocs } = load('docgen.js', ['generateAllDocs']);
   const docs = generateAllDocs(answers, state);
-  assert.equal(Object.keys(docs).length, 8);
+  assert.equal(Object.keys(docs).length, 9);
   for (const [name, html] of Object.entries(docs)) {
     assert.ok(html.length > 500, `${name} should render substantive content`);
     assert.match(html, /Bright River|Jordan Founder|Illinois/);
     assert.doesNotMatch(html, /undefined|null/);
   }
+});
+
+test('articles render registered-agent and incorporator details', () => {
+  const { generateAllDocs } = load('docgen.js', ['generateAllDocs']);
+  const articles = generateAllDocs(answers, state).articles;
+  assert.match(articles, /Taylor Agent/);
+  assert.match(articles, /200 Agent Street/);
+  assert.match(articles, /100 Test Street/);
 });
 
 test('annual documents do not claim StartYourCause.org is the customer website', () => {
