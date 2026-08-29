@@ -6,13 +6,15 @@ Subject: Your Start Your Cause account is ready
 
 Your account is ready. Sign in with the email address you used to create it, complete the questionnaire, and save your work as you go: https://startyourcause.org/?view=form
 
-Creating an account does not start a paid subscription.
+Creating an account does not start a paid plan.
 
 ## Purchase confirmed
 
 Subject: Payment received — your document access is ready
 
-Your Start Your Cause subscription is active. Sign in with the same email address used at checkout, review your questionnaire answers, and generate your customizable documents.
+Your Start Your Cause access is active. Sign in with the same email address used at checkout, review your questionnaire answers, and generate your customizable filing packet.
+
+If you purchased the $79 Formation Package, your access lasts twelve months and does not renew automatically. If you chose the $12 monthly Compliance Membership, it renews monthly until canceled.
 
 Your payment covers document generation and guidance. Government fees are separate, and Start Your Cause does not submit filings to a state or the IRS.
 
@@ -34,5 +36,4 @@ Thanks for contacting Start Your Cause. We will review the account and document 
 
 Subject: Your Start Your Cause billing request
 
-We received your billing request. You can manage or cancel an active subscription through Log in / manage subscription on the site. We will review any reported billing error using the checkout email and Stripe payment record. No refund is promised automatically; rights required by applicable law remain unaffected.
-
+We received your billing request. The one-time Formation Package does not renew. You can manage or cancel an active monthly Compliance Membership through Log in / manage billing on the site. We will review any reported billing error using the checkout email and Stripe payment record. No refund is promised automatically; rights required by applicable law remain unaffected.

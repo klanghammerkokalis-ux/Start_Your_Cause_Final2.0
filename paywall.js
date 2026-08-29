@@ -5,7 +5,7 @@ const PAYWALL_CONFIG = {
       id: 'monthly', name: 'Monthly', price: 12, period: 'month',
       stripePriceId: 'price_1U3daX0dD4h0E3se5Zo5Bne0',
       features: [
-        'All 8 formation documents',
+        'All 9 formation-packet documents',
         'All 4 yearly filing documents',
         'Form 990 / 990-EZ / 990-N prep guide',
         'Annual state report templates (all 56 jurisdictions)',
@@ -17,14 +17,15 @@ const PAYWALL_CONFIG = {
       ],
     },
     annual: {
-      id: 'annual', name: 'Annual', price: 79, period: 'year',
+      id: 'annual', name: 'Formation Package', price: 79, period: 'one-time',
       stripePriceId: 'price_1U3dbf0dD4h0E3seh4ZWKQmT',
-      badge: 'Best value — save 45%',
+      badge: 'Best value — no automatic renewal',
       features: [
-        'Everything in Monthly',
+        'All formation and annual document templates',
+        '12 months of account and document access',
         'All document updates included',
         'Annual compliance calendar',
-        'Save $65 vs monthly',
+        'One payment — does not renew automatically',
       ],
     },
   },
@@ -186,7 +187,7 @@ async function restoreVerifiedAccess() {
             value: plan.price,
             items: [{
               item_id: verifiedAccess.planId,
-              item_name: plan.name + ' subscription',
+              item_name: plan.name,
               price: plan.price,
               quantity: 1
             }]
@@ -264,12 +265,12 @@ function showAccessRecovery() {
       <button type="button" aria-label="Close" data-close-access style="position:absolute;right:1rem;top:1rem;background:none;border:0;font-size:21px;cursor:pointer;color:#9e8e7e">✕</button>
       <div style="font-size:12px;color:#2d8f6f;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem">Returning customer</div>
       <h2 style="font-family:Lora,serif;font-size:1.55rem;margin:0 0 .5rem;color:#2c2418">Restore document access</h2>
-      <p style="font-size:14px;color:#6b5c4c;line-height:1.6;margin:0 0 1rem">Enter the email used at Stripe checkout. We’ll email a one-time sign-in link, then confirm that the subscription is active.</p>
+      <p style="font-size:14px;color:#6b5c4c;line-height:1.6;margin:0 0 1rem">Enter the email used at checkout. We’ll email a one-time sign-in link, confirm your access, and load nonprofit answers saved to your account.</p>
       <label for="access-email" style="display:block;font-size:14px;font-weight:500;margin-bottom:4px">Checkout email</label>
       <input id="access-email" type="email" autocomplete="email" required style="width:100%;padding:11px 12px;border:1.5px solid #e2d5c6;border-radius:8px;font-size:15px;margin-bottom:.75rem">
       <button type="button" data-send-access style="width:100%;padding:11px;border:0;border-radius:8px;background:#2d8f6f;color:#fff;font-size:14px;font-weight:500;cursor:pointer">Email my access link</button>
       <p data-access-status aria-live="polite" style="font-size:13px;line-height:1.5;margin:.75rem 0 0"></p>
-      <p style="font-size:12px;color:#9e8e7e;line-height:1.5;margin:1rem 0 0">Your questionnaire answers remain on the browser and device where you entered them; restoring access does not transfer those answers.</p>
+      <p style="font-size:12px;color:#9e8e7e;line-height:1.5;margin:1rem 0 0">Answers saved while you were signed in are available across your devices. Answers entered before creating an account may remain only in the original browser.</p>
     </div>`;
   const close = () => { modal.style.display = 'none'; };
   modal.querySelector('[data-close-access]').addEventListener('click', close);
@@ -349,7 +350,7 @@ async function startCheckout(planId) {
       window.trackSycEvent('begin_checkout', {
         currency: 'USD',
         value: plan.price,
-        items: [{ item_id: planId, item_name: plan.name + ' subscription', price: plan.price, quantity: 1 }],
+        items: [{ item_id: planId, item_name: plan.name, price: plan.price, quantity: 1 }],
         checkout_source: 'paywall_modal'
       });
     }
@@ -374,7 +375,7 @@ async function startCheckout(planId) {
       });
     }
     if (btn) {
-      btn.textContent = planId === 'annual' ? 'Start annual plan →' : 'Start monthly plan';
+      btn.textContent = planId === 'annual' ? 'Get the Formation Package →' : 'Start compliance membership';
       btn.disabled = false;
     }
     alert('Payment system unavailable. Please try again later.');
@@ -398,31 +399,31 @@ function showPricingModal(context) {
       <div style="text-align:center;margin-bottom:2rem">
         <div style="font-size:12px;font-weight:500;color:#2d8f6f;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem">Start Your Cause</div>
         <h2 style="font-family:Lora,serif;font-size:1.75rem;color:#2c2418;margin-bottom:.5rem">Unlock all documents</h2>
-        <p style="color:#6b5c4c;font-size:15px;max-width:440px;margin:0 auto">Get access to all formation documents, yearly filing templates, and state-specific guides.</p>
+        <p style="color:#6b5c4c;font-size:15px;max-width:500px;margin:0 auto">Pay once for twelve months of formation access, or choose ongoing monthly compliance support.</p>
       </div>
       <div class="mobile-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
         <div style="background:#fff;border:1.5px solid #e2d5c6;border-radius:12px;padding:1.5rem">
-          <div style="font-size:13px;font-weight:500;color:#9e8e7e;margin-bottom:.25rem;text-transform:uppercase">Monthly</div>
+          <div style="font-size:13px;font-weight:500;color:#9e8e7e;margin-bottom:.25rem;text-transform:uppercase">Compliance membership</div>
           <div style="font-size:2.2rem;font-family:Lora,serif;font-weight:600;color:#2c2418;line-height:1">$${monthly.price}</div>
           <div style="font-size:13px;color:#9e8e7e;margin-bottom:1.25rem">per month</div>
           <ul style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:#6b5c4c">
             ${monthly.features.map(f=>`<li style="padding:5px 0;border-bottom:1px solid #f0e9de;display:flex;gap:8px"><span style="color:#2d8f6f;flex-shrink:0">✓</span>${f}</li>`).join('')}
           </ul>
-          <button id="checkout-btn-monthly" onclick="startCheckout('monthly')" style="width:100%;padding:11px;border-radius:8px;background:#fff;border:1.5px solid #c4e8d8;color:#1d6b52;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start monthly plan</button>
+          <button id="checkout-btn-monthly" onclick="startCheckout('monthly')" style="width:100%;padding:11px;border-radius:8px;background:#fff;border:1.5px solid #c4e8d8;color:#1d6b52;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start compliance membership</button>
         </div>
         <div style="background:#fff;border:2px solid #2d8f6f;border-radius:12px;padding:1.5rem;position:relative">
           <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#2d8f6f;color:#fff;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;white-space:nowrap">${annual.badge}</div>
-          <div style="font-size:13px;font-weight:500;color:#2d8f6f;margin-bottom:.25rem;text-transform:uppercase">Annual</div>
+          <div style="font-size:13px;font-weight:500;color:#2d8f6f;margin-bottom:.25rem;text-transform:uppercase">Formation Package</div>
           <div style="font-size:2.2rem;font-family:Lora,serif;font-weight:600;color:#2c2418;line-height:1">$${annual.price}</div>
-          <div style="font-size:13px;color:#9e8e7e;margin-bottom:1.25rem">per year ($${(annual.price/12).toFixed(2)}/mo)</div>
+          <div style="font-size:13px;color:#9e8e7e;margin-bottom:1.25rem">one payment · 12 months of access</div>
           <ul style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:#6b5c4c">
             ${annual.features.map(f=>`<li style="padding:5px 0;border-bottom:1px solid #f0e9de;display:flex;gap:8px"><span style="color:#2d8f6f;flex-shrink:0">✓</span>${f}</li>`).join('')}
           </ul>
-          <button id="checkout-btn-annual" onclick="startCheckout('annual')" style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Start annual plan →</button>
+          <button id="checkout-btn-annual" onclick="startCheckout('annual')" style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;cursor:pointer">Get the Formation Package →</button>
         </div>
       </div>
       <div style="text-align:center;margin-bottom:.75rem"><button type="button" onclick="hidePricingModal();showAccessRecovery()" style="background:none;border:0;color:#1d6b52;text-decoration:underline;font-size:14px;cursor:pointer">Already subscribed? Log in</button></div>
-      <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure subscription payment via Stripe · Billing help: hello@startyourcause.org</p>
+      <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure payment via Stripe · Formation Package does not renew · Billing help: hello@startyourcause.org</p>
     </div>`;
   modal.addEventListener('click', e => { if (e.target === modal) hidePricingModal(); });
   document.body.appendChild(modal);

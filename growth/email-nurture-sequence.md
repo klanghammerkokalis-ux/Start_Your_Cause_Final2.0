@@ -26,12 +26,21 @@ State incorporation and IRS tax-exempt recognition are separate processes. Start
 
 Illinois guide: https://startyourcause.org/start-a-nonprofit-illinois
 
-## Day 5 — 1023 or 1023-EZ?
+## Day 4 — 1023 or 1023-EZ?
 
 Subject: Can you use Form 1023-EZ?
 
 The shorter application is not available to every organization. Use our preliminary screener, then complete the official IRS eligibility worksheet before deciding:
 https://startyourcause.org/1023-vs-1023-ez
+
+## Day 6 — Preview the filing packet
+
+Subject: See what your nonprofit filing packet will contain
+
+Before paying, preview the document types and how Start Your Cause labels what gets filed, what goes to the IRS separately, and what stays in your internal records:
+https://startyourcause.org/document-previews
+
+The $79 Formation Package is a one-time payment for twelve months of access and does not renew automatically.
 
 ## Day 8 — Organize your documents
 
@@ -42,14 +51,13 @@ Articles are generally filed with the state. Bylaws, conflict policies, and boar
 See the document-by-document guide:
 https://startyourcause.org/after-filing-articles-of-incorporation
 
-## Day 12 — Build your document set
+## Day 10 — Build your document set
 
 Subject: Ready to turn your plan into documents?
 
-If your board, programs, budget, and filing state are decided, Start Your Cause can turn your questionnaire answers into customizable formation and governance templates.
+If your board, registered agent, programs, budget, and filing state are decided, Start Your Cause can turn your questionnaire answers into a labeled filing packet and customizable governance templates.
 
 See what is included and the current price:
 https://startyourcause.org/?view=pricing
 
-Government filing fees are separate. Start Your Cause does not submit filings for you.
-
+The $79 Formation Package is a one-time payment for twelve months of access and does not renew automatically. The optional $12 monthly Compliance Membership is for ongoing compliance support. Government filing fees are separate, and Start Your Cause does not submit filings for you.

@@ -51,6 +51,18 @@ async function findActivePlan(email) {
       const planId = Object.keys(ALLOWED_PRICES).find(key => ALLOWED_PRICES[key] === priceId);
       if (planId) return { planId, subscription };
     }
+
+    const sessions = await stripe.checkout.sessions.list({ customer: customer.id, status: 'complete', limit: 100 });
+    const now = Math.floor(Date.now() / 1000);
+    const formationSession = sessions.data.find(session =>
+      session.mode === 'payment'
+      && session.payment_status === 'paid'
+      && session.metadata?.planId === 'annual'
+      && session.amount_total === 7900
+      && session.currency === 'usd'
+      && session.created + (365 * 24 * 60 * 60) > now
+    );
+    if (formationSession) return { planId: 'annual', formationSession };
   }
   return null;
 }
@@ -72,8 +84,10 @@ exports.handler = async (event) => {
     return json(200, {
       verified: true,
       planId: match.planId,
-      subscriptionStatus: match.subscription.status,
-      currentPeriodEnd: match.subscription.current_period_end
+      subscriptionStatus: match.formationSession ? 'formation_access' : match.subscription.status,
+      currentPeriodEnd: match.formationSession
+        ? (match.formationSession.created + (365 * 24 * 60 * 60)) * 1000
+        : match.subscription.current_period_end
         ? match.subscription.current_period_end * 1000
         : null,
     });

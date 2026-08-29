@@ -73,6 +73,7 @@ async function signUpWithPassword(email, password) {
     body: JSON.stringify({ email, password }),
   });
   if (data.access_token) storeAccountSession(data);
+  if (typeof window.trackSycEvent === 'function') window.trackSycEvent('sign_up', { method: 'password' });
   return data;
 }
 
@@ -84,6 +85,7 @@ async function signInWithPassword(email, password) {
     body: JSON.stringify({ email, password }),
   });
   storeAccountSession(data);
+  if (typeof window.trackSycEvent === 'function') window.trackSycEvent('login', { method: 'password' });
   await loadAccountProject();
   if (typeof restoreVerifiedAccess === 'function') await restoreVerifiedAccess();
   return data;
@@ -130,6 +132,7 @@ async function saveAccountProject(formData) {
       });
       if (!response.ok) throw new Error('Unable to save project');
       setAccountSaveStatus('Saved to your account');
+      if (typeof window.trackSycEvent === 'function') window.trackSycEvent('project_saved', { project_key: projectKey });
     } catch (error) {
       console.error('Account save failed:', error);
       setAccountSaveStatus('Not saved — check your connection', true);
