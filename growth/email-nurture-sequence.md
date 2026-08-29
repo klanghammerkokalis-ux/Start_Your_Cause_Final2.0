@@ -15,8 +15,7 @@ The most important distinction is simple: creating or printing a document does n
 
 Start with the checklist and reply if a step is unclear.
 
-Kristin
-Start Your Cause
+Start Your Cause Support
 
 ## Day 2 — State formation comes before federal exemption
 
