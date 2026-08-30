@@ -4,13 +4,13 @@
 
 Start Your Cause is a low-cost document-generation and education platform for first-time nonprofit founders. It does not file documents, replace legal or tax advice, or ask partners to endorse a commercial service. The initial outreach offers free resources that a library, capacity center, or adviser may share when appropriate.
 
-## Email 1 â resource introduction
+## Email 1 — resource introduction
 
 Subject: Free Illinois nonprofit startup resource for your clients
 
 Hello [Name],
 
-Iâm reaching out from Start Your Cause, a plain-language resource for people exploring nonprofit formation.
+I’m reaching out from Start Your Cause, a plain-language resource for people exploring nonprofit formation.
 
 We recently published a free Illinois nonprofit startup guide, a nonprofit startup checklist, and a preliminary Form 1023 versus 1023-EZ screener. Each resource links directly to the relevant government sources and clearly explains that users are responsible for their own filings and should obtain professional advice when needed.
 
@@ -27,13 +27,13 @@ Thank you,
 Start Your Cause Support
 hello@startyourcause.org
 
-## Follow-up â 7 days later
+## Follow-up — 7 days later
 
 Subject: Re: Free Illinois nonprofit startup resource
 
 Hello [Name],
 
-I wanted to follow up once regarding the free Illinois nonprofit startup resources below. If [Organization] maintains a resource page, workshop handout, or referral list for early-stage nonprofit founders, Iâd be glad to provide a short description in your preferred format.
+I wanted to follow up once regarding the free Illinois nonprofit startup resources below. If [Organization] maintains a resource page, workshop handout, or referral list for early-stage nonprofit founders, I’d be glad to provide a short description in your preferred format.
 
 If this is not relevant, no response is needed and I will not continue following up.
 
@@ -42,7 +42,7 @@ Start Your Cause Support
 
 ## Library variation
 
-Replace âclientsâ with âpatrons,â emphasize that the resources are free without an account, and offer a printable one-page QR handout.
+Replace “clients” with “patrons,” emphasize that the resources are free without an account, and offer a printable one-page QR handout.
 
 ## Legal-aid variation
 
