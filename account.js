@@ -333,9 +333,10 @@ function showAccountModal(mode) {
     <div style="font-size:12px;color:#2d8f6f;text-transform:uppercase;letter-spacing:.08em">Customer account</div>
     <h2 style="font-family:Lora,serif;margin:.35rem 0 1rem">${signedIn ? 'My account' : (signup ? 'Create your account' : 'Log in')}</h2>
     ${signedIn ? `<p style="font-size:14px;color:#6b5c4c">Signed in as <strong>${escapeAccountHtml(accountUser.email)}</strong>. Your nonprofit information is saved securely to this account.</p><button type="button" data-projects style="padding:10px 14px;border:0;border-radius:8px;background:#2d8f6f;color:#fff">Manage my nonprofits</button>` : ''}
+    ${signup && !signedIn ? '<p style="font-size:13px;color:#6b5c4c;line-height:1.5;margin-top:-.35rem">Create a free account to save your questionnaire. No payment is required to begin.</p>' : ''}
     <form data-account-form style="${signedIn ? 'display:none' : ''}">
-      <label style="display:block;font-size:14px;font-weight:500">Email</label><input name="email" type="email" required autocomplete="email" style="width:100%;padding:11px;margin:.25rem 0 .75rem;border:1.5px solid #e2d5c6;border-radius:8px">
-      <label style="display:block;font-size:14px;font-weight:500">Password</label><input name="password" type="password" required minlength="8" autocomplete="${signup ? 'new-password' : 'current-password'}" style="width:100%;padding:11px;margin:.25rem 0 .75rem;border:1.5px solid #e2d5c6;border-radius:8px">
+      <label for="account-email" style="display:block;font-size:14px;font-weight:500">Email</label><input id="account-email" name="email" type="email" required autocomplete="email" style="width:100%;padding:11px;margin:.25rem 0 .75rem;border:1.5px solid #e2d5c6;border-radius:8px">
+      <label for="account-password" style="display:block;font-size:14px;font-weight:500">Password</label><input id="account-password" name="password" type="password" required minlength="8" autocomplete="${signup ? 'new-password' : 'current-password'}" style="width:100%;padding:11px;margin:.25rem 0 .75rem;border:1.5px solid #e2d5c6;border-radius:8px">
       <button type="submit" style="width:100%;padding:11px;border:0;border-radius:8px;background:#2d8f6f;color:white;font-weight:500">${signup ? 'Create account' : 'Log in'}</button>
     </form>
     <p data-status aria-live="polite" style="font-size:13px;line-height:1.5"></p>
