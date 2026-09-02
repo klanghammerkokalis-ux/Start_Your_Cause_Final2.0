@@ -28,6 +28,11 @@
   status = 200
 
 [[redirects]]
+  from = "/form-990-before-501c3-approval"
+  to = "/form-990-before-501c3-approval.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-illinois"
   to = "/start-a-nonprofit-illinois.html"
   status = 200

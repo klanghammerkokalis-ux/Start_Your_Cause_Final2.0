@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://startyourcause.org/</loc><lastmod>2026-08-30</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-<url><loc>https://startyourcause.org/resources</loc><lastmod>2026-08-30</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+<url><loc>https://startyourcause.org/resources</loc><lastmod>2026-08-31</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
 <url><loc>https://startyourcause.org/start-a-nonprofit-illinois</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 <url><loc>https://startyourcause.org/illinois-nonprofit-articles-of-incorporation</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 <url><loc>https://startyourcause.org/illinois-nonprofit-bylaws</loc><lastmod>2026-08-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -20,6 +20,7 @@
 <url><loc>https://startyourcause.org/1023-ez-eligibility-quiz</loc><lastmod>2026-08-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
 <url><loc>https://startyourcause.org/document-previews</loc><lastmod>2026-08-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 <url><loc>https://startyourcause.org/start-your-cause-vs-filing-services</loc><lastmod>2026-08-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://startyourcause.org/form-990-before-501c3-approval</loc><lastmod>2026-08-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
 <url><loc>https://startyourcause.org/privacy.html</loc><lastmod>2026-08-30</lastmod><priority>0.2</priority></url>
 <url><loc>https://startyourcause.org/terms.html</loc><lastmod>2026-08-30</lastmod><priority>0.2</priority></url>
 </urlset>
