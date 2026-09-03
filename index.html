@@ -307,6 +307,11 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
 
 <!-- ═══════ HOME ═══════ -->
 <div class="page active" id="page-home">
+  <section aria-label="Founding customer offer" style="background:var(--gdark);color:#fff;padding:.8rem 1.25rem;text-align:center;font-size:14px;line-height:1.55">
+    <strong>Founding 10 offer:</strong> Get the 12-month Formation Package for <strong>$49</strong> instead of $79.
+    Use code <strong style="letter-spacing:.04em">FOUNDERS49</strong> at checkout. Limited to 10 first-time customers; one payment with no automatic renewal.
+    <button onclick="window.trackSycEvent('founding_offer_click',{source:'homepage',offer_code:'FOUNDERS49'});go('pricing')" style="margin-left:.6rem;border:1px solid rgba(255,255,255,.65);border-radius:7px;background:transparent;color:#fff;padding:.35rem .7rem;font:inherit;font-weight:600;cursor:pointer">See the package →</button>
+  </section>
   <section class="hero">
     <div class="badge">🌱 Guided nonprofit tools for all 50 states and U.S. territories</div>
     <h1>The easiest way for everyday people<br>to launch a <em>real nonprofit.</em></h1>
@@ -974,6 +979,10 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <p>Pay once to build your nonprofit, or choose ongoing monthly compliance support.</p>
   </div>
   <div style="max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 5rem">
+    <div style="background:var(--glight);border:2px solid var(--green);border-radius:var(--r);padding:1rem 1.25rem;margin:0 auto 1.5rem;text-align:center;color:var(--gdark);line-height:1.65">
+      <strong style="display:block;font-size:17px">Founding 10: Formation Package for $49</strong>
+      <span style="font-size:14px">Enter code <strong style="letter-spacing:.05em">FOUNDERS49</strong> in Stripe checkout to save $30. Limited to 10 first-time customers. One payment; no automatic renewal.</span>
+    </div>
     <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--r);padding:1rem 1.25rem;margin:0 auto 1.5rem;font-size:14px;color:#7a4010;line-height:1.7">
       <strong>Important before purchasing:</strong> Your payment covers Start Your Cause document generation, educational guidance, and account access. It does <strong>not</strong> include filing services or government fees. We do not submit documents to your state or the IRS. You are responsible for reviewing, signing, and submitting required filings.
     </div>
@@ -1011,7 +1020,8 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Annual compliance calendar</li>
               <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>One payment — does not renew automatically</li>
             </ul>
-            <button onclick="doCheckout('annual', this)"  style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Get the Formation Package — $79</button>
+            <button onclick="window.trackSycEvent('founding_offer_checkout',{offer_code:'FOUNDERS49',regular_price:79,offer_price:49});doCheckout('annual', this)"  style="width:100%;padding:11px;border-radius:8px;background:#2d8f6f;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer">Get the Formation Package — $49 with code</button>
+            <p style="font-size:12px;color:var(--tmid);text-align:center;margin:.7rem 0 0">Regularly $79 · Enter <strong>FOUNDERS49</strong> at checkout</p>
           </div>
         </div>
         <p style="text-align:center;font-size:12px;color:var(--tlight)">🔒 Secure payment via Stripe &nbsp;·&nbsp; Formation Package does not renew &nbsp;·&nbsp; Billing help: hello@startyourcause.org</p>
