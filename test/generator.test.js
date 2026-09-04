@@ -98,6 +98,9 @@ test('resource email signup has consent, spam protection, and a noindex confirma
   assert.match(resources, /data-netlify="true"/);
   assert.match(resources, /netlify-honeypot="company"/);
   assert.match(resources, /name="consent" value="yes" required/);
+  assert.match(resources, /%\{submissionId\}/);
+  assert.match(resources, /generate_lead/);
+  assert.match(resources, /lead_source:'resource_updates'/);
   assert.match(confirmation, /name="robots" content="noindex"/);
 });
 
@@ -106,4 +109,7 @@ test('homepage founder checklist signup requires consent and blocks bots', () =>
   assert.match(homepage, /name="founder-checklist"/);
   assert.match(homepage, /netlify-honeypot="company"/);
   assert.match(homepage, /name="consent" value="yes" required/);
+  assert.match(homepage, /%\{submissionId\}/);
+  assert.match(homepage, /generate_lead/);
+  assert.match(homepage, /lead_source:'founder_checklist'/);
 });
