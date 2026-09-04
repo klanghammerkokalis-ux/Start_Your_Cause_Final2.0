@@ -100,3 +100,10 @@ test('resource email signup has consent, spam protection, and a noindex confirma
   assert.match(resources, /name="consent" value="yes" required/);
   assert.match(confirmation, /name="robots" content="noindex"/);
 });
+
+test('homepage founder checklist signup requires consent and blocks bots', () => {
+  const homepage = fs.readFileSync('index.html', 'utf8');
+  assert.match(homepage, /name="founder-checklist"/);
+  assert.match(homepage, /netlify-honeypot="company"/);
+  assert.match(homepage, /name="consent" value="yes" required/);
+});
