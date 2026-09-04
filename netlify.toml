@@ -38,6 +38,21 @@
   status = 200
 
 [[redirects]]
+  from = "/email-signup-confirmed"
+  to = "/email-signup-confirmed.html"
+  status = 200
+
+[[redirects]]
+  from = "/nonprofit-board-meeting-agenda-template"
+  to = "/nonprofit-board-meeting-agenda-template.html"
+  status = 200
+
+[[redirects]]
+  from = "/nonprofit-organizational-meeting-minutes-template"
+  to = "/nonprofit-organizational-meeting-minutes-template.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-california"
   to = "/start-a-nonprofit-california.html"
   status = 200
@@ -55,6 +70,36 @@
 [[redirects]]
   from = "/start-a-nonprofit-new-york"
   to = "/start-a-nonprofit-new-york.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-pennsylvania"
+  to = "/start-a-nonprofit-pennsylvania.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-georgia"
+  to = "/start-a-nonprofit-georgia.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-north-carolina"
+  to = "/start-a-nonprofit-north-carolina.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-michigan"
+  to = "/start-a-nonprofit-michigan.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-ohio"
+  to = "/start-a-nonprofit-ohio.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-new-jersey"
+  to = "/start-a-nonprofit-new-jersey.html"
   status = 200
 
 [[redirects]]

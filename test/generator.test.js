@@ -72,7 +72,12 @@ test('organic acquisition pages are indexable and linked', () => {
   const expected = [
     'nonprofit-startup-cost-calculator', 'resource-partners',
     'start-a-nonprofit-california', 'start-a-nonprofit-texas',
-    'start-a-nonprofit-florida', 'start-a-nonprofit-new-york'
+    'start-a-nonprofit-florida', 'start-a-nonprofit-new-york',
+    'start-a-nonprofit-pennsylvania', 'start-a-nonprofit-georgia',
+    'start-a-nonprofit-north-carolina', 'start-a-nonprofit-michigan',
+    'start-a-nonprofit-ohio', 'start-a-nonprofit-new-jersey',
+    'nonprofit-board-meeting-agenda-template',
+    'nonprofit-organizational-meeting-minutes-template'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const redirects = fs.readFileSync('netlify.toml', 'utf8');
@@ -85,4 +90,13 @@ test('organic acquisition pages are indexable and linked', () => {
     assert.match(redirects, new RegExp(`from = "/${slug}"`));
     assert.match(resources, new RegExp(`href="/${slug}"`));
   }
+});
+
+test('resource email signup has consent, spam protection, and a noindex confirmation page', () => {
+  const resources = fs.readFileSync('resources.html', 'utf8');
+  const confirmation = fs.readFileSync('email-signup-confirmed.html', 'utf8');
+  assert.match(resources, /data-netlify="true"/);
+  assert.match(resources, /netlify-honeypot="company"/);
+  assert.match(resources, /name="consent" value="yes" required/);
+  assert.match(confirmation, /name="robots" content="noindex"/);
 });
