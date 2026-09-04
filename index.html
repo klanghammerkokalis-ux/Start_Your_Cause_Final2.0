@@ -438,6 +438,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <p style="color:var(--tmid);font-size:14px;line-height:1.7;margin-bottom:1rem">Get the printable startup checklist plus occasional plain-language filing reminders. No account or purchase is required.</p>
         <form name="founder-checklist" method="POST" data-netlify="true" netlify-honeypot="company" action="/nonprofit-startup-checklist?signup=success" onsubmit="window.trackSycEvent('generate_lead',{lead_source:'founder_checklist'})">
           <input type="hidden" name="form-name" value="founder-checklist">
+          <input type="hidden" name="subject" data-remove-prefix value="Start Your Cause signup: %{formName} (%{submissionId})">
           <p hidden><label>Do not fill this out: <input name="company"></label></p>
           <label for="checklist-email" style="display:block;font-size:13px;font-weight:600;margin-bottom:.4rem">Email address</label>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap">
