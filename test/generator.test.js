@@ -59,3 +59,30 @@ test('generated documents escape customer-supplied HTML', () => {
   const docs = generateAllDocs({...answers, orgName: '<script>alert(1)</script>'}, state);
   assert.doesNotMatch(Object.values(docs).join(''), /<script>alert\(1\)<\/script>/);
 });
+
+test('visitors can begin the questionnaire without an account', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  const goFunction = home.match(/function go\(id\) \{[\s\S]*?\n\}/)?.[0] || '';
+  assert.doesNotMatch(goFunction, /id === 'form'.*hasAccountSession/);
+  assert.match(home, /No account or payment required to begin/);
+  assert.match(home, /No account is required to begin/);
+});
+
+test('organic acquisition pages are indexable and linked', () => {
+  const expected = [
+    'nonprofit-startup-cost-calculator', 'resource-partners',
+    'start-a-nonprofit-california', 'start-a-nonprofit-texas',
+    'start-a-nonprofit-florida', 'start-a-nonprofit-new-york'
+  ];
+  const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
+  const redirects = fs.readFileSync('netlify.toml', 'utf8');
+  const resources = fs.readFileSync('resources.html', 'utf8');
+  for (const slug of expected) {
+    const page = fs.readFileSync(`${slug}.html`, 'utf8');
+    assert.match(page, new RegExp(`<link rel="canonical" href="https://startyourcause\\.org/${slug}"`));
+    assert.match(page, /<meta name="description"/);
+    assert.match(sitemap, new RegExp(`https://startyourcause\\.org/${slug}`));
+    assert.match(redirects, new RegExp(`from = "/${slug}"`));
+    assert.match(resources, new RegExp(`href="/${slug}"`));
+  }
+});

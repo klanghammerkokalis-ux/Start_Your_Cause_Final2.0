@@ -28,6 +28,36 @@
   status = 200
 
 [[redirects]]
+  from = "/nonprofit-startup-cost-calculator"
+  to = "/nonprofit-startup-cost-calculator.html"
+  status = 200
+
+[[redirects]]
+  from = "/resource-partners"
+  to = "/resource-partners.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-california"
+  to = "/start-a-nonprofit-california.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-texas"
+  to = "/start-a-nonprofit-texas.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-florida"
+  to = "/start-a-nonprofit-florida.html"
+  status = 200
+
+[[redirects]]
+  from = "/start-a-nonprofit-new-york"
+  to = "/start-a-nonprofit-new-york.html"
+  status = 200
+
+[[redirects]]
   from = "/form-990-before-501c3-approval"
   to = "/form-990-before-501c3-approval.html"
   status = 200

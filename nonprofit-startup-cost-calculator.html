@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nonprofit Startup Cost Calculator by State | Start Your Cause</title>
+  <meta name="description" content="Estimate nonprofit incorporation, IRS application, charitable registration, and optional support costs with this free state-specific calculator.">
+  <link rel="canonical" href="https://startyourcause.org/nonprofit-startup-cost-calculator">
+  <meta property="og:title" content="Free Nonprofit Startup Cost Calculator">
+  <meta property="og:description" content="Estimate state and federal nonprofit startup costs before you file.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://startyourcause.org/nonprofit-startup-cost-calculator">
+  <link rel="stylesheet" href="/resources.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE983T68NN"></script>
+  <script defer src="/resources.js"></script>
+  <style>
+    .calculator{max-width:760px;margin:auto}.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.calc-field label{display:block;font-weight:700;margin-bottom:6px}.calc-field select,.calc-field input{width:100%;min-height:48px;border:1px solid var(--sand2);border-radius:var(--rs);padding:10px 12px;background:#fff;color:var(--text);font:inherit}.total{font:700 clamp(2.25rem,8vw,4rem)/1 Georgia,serif;color:var(--gdark);margin:10px 0}.cost-row{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--sand2)}.cost-row span:last-child{font-weight:700}.result-panel{margin-top:24px}.result-panel[hidden]{display:none}.fine{font-size:13px;color:var(--tmid)}
+    @media(max-width:620px){.calc-grid{grid-template-columns:1fr}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Nonprofit Startup Cost Calculator","applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"Start Your Cause","url":"https://startyourcause.org"}}</script>
+</head>
+<body data-slug="nonprofit-startup-cost-calculator">
+<header><div class="nav"><a class="logo" href="/">🌱 Start Your Cause</a><nav><a href="/resources">Resources</a><a href="/?view=states">State Guide</a><a href="/1023-ez-eligibility-quiz">Free Screener</a><a href="/?view=pricing">Pricing</a></nav></div></header>
+<main>
+  <section class="hero"><div class="hero-inner"><div class="crumbs"><a href="/">Home</a> / Resources / Startup cost calculator</div><span class="tag">Free planning tool</span><h1>Estimate the cost to start your nonprofit</h1><p>Select your state and likely IRS application. The calculator separates government fees from optional document or professional support so you can budget before starting.</p></div></section>
+  <div class="wrap calculator">
+    <form id="cost-form" class="tool">
+      <div class="calc-grid">
+        <div class="calc-field"><label for="state">State or territory</label><select id="state" required><option value="">Choose a location</option></select></div>
+        <div class="calc-field"><label for="irs-form">IRS application</label><select id="irs-form"><option value="275">Form 1023-EZ — $275</option><option value="600">Form 1023 — $600</option><option value="0">Not sure yet</option></select></div>
+        <div class="calc-field"><label for="support">Optional document or professional support</label><input id="support" type="number" min="0" step="1" value="0" inputmode="numeric" aria-describedby="support-help"><div id="support-help" class="fine">Enter $0 for a fully self-directed estimate.</div></div>
+        <div class="calc-field"><label for="buffer">Planning buffer</label><select id="buffer"><option value="0">No buffer</option><option value="25">Add $25</option><option value="50">Add $50</option><option value="100">Add $100</option></select></div>
+      </div>
+      <button class="btn" type="submit" style="margin-top:22px">Calculate my estimate</button>
+    </form>
+    <section id="result" class="card result-panel" hidden tabindex="-1" aria-live="polite">
+      <span class="tag">Estimated starting total</span><div class="total" id="total">$0</div>
+      <div id="breakdown"></div>
+      <p class="fine" id="state-note"></p>
+      <div class="notice"><strong>Planning estimate only:</strong> Fees and requirements change. Optional copies, expedited service, registered-agent service, state tax applications, local licenses, payment processing, and professional advice may add cost. Verify every amount with the linked agency before paying.</div>
+      <a class="btn" href="/?view=form" data-track="calculator_to_form">Start the free questionnaire →</a>
+      <a class="btn secondary" href="/1023-ez-eligibility-quiz" data-track="calculator_to_quiz">Check 1023-EZ indicators</a>
+    </section>
+    <h2>What this estimate includes</h2><p>The total combines the incorporation fee shown in the Start Your Cause state guide, the selected IRS user fee, any charitable-solicitation registration fee listed in the guide, your optional support amount, and your selected buffer. Incorporation does not automatically create federal tax-exempt status.</p>
+    <div class="cta"><h2>Ready to organize the paperwork?</h2><p>Complete the guided questionnaire without creating an account. Register only when you are ready to save across devices or unlock generated documents.</p><a class="btn" href="/?view=form" data-track="calculator_bottom_cta">Begin without an account →</a></div>
+  </div>
+</main>
+<footer><div class="inner"><strong>Start Your Cause</strong><p>Plain-language nonprofit formation tools for everyday founders.</p><p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="mailto:hello@startyourcause.org">hello@startyourcause.org</a></p></div></footer>
+<script src="/states.js"></script>
+<script>
+const stateSelect=document.getElementById('state');
+Object.entries(STATE_DATA).sort((a,b)=>a[1].name.localeCompare(b[1].name)).forEach(([code,data])=>{const option=document.createElement('option');option.value=code;option.textContent=data.name;stateSelect.appendChild(option)});
+document.getElementById('cost-form').addEventListener('submit',event=>{
+  event.preventDefault();
+  const data=STATE_DATA[stateSelect.value]; if(!data)return;
+  const irs=Number(document.getElementById('irs-form').value);
+  const support=Math.max(0,Number(document.getElementById('support').value)||0);
+  const buffer=Number(document.getElementById('buffer').value);
+  const stateFee=Number(data.fee)||0;
+  const solicitation=data.solicitationReg?(Number(data.solicitationFee)||0):0;
+  const total=stateFee+irs+solicitation+support+buffer;
+  document.getElementById('total').textContent=total.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+  const rows=[['State incorporation fee',stateFee],['IRS application fee',irs],['Charitable-registration fee shown in guide',solicitation],['Optional support entered',support],['Planning buffer',buffer]];
+  document.getElementById('breakdown').innerHTML=rows.map(([label,value])=>`<div class="cost-row"><span>${label}</span><span>${Number(value).toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0})}</span></div>`).join('');
+  document.getElementById('state-note').innerHTML=`For <strong>${data.name}</strong>: ${data.notes} <a href="${data.agencyUrl}" target="_blank" rel="noopener">Verify with ${data.agency} →</a>`;
+  const result=document.getElementById('result');result.hidden=false;result.focus();
+  if(window.trackSycEvent)window.trackSycEvent('calculator_complete',{calculator_name:'startup_cost',state:stateSelect.value,irs_fee:irs,estimated_total:total});
+});
+</script>
+</body></html>
