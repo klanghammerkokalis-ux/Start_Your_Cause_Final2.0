@@ -1,6 +1,12 @@
-# Founder checklist email sequence
+# Start Your Cause consented-subscriber email sequence
 
-Send only to people who submit the `founder-checklist` form. Every message should include an unsubscribe option and `hello@startyourcause.org` as the reply address.
+Send only to people whose Netlify submission explicitly records consent: yes for founder-checklist or nonprofit-startup-updates. Never add a personal name, personal email, photograph, biography, or location. Send from and reply to hello@startyourcause.org, sign only as Start Your Cause Support, and suppress a recipient immediately after an unsubscribe request.
+
+Every message must end with:
+
+Start Your Cause Support
+
+You received this because you requested Start Your Cause resources. Reply with unsubscribe to stop future emails.
 
 ## Immediately — Your nonprofit startup checklist
 
@@ -17,46 +23,39 @@ Start with the checklist and reply if a step is unclear.
 
 Start Your Cause Support
 
-## Day 2 — State formation comes before federal exemption
+## Day 3 — Estimate the complete startup cost
 
-Subject: The two nonprofit filings people often confuse
+Subject: What will your nonprofit cost to start?
 
-State incorporation and IRS tax-exempt recognition are separate processes. Start with your state’s formation requirements, organize your board and records, obtain an EIN, and then determine which Form 1023-series application fits.
+State incorporation, IRS recognition, charity registration, and optional support can create separate expenses. Use the calculator before committing funds:
+https://startyourcause.org/nonprofit-startup-cost-calculator
 
-Illinois guide: https://startyourcause.org/start-a-nonprofit-illinois
+Government fees are paid separately and Start Your Cause does not submit filings or fees.
 
-## Day 4 — 1023 or 1023-EZ?
+## Day 6 — 1023 or 1023-EZ?
 
 Subject: Can you use Form 1023-EZ?
 
 The shorter application is not available to every organization. Use our preliminary screener, then complete the official IRS eligibility worksheet before deciding:
 https://startyourcause.org/1023-vs-1023-ez
 
-## Day 6 — Preview the filing packet
+## Day 10 — Preview the filing packet and decide
 
 Subject: See what your nonprofit filing packet will contain
 
 Before paying, preview the document types and how Start Your Cause labels what gets filed, what goes to the IRS separately, and what stays in your internal records:
 https://startyourcause.org/document-previews
 
-The $79 Formation Package is a one-time payment for twelve months of access and does not renew automatically.
-
-## Day 8 — Organize your documents
-
-Subject: Which nonprofit documents get filed?
-
-Articles are generally filed with the state. Bylaws, conflict policies, and board minutes are generally adopted and retained in the organization’s records. The IRS application is separate.
-
-See the document-by-document guide:
-https://startyourcause.org/after-filing-articles-of-incorporation
-
-## Day 10 — Build your document set
-
-Subject: Ready to turn your plan into documents?
-
-If your board, registered agent, programs, budget, and filing state are decided, Start Your Cause can turn your questionnaire answers into a labeled filing packet and customizable governance templates.
-
-See what is included and the current price:
+See the current options:
 https://startyourcause.org/?view=pricing
 
-The $79 Formation Package is a one-time payment for twelve months of access and does not renew automatically. The optional $12 monthly Compliance Membership is for ongoing compliance support. Government filing fees are separate, and Start Your Cause does not submit filings for you.
+The Formation Package is a one-time payment for twelve months of access and does not renew automatically. The optional monthly Compliance Membership is for ongoing compliance support. Government fees are separate, and Start Your Cause does not submit filings.
+
+## Automation requirements
+
+- Deduplicate by normalized recipient email plus sequence step.
+- Never send if consent is missing or is not exactly yes.
+- Stop the entire sequence after any unsubscribe request.
+- Do not send the immediate email twice when the existing welcome automation already handled it.
+- Record form name, consent timestamp, sequence step, send timestamp, and unsubscribe status.
+- Use plain text so the message remains accessible and easy to audit.
