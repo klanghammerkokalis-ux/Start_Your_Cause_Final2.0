@@ -7,13 +7,24 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-BE983T68NN');
+    window.sycAnalyticsDisabled = new URLSearchParams(window.location.search).get('syc_test') === '1';
+    if (!window.sycAnalyticsDisabled) gtag('config', 'G-BE983T68NN');
 
     // Centralized GA4 event helper. Calls are safe if analytics is blocked or unavailable.
     window.trackSycEvent = function(name, params) {
-      if (typeof window.gtag !== 'function') return;
+      if (window.sycAnalyticsDisabled || typeof window.gtag !== 'function') return;
       window.gtag('event', name, params || {});
     };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const checklistForm = document.querySelector('form[name="founder-checklist"]');
+      if (checklistForm) checklistForm.addEventListener('submit', function() {
+        window.trackSycEvent('generate_lead', {
+          lead_source: 'founder_checklist',
+          form_id: 'founder-checklist'
+        });
+      });
+    });
   </script>
 
   <meta charset="UTF-8">
@@ -436,7 +447,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="stag">free founder checklist</div>
         <h2 style="font-size:clamp(1.35rem,3vw,1.8rem);margin-bottom:.65rem">Keep the nonprofit steps in the right order</h2>
         <p style="color:var(--tmid);font-size:14px;line-height:1.7;margin-bottom:1rem">Get the printable startup checklist plus occasional plain-language filing reminders. No account or purchase is required.</p>
-        <form name="founder-checklist" method="POST" data-netlify="true" netlify-honeypot="company" action="/nonprofit-startup-checklist?signup=success" onsubmit="window.trackSycEvent('generate_lead',{lead_source:'founder_checklist'})">
+        <form name="founder-checklist" method="POST" data-netlify="true" netlify-honeypot="company" action="/nonprofit-startup-checklist?signup=success">
           <input type="hidden" name="form-name" value="founder-checklist">
           <input type="hidden" name="subject" data-remove-prefix value="Start Your Cause signup: %{formName} (%{submissionId})">
           <p hidden><label>Do not fill this out: <input name="company"></label></p>
