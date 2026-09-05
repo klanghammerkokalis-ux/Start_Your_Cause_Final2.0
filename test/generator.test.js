@@ -99,8 +99,6 @@ test('resource email signup has consent, spam protection, and a noindex confirma
   assert.match(resources, /netlify-honeypot="company"/);
   assert.match(resources, /name="consent" value="yes" required/);
   assert.match(resources, /%\{submissionId\}/);
-  assert.match(resources, /generate_lead/);
-  assert.match(resources, /lead_source:'resource_updates'/);
   assert.match(confirmation, /name="robots" content="noindex"/);
 });
 
@@ -111,5 +109,43 @@ test('homepage founder checklist signup requires consent and blocks bots', () =>
   assert.match(homepage, /name="consent" value="yes" required/);
   assert.match(homepage, /%\{submissionId\}/);
   assert.match(homepage, /generate_lead/);
-  assert.match(homepage, /lead_source:'founder_checklist'/);
+  assert.match(homepage, /lead_source:\s*'founder_checklist'/);
+  assert.doesNotMatch(homepage, /form name="founder-checklist"[^>]+onsubmit=/);
+});
+
+test('funnel analytics are attached outside Netlify form markup', () => {
+  const homepage = fs.readFileSync('index.html', 'utf8');
+  const resources = fs.readFileSync('resources.js', 'utf8');
+  assert.match(homepage, /addEventListener\('submit'/);
+  assert.match(resources, /form\[name="nonprofit-startup-updates"\]/);
+  assert.match(resources, /addEventListener\('submit'/);
+  assert.match(resources, /generate_lead/);
+  assert.match(resources, /lead_source:'resource_updates'/);
+  const formMarkup = fs.readFileSync('resources.html', 'utf8');
+  assert.doesNotMatch(formMarkup, /form name="nonprofit-startup-updates"[^>]+onsubmit=/);
+});
+
+test('test traffic can be excluded without disabling production analytics', () => {
+  const homepage = fs.readFileSync('index.html', 'utf8');
+  const resources = fs.readFileSync('resources.js', 'utf8');
+  assert.match(homepage, /syc_test/);
+  assert.match(homepage, /sycAnalyticsDisabled/);
+  assert.match(resources, /syc_test/);
+  assert.match(resources, /sycAnalyticsDisabled/);
+});
+
+test('purchase analytics are deduplicated by checkout session', () => {
+  const paywall = fs.readFileSync('paywall.js', 'utf8');
+  assert.match(paywall, /syc_purchase_tracked_/);
+  assert.match(paywall, /trackSycEvent\('purchase'/);
+  assert.match(paywall, /localStorage\.setItem\(purchaseKey, 'true'\)/);
+});
+
+test('high-performing organic pages provide direct conversion paths', () => {
+  const resources = fs.readFileSync('resources.js', 'utf8');
+  assert.match(resources, /start-a-nonprofit-illinois/);
+  assert.match(resources, /illinois_next_intake/);
+  assert.match(resources, /nonprofit-startup-cost-calculator/);
+  assert.match(resources, /1023-vs-1023-ez/);
+  assert.match(resources, /data-track="quiz_start"/);
 });
