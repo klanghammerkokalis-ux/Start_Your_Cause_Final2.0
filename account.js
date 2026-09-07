@@ -73,7 +73,7 @@ async function signUpWithPassword(email, password) {
     body: JSON.stringify({ email, password }),
   });
   if (data.access_token) storeAccountSession(data);
-  if (typeof window.trackSycEvent === 'function') window.trackSycEvent('sign_up', { method: 'password' });
+  if (typeof window.trackSycEvent === 'function') window.trackSycEvent('account_created', { method: 'password' });
   return data;
 }
 

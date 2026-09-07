@@ -359,7 +359,7 @@ async function startCheckout(planId) {
   try {
     if (btn) { btn.textContent = 'Redirecting to payment...'; btn.disabled = true; }
     if (typeof window.trackSycEvent === 'function') {
-      window.trackSycEvent('begin_checkout', {
+      window.trackSycEvent('checkout_started', {
         currency: 'USD',
         value: plan.price,
         items: [{ item_id: planId, item_name: plan.name, price: plan.price, quantity: 1 }],
@@ -411,7 +411,7 @@ function showPricingModal(context) {
       <div style="text-align:center;margin-bottom:2rem">
         <div style="font-size:12px;font-weight:500;color:#2d8f6f;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem">Start Your Cause</div>
         <h2 style="font-family:Lora,serif;font-size:1.75rem;color:#2c2418;margin-bottom:.5rem">Unlock all documents</h2>
-        <p style="color:#6b5c4c;font-size:15px;max-width:500px;margin:0 auto">Pay once for twelve months of formation access, or choose ongoing monthly compliance support.</p>
+        <p style="color:#6b5c4c;font-size:15px;max-width:500px;margin:0 auto">Pay once for twelve months of formation access, or choose ongoing monthly compliance support. Stripe securely processes payment.</p>
       </div>
       <div class="mobile-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
         <div style="background:#fff;border:1.5px solid #e2d5c6;border-radius:12px;padding:1.5rem">
@@ -435,7 +435,7 @@ function showPricingModal(context) {
         </div>
       </div>
       <div style="text-align:center;margin-bottom:.75rem"><button type="button" onclick="hidePricingModal();showAccessRecovery()" style="background:none;border:0;color:#1d6b52;text-decoration:underline;font-size:14px;cursor:pointer">Already subscribed? Log in</button></div>
-      <p style="text-align:center;font-size:12px;color:#9e8e7e">🔒 Secure payment via Stripe · Formation Package does not renew · Billing help: hello@startyourcause.org</p>
+      <p style="text-align:center;font-size:12px;color:#9e8e7e;line-height:1.6">🔒 Secure payment via Stripe · Formation Package does not renew · Regenerate documents during your access period · Government fees and filing submission are separate · Billing help: hello@startyourcause.org</p>
     </div>`;
   modal.addEventListener('click', e => { if (e.target === modal) hidePricingModal(); });
   document.body.appendChild(modal);

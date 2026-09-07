@@ -704,17 +704,19 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     <div id="account-save-status" style="font-size:12px;text-align:right;color:var(--tlight);margin:-1rem 0 1rem">Your answers are saved on this device. No account is required to begin.</div>
     <div class="f-error-summary" id="f-error-summary" role="alert" aria-live="polite"></div>
 
-    <!-- STEP 1: CAUSE -->
+    <!-- STEP 1: QUICK START -->
     <div class="fsec active" id="fs1">
       <div class="fcard">
-        <div class="fs-tag">Step 1 of 8 — Your Cause</div>
-        <div class="fs-title">What is your nonprofit about?</div>
-        <div class="fs-desc">A nonprofit helps people, animals, or the community — without making personal profit. Let's start with your big idea.</div>
+        <div class="fs-tag">Step 1 of 8 — 5-minute quick start</div>
+        <div class="fs-title">See your personalized starting point</div>
+        <div class="fs-desc">Answer four questions first. We’ll immediately show your state, mission, document packet, and next steps before asking for the filing details.</div>
         <div class="field"><label>Name of your nonprofit</label><div class="hint">Example: "Bright Future Youth Center" or "Paws &amp; Claws Rescue"</div><input type="text" id="f_orgName" placeholder="e.g. Helping Hands Community Center"></div>
-        <div class="field"><label>Nonprofit website (optional)</label><div class="hint">Use the organization’s website if it already has one. Leave this blank if it does not.</div><input type="url" id="f_website" inputmode="url" autocomplete="url" placeholder="https://example.org"></div>
-        <div class="field"><label>What problem are you trying to fix?</label><div class="hint">Explain it like you're telling a friend. What hurts your community?</div><textarea id="f_problem" placeholder="e.g. Many kids in our town don't have a safe place to go after school..."></textarea></div>
-        <div class="field"><label>What will your nonprofit DO to help?</label><div class="hint">What programs, activities, or services will you offer?</div><textarea id="f_activities" placeholder="e.g. We will run an after-school tutoring program, offer free meals, and provide safe activities..."></textarea></div>
-        <div class="field"><label>Write a one-sentence mission statement (optional — we can help you draft one)</label><div class="hint">Example: "Our mission is to provide safe after-school programs for underserved youth in Chicago."</div><input type="text" id="f_mission" placeholder="Our mission is to..."></div>
+        <div class="field"><label>Select your state or territory</label><select id="f_stateSelect" onchange="updateStateBanner()"><option value="">— Choose your state or territory —</option></select></div>
+        <div id="f_stateBanner" style="display:none"></div>
+        <div class="field"><label>What is your nonprofit’s mission?</label><div class="hint">One sentence is enough. You can refine it later.</div><input type="text" id="f_mission" placeholder="Our mission is to..."></div>
+        <div class="field"><label>Your email address</label><div class="hint">Used for your account and, only with permission below, one reminder about saved progress.</div><input type="email" id="f_founderEmail" autocomplete="email" placeholder="you@email.com"></div>
+        <label style="display:flex;gap:.55rem;align-items:flex-start;font-size:12px;color:var(--tmid);line-height:1.5"><input type="checkbox" id="f_recoveryConsent" name="f_recoveryConsent" value="yes" style="margin-top:.2rem"> Email me one reminder if I leave before finishing. I can unsubscribe by replying “unsubscribe.”</label>
+        <p style="font-size:11px;color:var(--tlight);margin-top:.55rem">Your answers autosave on this device. Start Your Cause never sells questionnaire information.</p>
       </div>
     </div>
 
@@ -724,6 +726,10 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="fs-tag">Step 2 of 8 — Who You Help</div>
         <div class="fs-title">Who does your nonprofit serve?</div>
         <div class="fs-desc">The IRS needs to know your nonprofit benefits the public — not just a private group.</div>
+        <div id="quick-start-preview" style="background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem 1.1rem;margin-bottom:1.25rem;color:var(--gdark);line-height:1.6"></div>
+        <div class="field"><label>Nonprofit website (optional)</label><div class="hint">Use the organization’s website if it already has one. Leave this blank if it does not.</div><input type="url" id="f_website" inputmode="url" autocomplete="url" placeholder="https://example.org"></div>
+        <div class="field"><label>What problem are you trying to fix?</label><div class="hint">Explain it like you're telling a friend. What hurts your community?</div><textarea id="f_problem" placeholder="e.g. Many kids in our town don't have a safe place to go after school..."></textarea></div>
+        <div class="field"><label>What will your nonprofit DO to help?</label><div class="hint">What programs, activities, or services will you offer?</div><textarea id="f_activities" placeholder="e.g. We will run an after-school tutoring program, offer free meals, and provide safe activities..."></textarea></div>
         <div class="field"><label>Who are the people (or animals, places) you want to help?</label><div class="hint">Be specific! Example: "Kids ages 5–12 in Cook County, IL" or "Stray cats in rural Texas"</div><textarea id="f_whoHelp" placeholder="e.g. Low-income families in our county who struggle to afford healthy food..."></textarea></div>
         <div class="field"><label>How many people do you hope to help each year?</label><div class="hint">A rough guess is totally fine.</div><input type="text" id="f_howMany" placeholder="e.g. About 200–300 families per year"></div>
         <div class="field"><label>Where will your nonprofit work?</label><div class="hint">City, county, state — or is it online/national?</div><input type="text" id="f_location" placeholder="e.g. Cook County, Illinois"></div>
@@ -745,13 +751,6 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="fs-tag">Step 3 of 8 — Your State</div>
         <div class="fs-title">Where will you incorporate?</div>
         <div class="fs-desc">Every state and U.S. territory has different requirements, fees, and rules. Select yours and we'll show you exactly what you need.</div>
-        <div class="field">
-          <label>Select your state or territory</label>
-          <select id="f_stateSelect" onchange="updateStateBanner()">
-            <option value="">— Choose your state or territory —</option>
-          </select>
-        </div>
-        <div id="f_stateBanner" style="display:none"></div>
         <div class="field" style="margin-top:1rem"><label>What is the mailing address of your nonprofit?</label><div class="hint">This will appear on your Articles of Incorporation.</div><input type="text" id="f_address" placeholder="Street address, City, State, ZIP"></div>
         <div class="field"><label>Registered agent's full legal name</label><div class="hint">This person or company must meet your state's requirements and be available at a physical address during business hours.</div><input type="text" id="f_agentName" placeholder="Full legal name or registered-agent company"></div>
         <div class="field"><label>Registered agent's physical address</label><div class="hint">Do not use a P.O. box. Confirm the agent has agreed to serve before filing.</div><input type="text" id="f_agentAddress" placeholder="Street address, City, State, ZIP"></div>
@@ -765,7 +764,6 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="fs-title">Who will lead your nonprofit?</div>
         <div class="fs-desc">Every 501(c)(3) needs a <strong>board of directors</strong> — at least 3 people in most states who make key decisions. Board members must act in the nonprofit’s interests. Compensation, if any, should be reasonable, properly approved, and consistent with applicable law and governing documents.</div>
         <div class="field"><label>Your full name (founder)</label><input type="text" id="f_founderName" placeholder="Your full legal name"></div>
-        <div class="field"><label>Your email address</label><input type="email" id="f_founderEmail" placeholder="you@email.com"></div>
         <div class="field"><label>Your physical address as incorporator</label><div class="hint">Some state filings require an incorporator address. Review your state's official form before submitting.</div><input type="text" id="f_founderAddress" placeholder="Street address, City, State, ZIP"></div>
         <div class="field"><label>Second board member's name</label><div class="hint">A friend, colleague, or community member who supports your cause.</div><input type="text" id="f_board2" placeholder="Full name"></div>
         <div class="field"><label>Third board member's name</label><input type="text" id="f_board3" placeholder="Full name"></div>
@@ -897,6 +895,13 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
           <strong>These documents have not been filed.</strong> File only the required formation document with your state. Keep bylaws, policies, and board minutes in your organization’s records. Apply for an EIN and federal tax-exempt status separately with the IRS.
         </div>
         <div class="docs-grid" id="docsGrid"></div>
+      </div>
+      <div class="fcard" id="completion-offer" style="margin-top:.875rem;border:2px solid var(--green);background:var(--glight)">
+        <div class="fs-tag">Your packet is ready to generate</div>
+        <div class="fs-title" style="font-size:20px;margin-bottom:.5rem">Unlock all 9 personalized formation documents</div>
+        <p style="font-size:14px;color:var(--tmid);line-height:1.65;margin-bottom:1rem">The Formation Package is one payment for 12 months of account and document access. Regenerate documents as your plans change. Stripe securely processes payment.</p>
+        <ul style="font-size:13px;color:var(--tmid);line-height:1.8;margin:0 0 1rem 1.25rem"><li>No automatic renewal for the Formation Package</li><li>Your saved answers remain available across devices when signed in</li><li>Government filing fees are separate; Start Your Cause does not submit filings</li><li>Billing and access help: hello@startyourcause.org</li></ul>
+        <button class="btn btn-p" onclick="window.trackSycEvent('completion_checkout_cta',{source:'questionnaire_complete'});doCheckout('annual',this)" style="width:100%;max-width:430px">Get my Formation Package — $79 →</button>
       </div>
       <div class="fcard" style="margin-top:.875rem">
         <div class="fs-title" style="font-size:17px;margin-bottom:.75rem">Your State-Specific Next Steps</div>
@@ -1358,7 +1363,7 @@ function fNav(dir){
   saveFormData();
   if (dir === 1 && fCur === F_TOTAL - 1) {
     const answers = getAnswers();
-    window.trackSycEvent('form_complete', {
+    window.trackSycEvent('questionnaire_complete', {
       form_id: 'nonprofit_intake',
       form_name: 'Nonprofit intake',
       step_total: F_TOTAL
@@ -1369,6 +1374,14 @@ function fNav(dir){
       has_email: Boolean(answers.founderEmail)
     });
     return;
+  }
+  if (dir === 1 && fCur === 0) {
+    buildQuickStartPreview();
+    submitRecoveryConsent();
+    window.trackSycEvent('questionnaire_quick_start_complete', {
+      form_id: 'nonprofit_intake',
+      state: document.getElementById('f_stateSelect').value
+    });
   }
   if(dir===1 && fCur===F_TOTAL-2) buildSummary();
   document.getElementById('fs'+(fCur+1)).classList.remove('active');
@@ -1395,23 +1408,24 @@ function fNav(dir){
 const REQUIRED_BY_STEP = [
   [
     {id:'f_orgName', message:'Enter the nonprofit name.'},
-    {id:'f_problem', message:'Describe the problem your nonprofit will address.'},
-    {id:'f_activities', message:'Describe the programs or services your nonprofit will provide.'},
+    {id:'f_stateSelect', message:'Select the state or territory where you will incorporate.'},
+    {id:'f_mission', message:'Enter a one-sentence mission.'},
+    {id:'f_founderEmail', message:'Enter a valid email address.'},
   ],
   [
+    {id:'f_problem', message:'Describe the problem your nonprofit will address.'},
+    {id:'f_activities', message:'Describe the programs or services your nonprofit will provide.'},
     {id:'f_whoHelp', message:'Describe who or what your nonprofit will serve.'},
     {id:'f_location', message:'Enter where your nonprofit will operate.'},
     {name:'f_type', message:'Choose the type of nonprofit, or select “Not sure yet.”'},
   ],
   [
-    {id:'f_stateSelect', message:'Select the state or territory where you will incorporate.'},
     {id:'f_address', message:'Enter the nonprofit mailing address.'},
     {id:'f_agentName', message:'Enter the registered agent’s name.'},
     {id:'f_agentAddress', message:'Enter the registered agent’s physical address.'},
   ],
   [
     {id:'f_founderName', message:'Enter the founder’s full name.'},
-    {id:'f_founderEmail', message:'Enter a valid email address.'},
     {id:'f_founderAddress', message:'Enter the incorporator’s physical address.'},
     {id:'f_board2', message:'Enter the second board member’s name.'},
     {id:'f_board3', message:'Enter the third board member’s name.'},
@@ -1544,6 +1558,7 @@ function saveFormData() {
     ['f_funding','f_special'].forEach(cls => {
       data.checkboxes[cls] = Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value);
     });
+    data.checkboxes.f_recoveryConsent = document.getElementById('f_recoveryConsent')?.checked ? ['yes'] : [];
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
     if (typeof saveAccountProject === 'function' && hasAccountSession()) saveAccountProject(data);
   } catch(e) { /* localStorage may be unavailable */ }
@@ -1580,6 +1595,8 @@ function restoreFormData() {
           if (el) el.checked = true;
         });
       });
+      const recoveryConsent=document.getElementById('f_recoveryConsent');
+      if(recoveryConsent) recoveryConsent.checked=(data.checkboxes.f_recoveryConsent||[]).includes('yes');
     }
     // Restore state banner if state was saved
     if (data.fields && data.fields['f_stateSelect']) {
@@ -1660,6 +1677,34 @@ function updateStateBanner(){
     <a href="${sd.agencyUrl}" target="_blank" style="color:var(--green);font-size:13px">Visit ${sd.agency} ↗</a>
   </div>`;
   banner.style.display='block';
+}
+
+function buildQuickStartPreview(){
+  const preview=document.getElementById('quick-start-preview');
+  if(!preview) return;
+  const org=fv('f_orgName')||'Your nonprofit';
+  const code=document.getElementById('f_stateSelect').value;
+  const state=STATE_DATA[code];
+  const mission=fv('f_mission');
+  preview.innerHTML=`<strong>${org} has a starting plan.</strong><br>${mission}<br><span style="font-size:13px">Your personalized packet will include ${state?state.name+' formation guidance, ':''}Articles of Incorporation, bylaws, conflict policy, board minutes, EIN guidance, and IRS application preparation.</span>`;
+  window.trackSycEvent('questionnaire_value_preview',{form_id:'nonprofit_intake',state:code});
+}
+
+function submitRecoveryConsent(){
+  const consent=document.getElementById('f_recoveryConsent');
+  const email=fv('f_founderEmail').toLowerCase();
+  if(!consent?.checked || !email || sessionStorage.getItem('syc_recovery_submitted')==='true') return;
+  const params=new URLSearchParams({
+    'form-name':'questionnaire-recovery',
+    email,
+    nonprofit_name:fv('f_orgName'),
+    state:document.getElementById('f_stateSelect').value,
+    consent:'yes',
+    bot_field:''
+  });
+  fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()})
+    .then(response=>{if(!response.ok) throw new Error('Recovery signup failed');sessionStorage.setItem('syc_recovery_submitted','true');window.trackSycEvent('questionnaire_recovery_opt_in',{form_id:'questionnaire-recovery'});})
+    .catch(()=>{});
 }
 
 function buildSummary(){
@@ -1869,7 +1914,7 @@ function doCheckout(planId, btn) {
     btn.textContent = 'Redirecting...';
     btn.disabled = true;
   }
-  window.trackSycEvent('begin_checkout', {
+  window.trackSycEvent('checkout_started', {
     currency: 'USD',
     value: value,
     items: [{ item_id: planId, item_name: planId === 'annual' ? 'Formation Package' : 'Compliance Membership', price: value, quantity: 1 }],
@@ -1906,5 +1951,9 @@ function doCheckout(planId, btn) {
 }
 
 </script>
+<form name="questionnaire-recovery" data-netlify="true" netlify-honeypot="bot_field" hidden>
+  <input type="hidden" name="form-name" value="questionnaire-recovery">
+  <input name="bot_field"><input type="email" name="email"><input name="nonprofit_name"><input name="state"><input name="consent">
+</form>
 </body>
 </html>

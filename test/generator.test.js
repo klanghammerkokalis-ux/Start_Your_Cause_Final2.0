@@ -188,3 +188,46 @@ test('high-performing organic pages provide direct conversion paths', () => {
   assert.match(resources, /1023-vs-1023-ez/);
   assert.match(resources, /data-track="quiz_start"/);
 });
+
+test('quick-start intake delivers value before the detailed questionnaire', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  assert.match(home, /Step 1 of 8 — 5-minute quick start/);
+  assert.match(home, /id="f_orgName"/);
+  assert.match(home, /id="f_stateSelect"/);
+  assert.match(home, /id="f_mission"/);
+  assert.match(home, /id="f_founderEmail"/);
+  assert.match(home, /id="quick-start-preview"/);
+  assert.match(home, /questionnaire_quick_start_complete/);
+  assert.match(home, /questionnaire_value_preview/);
+});
+
+test('dedicated customer funnel events are distinct from generic form analytics', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  const account = fs.readFileSync('account.js', 'utf8');
+  const paywall = fs.readFileSync('paywall.js', 'utf8');
+  assert.match(home, /questionnaire_complete/);
+  assert.match(account, /account_created/);
+  assert.match(home, /checkout_started/);
+  assert.match(paywall, /checkout_started/);
+  assert.match(paywall, /trackSycEvent\('purchase'/);
+});
+
+test('abandoned questionnaire recovery requires explicit consent', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  assert.match(home, /name="questionnaire-recovery" data-netlify="true"/);
+  assert.match(home, /id="f_recoveryConsent"/);
+  assert.match(home, /if\(!consent\?\.checked/);
+  assert.match(home, /consent:'yes'/);
+  assert.match(home, /replying “unsubscribe/);
+});
+
+test('checkout surfaces access, renewal, filing-fee, and brand-only support terms', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  const paywall = fs.readFileSync('paywall.js', 'utf8');
+  for (const content of [home, paywall]) {
+    assert.match(content, /Stripe securely processes payment|Secure payment via Stripe/);
+    assert.match(content, /does not renew/);
+    assert.match(content, /Government (filing )?fees|Government fees/);
+    assert.match(content, /hello@startyourcause\.org/);
+  }
+});
