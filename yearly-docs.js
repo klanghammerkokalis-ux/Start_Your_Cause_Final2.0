@@ -62,6 +62,7 @@ const ydocFooter = `</body></html>`;
 // ─────────────────────────────────────────────
 function generateForm990Prep(a, sd, year) {
   const orgName = a.orgName || "[Organization Name]";
+  const website = a.website || '<span class="blank" style="min-width:260px">&nbsp;</span>';
   const taxYear = year || new Date().getFullYear() - 1;
   const dueDate = `May 15, ${parseInt(taxYear)+1}`;
 
@@ -86,7 +87,7 @@ function generateForm990Prep(a, sd, year) {
 <tr><td>Tax year</td><td>January 1 – December 31, ${taxYear}</td></tr>
 <tr><td>Address</td><td>${a.address||'<span class="blank">&nbsp;</span>'}</td></tr>
 <tr><td>State of formation</td><td>${sd?sd.name:(a.state||'<span class="blank">&nbsp;</span>')}</td></tr>
-<tr><td>Website</td><td><span class="blank" style="min-width:260px">&nbsp;</span></td></tr>
+<tr><td>Website</td><td>${website}</td></tr>
 <tr><td>Mission statement</td><td>${a.missionStatement||a.activities||'<span class="blank" style="min-width:350px">&nbsp;</span>'}</td></tr>
 <tr><td>Number of voting board members</td><td>${[a.founderName,a.board2,a.board3,a.board4,a.board5].filter(Boolean).length}</td></tr>
 <tr><td>Number of employees</td><td><span class="blank" style="min-width:60px">&nbsp;</span></td></tr>

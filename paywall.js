@@ -128,7 +128,6 @@ async function verifyAccess(sessionId) {
 
   const result = await response.json();
   if (!response.ok || !result.verified) {
-    clearStoredAccess();
     return false;
   }
 
@@ -176,7 +175,12 @@ async function restoreVerifiedAccess() {
     }
 
     try {
-      const verified = await verifyAccess(sessionId);
+      let verified = await verifyAccess(sessionId);
+      if (!verified) {
+        const refreshedToken = await refreshCustomerToken();
+        if (refreshedToken) verified = await verifyAccess(sessionId);
+      }
+      if (!verified) clearStoredAccess();
       if (verified && returnedSessionId) {
         const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
         const purchaseKey = 'syc_purchase_tracked_' + sessionId;
@@ -304,6 +308,14 @@ async function openBillingPortal(btn) {
         btn.textContent = originalText;
         btn.disabled = false;
       }
+      return;
+    }
+    if (verifiedAccess && verifiedAccess.planId === 'annual') {
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      alert('Your Formation Package is a one-time payment and does not renew automatically. There is no subscription to cancel.');
       return;
     }
     const authToken = localStorage.getItem(AUTH_TOKEN_KEY);

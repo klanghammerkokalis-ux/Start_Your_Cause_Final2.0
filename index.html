@@ -711,6 +711,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="fs-title">What is your nonprofit about?</div>
         <div class="fs-desc">A nonprofit helps people, animals, or the community — without making personal profit. Let's start with your big idea.</div>
         <div class="field"><label>Name of your nonprofit</label><div class="hint">Example: "Bright Future Youth Center" or "Paws &amp; Claws Rescue"</div><input type="text" id="f_orgName" placeholder="e.g. Helping Hands Community Center"></div>
+        <div class="field"><label>Nonprofit website (optional)</label><div class="hint">Use the organization’s website if it already has one. Leave this blank if it does not.</div><input type="url" id="f_website" inputmode="url" autocomplete="url" placeholder="https://example.org"></div>
         <div class="field"><label>What problem are you trying to fix?</label><div class="hint">Explain it like you're telling a friend. What hurts your community?</div><textarea id="f_problem" placeholder="e.g. Many kids in our town don't have a safe place to go after school..."></textarea></div>
         <div class="field"><label>What will your nonprofit DO to help?</label><div class="hint">What programs, activities, or services will you offer?</div><textarea id="f_activities" placeholder="e.g. We will run an after-school tutoring program, offer free meals, and provide safe activities..."></textarea></div>
         <div class="field"><label>Write a one-sentence mission statement (optional — we can help you draft one)</label><div class="hint">Example: "Our mission is to provide safe after-school programs for underserved youth in Chicago."</div><input type="text" id="f_mission" placeholder="Our mission is to..."></div>
@@ -1523,7 +1524,7 @@ function saveFormData() {
       checklist: Array.from(document.querySelectorAll('.cl-item')).map((item,index) => item.classList.contains('chk') ? index : null).filter(index => index !== null),
     };
     // Save all text inputs and textareas
-    const ids = ['f_orgName','f_problem','f_activities','f_mission','f_whoHelp','f_howMany',
+    const ids = ['f_orgName','f_website','f_problem','f_activities','f_mission','f_whoHelp','f_howMany',
       'f_location','f_address','f_agentName','f_agentAddress','f_founderName','f_founderEmail','f_founderAddress','f_board2','f_board3',
       'f_board4','f_board5','f_president','f_secretary','f_treasurer','f_budget','f_expenses','f_notes','f_spendLimit'];
     ids.forEach(id => {
@@ -1628,7 +1629,7 @@ document.addEventListener('change', function(e) {
 
 function getAnswers(){
   return {
-    orgName: fv('f_orgName'), problem: fv('f_problem'), activities: fv('f_activities'),
+    orgName: fv('f_orgName'), website: fv('f_website'), problem: fv('f_problem'), activities: fv('f_activities'),
     missionStatement: fv('f_mission'), whoHelp: fv('f_whoHelp'), howMany: fv('f_howMany'),
     location: fv('f_location'), orgType: fr('f_type'),
     state: fv('f_stateSelect') || document.getElementById('f_stateSelect').value,
