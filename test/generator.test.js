@@ -13,6 +13,7 @@ function load(file, names) {
 
 const answers = {
   orgName: 'Bright River Youth Center', problem: 'Students lack safe after-school support.',
+  website: 'https://brightriver.example',
   activities: 'Provide tutoring and meals.', missionStatement: 'Support students through tutoring and meals.',
   whoHelp: 'Students ages 8–14', howMany: '120', location: 'Kane County, Illinois',
   orgType: 'Public Charity', state: 'IL', address: '100 Test Street, St. Charles, IL 60174',
@@ -46,12 +47,14 @@ test('articles render registered-agent and incorporator details', () => {
   assert.match(articles, /100 Test Street/);
 });
 
-test('annual documents do not claim StartYourCause.org is the customer website', () => {
+test('annual documents use the customer website and never claim StartYourCause.org is theirs', () => {
   const { generateYearlyDocs } = load('yearly-docs.js', ['generateYearlyDocs']);
   const docs = generateYearlyDocs(answers, state, 2025);
   assert.equal(Object.keys(docs).length, 4);
   assert.doesNotMatch(docs.form990, /<td>Website<\/td><td>\s*StartYourCause\.org/i);
-  assert.match(docs.form990, /<td>Website<\/td><td><span class="blank"/);
+  assert.match(docs.form990, /<td>Website<\/td><td>https:\/\/brightriver\.example<\/td>/);
+  const blankDocs = generateYearlyDocs({...answers, website: ''}, state, 2025);
+  assert.match(blankDocs.form990, /<td>Website<\/td><td><span class="blank"/);
 });
 
 test('generated documents escape customer-supplied HTML', () => {
@@ -139,6 +142,27 @@ test('purchase analytics are deduplicated by checkout session', () => {
   assert.match(paywall, /syc_purchase_tracked_/);
   assert.match(paywall, /trackSycEvent\('purchase'/);
   assert.match(paywall, /localStorage\.setItem\(purchaseKey, 'true'\)/);
+});
+
+test('returning customer access refreshes expired tokens before clearing access', () => {
+  const paywall = fs.readFileSync('paywall.js', 'utf8');
+  assert.match(paywall, /let verified = await verifyAccess\(sessionId\)/);
+  assert.match(paywall, /const refreshedToken = await refreshCustomerToken\(\)/);
+  assert.match(paywall, /if \(refreshedToken\) verified = await verifyAccess\(sessionId\)/);
+  assert.match(paywall, /if \(!verified\) clearStoredAccess\(\)/);
+});
+
+test('one-time formation customers are not sent to subscription cancellation', () => {
+  const paywall = fs.readFileSync('paywall.js', 'utf8');
+  assert.match(paywall, /verifiedAccess\.planId === 'annual'/);
+  assert.match(paywall, /one-time payment and does not renew automatically/);
+});
+
+test('questionnaire saves and maps the optional nonprofit website', () => {
+  const home = fs.readFileSync('index.html', 'utf8');
+  assert.match(home, /id="f_website"/);
+  assert.match(home, /'f_orgName','f_website'/);
+  assert.match(home, /website: fv\('f_website'\)/);
 });
 
 test('high-performing organic pages provide direct conversion paths', () => {
