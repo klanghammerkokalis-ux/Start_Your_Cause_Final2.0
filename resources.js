@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded',function(){
       const next=document.createElement('section');
       next.className='card';
       next.style.cssText='margin:18px 0;background:var(--glight);border-color:var(--gmid)';
-      next.innerHTML='<h2 style="margin-top:0">Plan your Illinois filing before you pay</h2><p>Estimate government fees, screen for 1023-EZ indicators, and organize the information needed for your document packet.</p><div class="related"><a href="/nonprofit-startup-cost-calculator" data-track="illinois_next_calculator">Estimate my costs →</a><a href="/1023-ez-eligibility-quiz" data-track="illinois_next_quiz">Check 1023-EZ indicators →</a><a href="/?view=form" data-track="illinois_next_intake">Start my questionnaire →</a><a href="/document-previews" data-track="illinois_next_previews">Preview the documents →</a></div>';
+      next.innerHTML='<h2 style="margin-top:0">Plan your Illinois filing before you pay</h2><p>Estimate government fees, screen for 1023-EZ indicators, and organize the information needed for your document packet.</p><div class="related"><a href="/nonprofit-startup-cost-calculator" data-track="illinois_next_calculator">Estimate my costs →</a><a href="/1023-ez-eligibility-quiz" data-track="illinois_next_quiz">Check 1023-EZ indicators →</a><a href="/?view=form" data-track="illinois_next_intake">Create my free quick-start preview →</a><a href="/document-previews" data-track="illinois_next_previews">Preview the documents →</a></div>';
       snapshot.insertAdjacentElement('afterend',next);
     }
   }
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded',function(){
   offer.className='founding-offer';
   offer.setAttribute('aria-label','Founding customer offer');
   offer.style.cssText='margin:0;background:#1d6b52;color:#fff;padding:10px 22px;text-align:center;font-size:14px;line-height:1.5';
-  offer.innerHTML='<strong>Founding 10:</strong> Get the 12-month Formation Package for <strong>$49</strong> instead of $79 with code <strong>FOUNDERS49</strong>. Limited to 10 first-time customers; one payment with no automatic renewal. <a href="/?view=pricing" data-track="resource_founding_offer" style="display:inline-block;margin-left:8px;color:#fff;font-weight:700">See the package →</a>';
+  offer.innerHTML='<strong>Start free:</strong> Answer four questions to see a personalized nonprofit starting plan. No account or payment required. <a href="/?view=form" data-track="resource_quick_start" style="display:inline-block;margin-left:8px;color:#fff;font-weight:700">Create my quick-start preview →</a>';
   document.body.insertBefore(offer,document.body.firstChild);
   let sent=false;
   addEventListener('scroll',function(){if(!sent&&(scrollY+innerHeight)>=document.documentElement.scrollHeight*.75){sent=true;trackSycResourceEvent('resource_75_percent',{resource_slug:document.body.dataset.slug||location.pathname})}},{passive:true});
