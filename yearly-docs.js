@@ -432,18 +432,22 @@ function generateDonorLetters(a, year) {
 
   return ydocHeader(
     `Donor Acknowledgment Letter Templates`,
-    `${orgName} | IRS-Compliant Gift Acknowledgment Letters`
+    `${orgName} | Customizable Gift Acknowledgment Letters`
   ) + `
+
+<div class="err-box">
+<strong>Confirm tax-exempt status before use:</strong> These templates contain optional 501(c)(3) and tax-deductibility language. Use that language only after confirming the organization’s IRS recognition, effective date, and EIN. If recognition is pending or does not cover the gift date, remove the optional language and do not tell a donor that a contribution is tax-deductible without qualified advice.
+</div>
 
 <div class="info-box">
 <strong>IRS Requirements for Donor Acknowledgment:</strong><br>
-• For any donation of <strong>$250 or more</strong>, the IRS requires a written acknowledgment from your organization — otherwise the donor CANNOT claim a tax deduction.<br>
+• A donor generally needs a contemporaneous written acknowledgment to claim a deduction for a contribution of <strong>$250 or more</strong>.<br>
 • The letter must include: (1) your org name and EIN, (2) date of donation, (3) amount donated or description of non-cash gift, (4) statement of whether any goods or services were provided in exchange.<br>
 • For donations under $250, a bank record or receipt is sufficient, but a letter builds donor relationships.
 </div>
 
 <div class="warn-box">
-⚠️ Send acknowledgment letters as soon as possible after receiving a gift — ideally within 2 weeks. Letters MUST be sent before the donor files their tax return (typically April 15 of the following year).
+⚠️ Send acknowledgments promptly. To be contemporaneous under federal rules, a donor generally must receive the acknowledgment by the earlier of the date the donor files the return claiming the contribution or the return’s due date, including extensions.
 </div>
 
 <hr style="margin:2em 0;border:none;border-top:2px solid #ccc">
@@ -455,7 +459,7 @@ function generateDonorLetters(a, year) {
 <p>Dear [Donor Name],</p>
 <p>On behalf of <strong>${orgName}</strong>, I want to express our sincere gratitude for your generous donation of <strong>$[Amount]</strong> received on <strong>[Date of Gift]</strong>.</p>
 <p>Your support directly helps us ${a.activities ? a.activities.substring(0,120)+'...' : '[describe your mission and impact]'}. Because of donors like you, we are able to serve ${a.whoHelp ? a.whoHelp.substring(0,100)+'...' : '[who you serve]'} in ${a.location||'our community'}.</p>
-<p>This letter serves as your official tax receipt. Please retain it for your records. <strong>${orgName}</strong> is a 501(c)(3) tax-exempt organization (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>). <strong>No goods or services were provided in exchange for this contribution.</strong> Your donation is tax-deductible to the fullest extent permitted by law.</p>
+<p>This letter acknowledges your contribution. Please retain it for your records. <strong>[Include only after verification: ${orgName} is recognized by the IRS as tax-exempt under Section 501(c)(3) (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>).]</strong> <strong>No goods or services were provided in exchange for this contribution.</strong> [Include only if accurate: Your contribution may be tax-deductible to the extent permitted by law.]</p>
 <p>With gratitude,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
@@ -478,7 +482,7 @@ function generateDonorLetters(a, year) {
 <tr><td>[Month] 1, ${taxYear}</td><td>$<span class="blank" style="min-width:60px">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td></tr>
 <tr><th>TOTAL ${taxYear}</th><th>$<span class="blank" style="min-width:60px">&nbsp;</span></th><th></th></tr>
 </table>
-<p><strong>${orgName}</strong> is a 501(c)(3) organization (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>). <strong>No goods or services were provided in exchange for these contributions.</strong> Your donations are tax-deductible to the fullest extent permitted by law.</p>
+<p><strong>[Include only after verification: ${orgName} is recognized by the IRS as tax-exempt under Section 501(c)(3) (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>).]</strong> <strong>No goods or services were provided in exchange for these contributions.</strong> [Include only if accurate: Your contributions may be tax-deductible to the extent permitted by law.]</p>
 <p>With deepest gratitude,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
@@ -502,7 +506,7 @@ function generateDonorLetters(a, year) {
 <tr><td><span class="blank" style="min-width:300px">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td></tr>
 </table>
 <p><strong>${orgName}</strong> did not provide any goods or services in exchange for this donation. No value has been assigned to the donated item(s) by ${orgName} — the donor is responsible for determining fair market value for tax deduction purposes.</p>
-<p><strong>${orgName}</strong> is a 501(c)(3) tax-exempt organization. EIN: <span class="blank" style="min-width:100px">&nbsp;</span></p>
+<p><strong>[Include only after verification: ${orgName} is recognized by the IRS as tax-exempt under Section 501(c)(3).]</strong> EIN: <span class="blank" style="min-width:100px">&nbsp;</span></p>
 <p>Sincerely,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
@@ -522,7 +526,7 @@ function generateDonorLetters(a, year) {
 <p>You paid <strong>$[Total Amount Paid]</strong> for [description of ticket/item purchased].</p>
 <p>The estimated fair market value of the goods/services you received was <strong>$[Fair Market Value]</strong>.</p>
 <p>Therefore, the <strong>tax-deductible portion</strong> of your payment is <strong>$[Amount Paid minus Fair Market Value]</strong>.</p>
-<p><strong>${orgName}</strong> is a 501(c)(3) tax-exempt organization (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>).</p>
+<p><strong>[Include only after verification: ${orgName} is recognized by the IRS as tax-exempt under Section 501(c)(3) (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>).]</strong></p>
 <p>Thank you again for your generous support!</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
@@ -543,8 +547,8 @@ function generateDonorLetters(a, year) {
 <li><span class="blank" style="min-width:400px">&nbsp;</span></li>
 <li><span class="blank" style="min-width:400px">&nbsp;</span></li>
 </ul>
-<p>Your total tax-deductible contributions to ${orgName} in ${taxYear} were: <strong>$[Total Amount]</strong></p>
-<p>This letter serves as your official year-end tax summary. Please retain it for your ${taxYear} tax return. <strong>${orgName}</strong> is a 501(c)(3) organization (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>). No goods or services were provided in exchange for your contributions unless otherwise noted above.</p>
+<p>[Include only if accurate: Your total potentially tax-deductible contributions to ${orgName} in ${taxYear} were: <strong>$[Total Amount]</strong>]</p>
+<p>This letter is your year-end contribution summary. Please retain it for your records. <strong>[Include only after verification: ${orgName} is recognized by the IRS as tax-exempt under Section 501(c)(3) (EIN: <span class="blank" style="min-width:100px">&nbsp;</span>).]</strong> No goods or services were provided in exchange for your contributions unless otherwise noted above.</p>
 <p>We are deeply grateful for your partnership in our mission. With your continued support, ${parseInt(taxYear)+1} will be even more impactful.</p>
 <p>With heartfelt thanks,</p>
 <div style="margin-top:2em">

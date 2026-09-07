@@ -57,6 +57,21 @@ test('annual documents use the customer website and never claim StartYourCause.o
   assert.match(blankDocs.form990, /<td>Website<\/td><td><span class="blank"/);
 });
 
+test('all annual documents render safely and donor letters do not assume IRS recognition', () => {
+  const { generateYearlyDocs } = load('yearly-docs.js', ['generateYearlyDocs']);
+  const docs = generateYearlyDocs(answers, state, 2025);
+  assert.deepEqual(Object.keys(docs), ['form990', 'stateReport', 'annualMinutes', 'donorLetters']);
+  for (const [name, html] of Object.entries(docs)) {
+    assert.ok(html.length > 500, `${name} should render substantive content`);
+    assert.match(html, /Bright River|Jordan Founder|Illinois/);
+    assert.doesNotMatch(html, /undefined|null/);
+  }
+  assert.match(docs.donorLetters, /Confirm tax-exempt status before use/);
+  assert.match(docs.donorLetters, /Include only after verification/);
+  assert.doesNotMatch(docs.donorLetters, /Bright River Youth Center<\/strong> is a 501\(c\)\(3\)/);
+  assert.doesNotMatch(docs.donorLetters, /IRS-Compliant Gift Acknowledgment Letters/);
+});
+
 test('generated documents escape customer-supplied HTML', () => {
   const { generateAllDocs } = load('docgen.js', ['generateAllDocs']);
   const docs = generateAllDocs({...answers, orgName: '<script>alert(1)</script>'}, state);
