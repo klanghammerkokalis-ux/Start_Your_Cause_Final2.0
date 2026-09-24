@@ -33,6 +33,11 @@
   status = 200
 
 [[redirects]]
+  from = "/nonprofit-filing-fees-by-state"
+  to = "/nonprofit-filing-fees-by-state.html"
+  status = 200
+
+[[redirects]]
   from = "/resource-partners"
   to = "/resource-partners.html"
   status = 200
