@@ -88,7 +88,7 @@ test('visitors can begin the questionnaire without an account', () => {
 
 test('organic acquisition pages are indexable and linked', () => {
   const expected = [
-    'nonprofit-startup-cost-calculator', 'resource-partners',
+    'nonprofit-startup-cost-calculator', 'nonprofit-filing-fees-by-state', 'resource-partners',
     'start-a-nonprofit-california', 'start-a-nonprofit-texas',
     'start-a-nonprofit-florida', 'start-a-nonprofit-new-york',
     'start-a-nonprofit-pennsylvania', 'start-a-nonprofit-georgia',
@@ -199,6 +199,19 @@ test('quick-start intake delivers value before the detailed questionnaire', () =
   assert.match(home, /id="quick-start-preview"/);
   assert.match(home, /questionnaire_quick_start_complete/);
   assert.match(home, /questionnaire_value_preview/);
+});
+
+test('50-state filing directory is indexable, complete, and conversion-ready', () => {
+  const directory = fs.readFileSync('nonprofit-filing-fees-by-state.html', 'utf8');
+  const resources = fs.readFileSync('resources.html', 'utf8');
+  const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
+  assert.match(directory, /Nonprofit filing fees and official links by state/);
+  assert.equal((directory.match(/<tr data-state=/g) || []).length, 50);
+  assert.match(directory, /FOUNDERS49/);
+  assert.match(directory, /no automatic renewal/i);
+  assert.match(directory, /does not submit filings or government fees/i);
+  assert.match(resources, /href="\/nonprofit-filing-fees-by-state"/);
+  assert.match(sitemap, /nonprofit-filing-fees-by-state/);
 });
 
 test('dedicated customer funnel events are distinct from generic form analytics', () => {
