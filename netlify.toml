@@ -161,3 +161,8 @@
   from = "/nonprofit-startup-checklist"
   to = "/nonprofit-startup-checklist.html"
   status = 200
+
+[[redirects]]
+  from = "/how-we-build-our-resources"
+  to = "/how-we-build-our-resources.html"
+  status = 200

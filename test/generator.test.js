@@ -244,3 +244,21 @@ test('checkout surfaces access, renewal, filing-fee, and brand-only support term
     assert.match(content, /hello@startyourcause\.org/);
   }
 });
+
+test('trust methodology is transparent, indexable, and identity-safe', () => {
+  const methodology = fs.readFileSync('how-we-build-our-resources.html', 'utf8');
+  const homepage = fs.readFileSync('index.html', 'utf8');
+  const resources = fs.readFileSync('resources.html', 'utf8');
+  const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
+  const redirects = fs.readFileSync('netlify.toml', 'utf8');
+  assert.match(methodology, /How we build our nonprofit resources/);
+  assert.match(methodology, /Form 1023 instructions/);
+  assert.match(methodology, /Last reviewed September 27, 2026/);
+  assert.match(methodology, /does not imply.*endorses/i);
+  assert.match(methodology, /author.*Organization.*Start Your Cause/);
+  assert.doesNotMatch(methodology, /SHRM|PMP|Waybridge|Kristin|Kokalis/i);
+  assert.match(homepage, /href="\/how-we-build-our-resources"/);
+  assert.match(resources, /href="\/how-we-build-our-resources"/);
+  assert.match(sitemap, /how-we-build-our-resources/);
+  assert.match(redirects, /from = "\/how-we-build-our-resources"/);
+});
