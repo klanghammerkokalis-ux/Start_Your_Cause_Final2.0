@@ -113,6 +113,11 @@
   status = 200
 
 [[redirects]]
+  from = "/form-1023-27-month-deadline"
+  to = "/form-1023-27-month-deadline.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-illinois"
   to = "/start-a-nonprofit-illinois.html"
   status = 200

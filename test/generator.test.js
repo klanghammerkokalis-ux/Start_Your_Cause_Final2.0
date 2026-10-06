@@ -96,6 +96,7 @@ test('organic acquisition pages are indexable and linked', () => {
     'start-a-nonprofit-ohio', 'start-a-nonprofit-new-jersey',
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
+    'form-1023-27-month-deadline',
     'illinois-charitable-registration-before-fundraising'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
@@ -109,6 +110,15 @@ test('organic acquisition pages are indexable and linked', () => {
     assert.match(redirects, new RegExp(`from = "/${slug}"`));
     assert.match(resources, new RegExp(`href="/${slug}"`));
   }
+});
+
+test('Form 1023 deadline calculator counts 27 months after the formation month', () => {
+  const page = fs.readFileSync('form-1023-27-month-deadline.html', 'utf8');
+  const deadline = (year, month) => new Date(Date.UTC(year, month - 1 + 28, 0)).toISOString().slice(0, 10);
+  assert.equal(deadline(2026, 1), '2028-04-30');
+  assert.equal(deadline(2024, 2), '2026-05-31');
+  assert.match(page, /Date\.UTC\(parts\[0\],parts\[1\]-1\+28,0\)/);
+  assert.match(page, /form_1023_deadline_result/);
 });
 
 test('resource email signup has consent, spam protection, and a noindex confirmation page', () => {
