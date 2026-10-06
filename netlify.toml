@@ -123,6 +123,11 @@
   status = 200
 
 [[redirects]]
+  from = "/illinois-charitable-registration-before-fundraising"
+  to = "/illinois-charitable-registration-before-fundraising.html"
+  status = 200
+
+[[redirects]]
   from = "/illinois-nonprofit-articles-of-incorporation"
   to = "/illinois-nonprofit-articles-of-incorporation.html"
   status = 200

@@ -96,7 +96,8 @@ test('organic acquisition pages are indexable and linked', () => {
     'start-a-nonprofit-ohio', 'start-a-nonprofit-new-jersey',
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
-    'form-1023-27-month-deadline'
+    'form-1023-27-month-deadline',
+    'illinois-charitable-registration-before-fundraising'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const redirects = fs.readFileSync('netlify.toml', 'utf8');
