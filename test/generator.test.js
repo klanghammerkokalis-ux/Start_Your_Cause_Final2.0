@@ -97,6 +97,7 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
+    'nonprofit-donation-receipt-requirements',
     'illinois-charitable-registration-before-fundraising'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
@@ -119,6 +120,16 @@ test('Form 1023 deadline calculator counts 27 months after the formation month',
   assert.equal(deadline(2024, 2), '2026-05-31');
   assert.match(page, /Date\.UTC\(parts\[0\],parts\[1\]-1\+28,0\)/);
   assert.match(page, /form_1023_deadline_result/);
+});
+
+test('donation receipt guide preserves the federal acknowledgment distinctions', () => {
+  const page = fs.readFileSync('nonprofit-donation-receipt-requirements.html', 'utf8');
+  assert.match(page, /single contribution of \$250 or more/i);
+  assert.match(page, /payment over \$75/i);
+  assert.match(page, /description—but not the value—of donated property/i);
+  assert.match(page, /No goods or services were provided/i);
+  assert.match(page, /date the donor files the original federal return/i);
+  assert.match(page, /Start Your Cause provides customizable templates and educational guidance/);
 });
 
 test('resource email signup has consent, spam protection, and a noindex confirmation page', () => {
