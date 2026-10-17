@@ -78,3 +78,40 @@ The pilot is $149 for a written task roadmap, official resource links, an inform
 Existing GA4 resource_view identifies resource_slug=guided-start. guided_start_offer_click records homepage/pricing entry. guided_start_inquiry records an email-link click only, not a submitted inquiry. Match received email inquiries and verified payments manually. Track source, inquiries received, accepted scopes, paid orders, gross revenue, refunds, payment fees, fulfillment minutes, and reasons for declining.
 
 No outreach has been sent as part of this implementation. No new Stripe product or checkout has been created.
+
+
+## Resource conversion links added October 16
+
+The document previews, startup checklist, filing-fee directory, and startup-cost calculator now show side-by-side DIY and Guided Start options. Track `resource_diy_offer_click` and `resource_guided_offer_click` by `resource_slug`. These are click events, not purchases. Keep the offer block when regenerating the filing-fee directory.
+
+## Next partner follow-ups, prepared for review only
+
+September introductions already exist for Naperville Public Library Business Services, West Chicago Public Library, Community Foundation of the Fox River Valley, Center for Nonprofit Excellence at CFECI, and Forefront. Check the complete individual conversation for replies, opt-outs, and earlier follow-ups before sending anything. Do not treat the existing sent-message record as evidence of interest or an active partnership.
+
+Use this follow-up draft after checking the thread:
+
+Subject: Re: Free 50-state nonprofit startup resource
+
+Hello [team],
+
+I wanted to follow up once on the nonprofit startup resources we shared in September. Would a short listing for your resource page or newsletter be useful?
+
+Suggested listing:
+“Start Your Cause offers a free nonprofit startup checklist, state filing resources, and a startup-cost calculator. Optional paid tools and written planning support are available. The service provides educational resources and does not submit filings or replace legal or tax advice.”
+
+Resource link: https://startyourcause.org/resource-partners?utm_source=partner_followup&utm_medium=email&utm_campaign=revenue_pilot
+
+If another person handles resource recommendations, please feel free to point us to the appropriate team. If this is not a fit, no response is needed and we will not keep following up.
+
+Thank you,
+Start Your Cause
+hello@startyourcause.org
+
+Tailoring for each review draft:
+- Naperville: Ask whether the checklist fits business-services resources for people exploring nonprofit formation.
+- West Chicago: Ask whether a short listing would help adult-services staff answer nonprofit startup questions.
+- Fox River Valley foundation: Ask whether the free tools fit referrals for emerging community groups not yet ready for funding.
+- CFECI: Ask whether a checklist would complement its existing founder education; do not imply its staff has reviewed the tools.
+- Forefront: Ask whether these self-service resources fit inquiries it receives from prospective founders; do not imply endorsement.
+
+Nothing in this section has been sent or scheduled.
