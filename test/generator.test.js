@@ -97,6 +97,7 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
+    'can-501c3-endorse-political-candidates',
     'illinois-charitable-registration-before-fundraising'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
@@ -119,6 +120,15 @@ test('Form 1023 deadline calculator counts 27 months after the formation month',
   assert.equal(deadline(2024, 2), '2026-05-31');
   assert.match(page, /Date\.UTC\(parts\[0\],parts\[1\]-1\+28,0\)/);
   assert.match(page, /form_1023_deadline_result/);
+});
+
+test('political activity guide preserves the candidate and lobbying distinction', () => {
+  const page = fs.readFileSync('can-501c3-endorse-political-candidates.html', 'utf8');
+  assert.match(page, /may not directly or indirectly participate or intervene/i);
+  assert.match(page, /federal, state, and local candidate campaigns/i);
+  assert.match(page, /Lobbying generally means attempting to influence legislation/i);
+  assert.match(page, /genuinely nonpartisan voter registration/i);
+  assert.match(page, /Start Your Cause provides customizable templates and educational guidance/);
 });
 
 test('resource email signup has consent, spam protection, and a noindex confirmation page', () => {

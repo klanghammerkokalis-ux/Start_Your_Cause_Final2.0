@@ -118,6 +118,11 @@
   status = 200
 
 [[redirects]]
+  from = "/can-501c3-endorse-political-candidates"
+  to = "/can-501c3-endorse-political-candidates.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-illinois"
   to = "/start-a-nonprofit-illinois.html"
   status = 200
