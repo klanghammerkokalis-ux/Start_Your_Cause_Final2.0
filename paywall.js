@@ -1,5 +1,4 @@
 const PAYWALL_CONFIG = {
-  stripePublishableKey: 'pk_live_51TLnV2RyNZ1TUldS1oCbXHlyJ7ySi72JfjrjHrjdS9eCLI5oyO3lZQNLVXT87NktLLixTNEygLJOdm9PExAyVwvI00sa2xJaBp',
   plans: {
     monthly: {
       id: 'monthly', name: 'Monthly', price: 12, period: 'month',
