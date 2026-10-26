@@ -97,6 +97,7 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
+    'can-an-llc-be-a-501c3',
     'illinois-charitable-registration-before-fundraising'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
@@ -119,6 +120,15 @@ test('Form 1023 deadline calculator counts 27 months after the formation month',
   assert.equal(deadline(2024, 2), '2026-05-31');
   assert.match(page, /Date\.UTC\(parts\[0\],parts\[1\]-1\+28,0\)/);
   assert.match(page, /form_1023_deadline_result/);
+});
+
+test('LLC exemption guide preserves the IRS entity and application distinctions', () => {
+  const page = fs.readFileSync('can-an-llc-be-a-501c3.html', 'utf8');
+  assert.match(page, /every member must be a recognized 501\(c\)\(3\) organization/i);
+  assert.match(page, /LLC is not eligible to apply using Form 1023-EZ/i);
+  assert.match(page, /both the LLC's articles of organization and operating agreement/i);
+  assert.match(page, /State formation and federal recognition are separate/i);
+  assert.match(page, /Start Your Cause provides customizable templates and educational guidance/);
 });
 
 test('resource email signup has consent, spam protection, and a noindex confirmation page', () => {

@@ -118,6 +118,11 @@
   status = 200
 
 [[redirects]]
+  from = "/can-an-llc-be-a-501c3"
+  to = "/can-an-llc-be-a-501c3.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-illinois"
   to = "/start-a-nonprofit-illinois.html"
   status = 200
