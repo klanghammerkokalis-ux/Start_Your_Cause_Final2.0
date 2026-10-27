@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { isPaidFormationSession } = require('./_stripe-access');
 
 const ALLOWED_PRICES = {
   monthly: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1U3daX0dD4h0E3se5Zo5Bne0',
@@ -65,10 +66,7 @@ exports.handler = async (event) => {
       });
     }
 
-    const isFormationPackage = session.mode === 'payment'
-      && session.metadata?.planId === 'annual'
-      && session.amount_total === 7900
-      && session.currency === 'usd';
+    const isFormationPackage = isPaidFormationSession(session);
     const subscription = session.subscription;
     const subscriptionStatus = subscription && typeof subscription === 'object'
       ? subscription.status

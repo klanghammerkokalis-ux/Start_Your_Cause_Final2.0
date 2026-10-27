@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { isPaidFormationSession } = require('./_stripe-access');
 
 const ALLOWED_PRICES = {
   monthly: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1U3daX0dD4h0E3se5Zo5Bne0',
@@ -55,11 +56,7 @@ async function findActivePlan(email) {
     const sessions = await stripe.checkout.sessions.list({ customer: customer.id, status: 'complete', limit: 100 });
     const now = Math.floor(Date.now() / 1000);
     const formationSession = sessions.data.find(session =>
-      session.mode === 'payment'
-      && session.payment_status === 'paid'
-      && session.metadata?.planId === 'annual'
-      && session.amount_total === 7900
-      && session.currency === 'usd'
+      isPaidFormationSession(session)
       && session.created + (365 * 24 * 60 * 60) > now
     );
     if (formationSession) return { planId: 'annual', formationSession };
