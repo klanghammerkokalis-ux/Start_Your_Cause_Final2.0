@@ -113,7 +113,7 @@ async function verifyAccess(sessionId) {
 
   const token = localStorage.getItem(AUTH_TOKEN_KEY);
   if (!token) {
-    clearStoredAccess();
+    // The customer may need to sign in again; never discard purchase evidence.
     return false;
   }
 
@@ -148,6 +148,11 @@ async function restoreVerifiedAccess() {
     const returnedAuthToken = consumeAuthTokenFromUrl();
     const storedAuthToken = localStorage.getItem(AUTH_TOKEN_KEY);
     const sessionId = returnedSessionId || storedSessionId;
+    // Save the Stripe reference immediately, even if auth verification fails.
+    // The checkout return URL is cleaned up below, so otherwise it is lost.
+    if (returnedSessionId && returnedSessionId.startsWith('cs_')) {
+      localStorage.setItem(CHECKOUT_SESSION_KEY, returnedSessionId);
+    }
 
     if (canceled && typeof window.trackSycEvent === 'function') {
       window.trackSycEvent('checkout_cancel', {});
