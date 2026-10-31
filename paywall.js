@@ -217,7 +217,7 @@ async function restoreVerifiedAccess() {
       return verified;
     } catch (error) {
       console.error('Unable to verify access:', error);
-      clearStoredAccess();
+      // Preserve the session so a subsequent sign-in can recover paid access.
       return false;
     } finally {
       if (returnedSessionId || canceled) {
@@ -229,9 +229,11 @@ async function restoreVerifiedAccess() {
     }
   })();
 
-  const result = await verificationPromise;
-  verificationPromise = null;
-  return result;
+  try {
+    return await verificationPromise;
+  } finally {
+    verificationPromise = null;
+  }
 }
 
 async function requestAccessEmail(email, statusElement, button) {
