@@ -38,7 +38,13 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         from, to: [recipient],
         subject: 'Your Start Your Cause Formation Package is ready',
-        text: 'Your Start Your Cause Formation Package checkout is complete. You have 12 months of access to your formation documents and saved questionnaire. No automatic renewal.\\n\\nLog in using the same email address you used at checkout: ' + origin + '/\\n\\nIf you need help accessing your account, reply to this email or contact hello@startyourcause.org.\\n\\nStart Your Cause',
+        text: [
+          'Your Start Your Cause Formation Package checkout is complete.',
+          'You have 12 months of access to your formation documents and saved questionnaire. No automatic renewal.',
+          'Log in using the same email address you used at checkout: ' + origin + '/',
+          'If you need help accessing your account, reply to this email or contact hello@startyourcause.org.',
+          'Start Your Cause',
+        ].join(String.fromCharCode(10, 10)),
       }),
     });
     if (!response.ok) {
