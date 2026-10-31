@@ -168,6 +168,8 @@ async function restoreVerifiedAccess() {
     }
 
     if (!sessionId) {
+      // No checkout session is needed when a signed-in customer has an
+      // existing Stripe entitlement; the account recovery path above checks it.
       if (returnedSessionId || canceled) {
         window.history.replaceState({}, document.title, window.location.pathname);
       }
@@ -180,7 +182,19 @@ async function restoreVerifiedAccess() {
         const refreshedToken = await refreshCustomerToken();
         if (refreshedToken) verified = await verifyAccess(sessionId);
       }
-      if (!verified) clearStoredAccess();
+      // A checkout return can fail verification because the browser token expired,
+      // even though Stripe has already recorded a valid purchase. Recover by
+      // authenticated customer email before discarding the checkout reference.
+      if (!verified) {
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
+        if (token) verified = await verifyCustomerToken(token);
+        if (!verified) {
+          const refreshedToken = await refreshCustomerToken();
+          if (refreshedToken) verified = await verifyCustomerToken(refreshedToken);
+        }
+      }
+      // Do not discard the checkout session on a transient verification failure.
+      // It may be needed for support or a subsequent successful recovery.
       if (verified && returnedSessionId) {
         const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
         const purchaseKey = 'syc_purchase_tracked_' + sessionId;
