@@ -113,7 +113,7 @@ async function verifyAccess(sessionId) {
 
   const token = localStorage.getItem(AUTH_TOKEN_KEY);
   if (!token) {
-    clearStoredAccess();
+    // The customer may need to sign in again; never discard purchase evidence.
     return false;
   }
 
@@ -148,6 +148,11 @@ async function restoreVerifiedAccess() {
     const returnedAuthToken = consumeAuthTokenFromUrl();
     const storedAuthToken = localStorage.getItem(AUTH_TOKEN_KEY);
     const sessionId = returnedSessionId || storedSessionId;
+    // Save the Stripe reference immediately, even if auth verification fails.
+    // The checkout return URL is cleaned up below, so otherwise it is lost.
+    if (returnedSessionId && returnedSessionId.startsWith('cs_')) {
+      localStorage.setItem(CHECKOUT_SESSION_KEY, returnedSessionId);
+    }
 
     if (canceled && typeof window.trackSycEvent === 'function') {
       window.trackSycEvent('checkout_cancel', {});
@@ -168,6 +173,8 @@ async function restoreVerifiedAccess() {
     }
 
     if (!sessionId) {
+      // No checkout session is needed when a signed-in customer has an
+      // existing Stripe entitlement; the account recovery path above checks it.
       if (returnedSessionId || canceled) {
         window.history.replaceState({}, document.title, window.location.pathname);
       }
@@ -180,7 +187,19 @@ async function restoreVerifiedAccess() {
         const refreshedToken = await refreshCustomerToken();
         if (refreshedToken) verified = await verifyAccess(sessionId);
       }
-      if (!verified) clearStoredAccess();
+      // A checkout return can fail verification because the browser token expired,
+      // even though Stripe has already recorded a valid purchase. Recover by
+      // authenticated customer email before discarding the checkout reference.
+      if (!verified) {
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
+        if (token) verified = await verifyCustomerToken(token);
+        if (!verified) {
+          const refreshedToken = await refreshCustomerToken();
+          if (refreshedToken) verified = await verifyCustomerToken(refreshedToken);
+        }
+      }
+      // Do not discard the checkout session on a transient verification failure.
+      // It may be needed for support or a subsequent successful recovery.
       if (verified && returnedSessionId) {
         const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
         const purchaseKey = 'syc_purchase_tracked_' + sessionId;
@@ -203,7 +222,7 @@ async function restoreVerifiedAccess() {
       return verified;
     } catch (error) {
       console.error('Unable to verify access:', error);
-      clearStoredAccess();
+      // Preserve the session so a subsequent sign-in can recover paid access.
       return false;
     } finally {
       if (returnedSessionId || canceled) {
@@ -215,9 +234,11 @@ async function restoreVerifiedAccess() {
     }
   })();
 
-  const result = await verificationPromise;
-  verificationPromise = null;
-  return result;
+  try {
+    return await verificationPromise;
+  } finally {
+    verificationPromise = null;
+  }
 }
 
 async function requestAccessEmail(email, statusElement, button) {
@@ -350,6 +371,13 @@ async function openBillingPortal(btn) {
 async function startCheckout(planId) {
   const plan = PAYWALL_CONFIG.plans[planId];
   if (!plan) return;
+  // A returning purchaser must not be sent through checkout a second time.
+  // Confirm entitlement with Stripe on the server, not with browser flags.
+  if (hasAccess() || await restoreVerifiedAccess()) {
+    if (typeof hidePricingModal === 'function') hidePricingModal();
+    if (typeof go === 'function') go('form');
+    return;
+  }
   const accountToken = localStorage.getItem(AUTH_TOKEN_KEY);
   if (!accountToken) {
     if (typeof showAccountModal === 'function') showAccountModal('signup');
