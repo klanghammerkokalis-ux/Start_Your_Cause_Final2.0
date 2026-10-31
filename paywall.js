@@ -364,6 +364,13 @@ async function openBillingPortal(btn) {
 async function startCheckout(planId) {
   const plan = PAYWALL_CONFIG.plans[planId];
   if (!plan) return;
+  // A returning purchaser must not be sent through checkout a second time.
+  // Confirm entitlement with Stripe on the server, not with browser flags.
+  if (hasAccess() || await restoreVerifiedAccess()) {
+    if (typeof hidePricingModal === 'function') hidePricingModal();
+    if (typeof go === 'function') go('form');
+    return;
+  }
   const accountToken = localStorage.getItem(AUTH_TOKEN_KEY);
   if (!accountToken) {
     if (typeof showAccountModal === 'function') showAccountModal('signup');
