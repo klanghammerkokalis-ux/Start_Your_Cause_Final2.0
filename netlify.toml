@@ -118,6 +118,11 @@
   status = 200
 
 [[redirects]]
+  from = "/can-a-nonprofit-charge-fees-or-sell-products"
+  to = "/can-a-nonprofit-charge-fees-or-sell-products.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-illinois"
   to = "/start-a-nonprofit-illinois.html"
   status = 200
