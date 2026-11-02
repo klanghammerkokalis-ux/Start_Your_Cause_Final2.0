@@ -97,7 +97,8 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
-    'illinois-charitable-registration-before-fundraising'
+    'illinois-charitable-registration-before-fundraising',
+    'can-a-nonprofit-charge-fees-or-sell-products'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const redirects = fs.readFileSync('netlify.toml', 'utf8');
@@ -110,6 +111,20 @@ test('organic acquisition pages are indexable and linked', () => {
     assert.match(redirects, new RegExp(`from = "/${slug}"`));
     assert.match(resources, new RegExp(`href="/${slug}"`));
   }
+});
+
+test('earned revenue guide explains UBI without overstating the rule', () => {
+  const page = fs.readFileSync('can-a-nonprofit-charge-fees-or-sell-products.html', 'utf8');
+  assert.match(page, /trade or business/);
+  assert.match(page, /regularly carried on/);
+  assert.match(page, /not substantially related/);
+  assert.match(page, /\$1,000 or more in gross income/);
+  assert.match(page, /gross-income filing threshold, not a net-profit threshold/i);
+  assert.match(page, /volunteer-run bake sale/);
+  assert.match(page, /Federal exemption and state sales tax are different/);
+  assert.match(page, /do not submit Form 990-T/);
+  assert.match(page, /G-BE983T68NN/);
+  assert.match(page, /data-slug="can-a-nonprofit-charge-fees-or-sell-products"/);
 });
 
 test('Form 1023 deadline calculator counts 27 months after the formation month', () => {
