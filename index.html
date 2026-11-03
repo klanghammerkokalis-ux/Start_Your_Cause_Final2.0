@@ -1537,7 +1537,7 @@ function fr(name){ const e=document.querySelector('input[name="'+name+'"]:checke
 function fchk(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value); }
 
 // ── AUTO-SAVE & AUTO-RESTORE ──
-const SAVE_KEY = 'syc_form_data';
+
 
 function saveFormData() {
   try {
@@ -1574,14 +1574,16 @@ function saveFormData() {
       data.checkboxes[cls] = Array.from(document.querySelectorAll('.'+cls+':checked')).map(c=>c.value);
     });
     data.checkboxes.f_recoveryConsent = document.getElementById('f_recoveryConsent')?.checked ? ['yes'] : [];
-    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    const key = draftKey();
+    if (!key) return;
+    localStorage.setItem(key, JSON.stringify(data));
     if (typeof saveAccountProject === 'function' && hasAccountSession()) saveAccountProject(data);
   } catch(e) { /* localStorage may be unavailable */ }
 }
 
 function restoreFormData() {
   try {
-    const saved = localStorage.getItem(SAVE_KEY);
+    const saved = localStorage.getItem(draftKey() || '');
     if (!saved) return;
     const data = JSON.parse(saved);
     if (Array.isArray(data.checklist)) {
@@ -1632,7 +1634,7 @@ function restoreFormData() {
 }
 
 function clearFormData() {
-  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+  try { localStorage.removeItem(draftKey() || ''); } catch(e) {}
 }
 
 function resetFormFields() {
