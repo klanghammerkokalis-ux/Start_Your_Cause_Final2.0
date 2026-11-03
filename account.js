@@ -1,7 +1,28 @@
 const ACCOUNT_ACCESS_KEY = 'syc_auth_access_token';
 const ACCOUNT_REFRESH_KEY = 'syc_auth_refresh_token';
 const ACCOUNT_PROJECT_STORAGE_KEY = 'syc_current_project_key';
-let currentProjectKey = localStorage.getItem(ACCOUNT_PROJECT_STORAGE_KEY) || 'default';
+function draftOwner(token = localStorage.getItem(ACCOUNT_ACCESS_KEY)) {
+  if (!token) return 'guest';
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return payload.sub ? 'user:' + payload.sub : null;
+  } catch {
+    return null;
+  }
+}
+
+function draftKey() {
+  const owner = draftOwner();
+  if (owner !== activeDraftOwner) return null;
+  return owner && 'syc_form_data_v2:' + JSON.stringify([owner, currentProjectKey]);
+}
+
+function projectSelectionKey() {
+  return ACCOUNT_PROJECT_STORAGE_KEY + ':' + draftOwner();
+}
+
+let activeDraftOwner = draftOwner();
+let currentProjectKey = localStorage.getItem(projectSelectionKey()) || 'default';
 let accountConfig = null;
 let accountUser = null;
 const accountSaveTimers = new Map();
@@ -23,10 +44,28 @@ function accountHeaders(token, extra) {
   }, extra || {});
 }
 
+function resetDraftContext() {
+  activeDraftOwner = draftOwner();
+  for (const timer of accountSaveTimers.values()) clearTimeout(timer);
+  accountSaveTimers.clear();
+  currentProjectKey = localStorage.getItem(projectSelectionKey()) || 'default';
+  if (typeof resetFormFields === 'function') resetFormFields();
+  if (typeof restoreFormData === 'function') restoreFormData();
+}
+
+window.addEventListener('storage', event => {
+  if ((event.key === ACCOUNT_ACCESS_KEY || event.key === null)
+      && draftOwner() !== activeDraftOwner) {
+    window.location.reload();
+  }
+});
+
 function storeAccountSession(session) {
   if (session.access_token) localStorage.setItem(ACCOUNT_ACCESS_KEY, session.access_token);
   if (session.refresh_token) localStorage.setItem(ACCOUNT_REFRESH_KEY, session.refresh_token);
-  accountUser = session.user || accountUser;
+  const changedOwner = draftOwner() !== activeDraftOwner;
+  accountUser = session.user || (changedOwner ? null : accountUser);
+  if (changedOwner) resetDraftContext();
   updateAccountButton();
 }
 
@@ -34,6 +73,7 @@ function clearAccountSession() {
   localStorage.removeItem(ACCOUNT_ACCESS_KEY);
   localStorage.removeItem(ACCOUNT_REFRESH_KEY);
   accountUser = null;
+  resetDraftContext();
   if (typeof revokeAccess === 'function') revokeAccess();
   updateAccountButton();
 }
@@ -111,11 +151,14 @@ async function getAccountUser() {
 
 async function saveAccountProject(formData) {
   const projectKey = currentProjectKey;
+  const owner = draftOwner();
   clearTimeout(accountSaveTimers.get(projectKey));
   const timer = setTimeout(async () => {
+    accountSaveTimers.delete(projectKey);
     const token = localStorage.getItem(ACCOUNT_ACCESS_KEY);
+    if (!token || draftOwner(token) !== owner) return;
     const user = accountUser || await getAccountUser();
-    if (!token || !user) return;
+    if (!user || owner !== 'user:' + user.id || draftOwner() !== owner) return;
     try {
       await getAccountConfig();
       const response = await fetch(accountConfig.supabaseUrl + '/rest/v1/nonprofit_projects?on_conflict=user_id,project_key', {
@@ -137,7 +180,6 @@ async function saveAccountProject(formData) {
       console.error('Account save failed:', error);
       setAccountSaveStatus('Not saved — check your connection', true);
     }
-    accountSaveTimers.delete(projectKey);
   }, 700);
   accountSaveTimers.set(projectKey, timer);
 }
@@ -147,13 +189,18 @@ async function loadAccountProject() {
   const user = accountUser || await getAccountUser();
   if (!token || !user) return null;
   await getAccountConfig();
+  const key = draftKey();
+  if (!key || draftOwner(token) !== 'user:' + user.id || draftOwner() !== draftOwner(token)) return null;
+  const cachedDraft = localStorage.getItem(key);
   const query = '/rest/v1/nonprofit_projects?select=form_data&user_id=eq.' + encodeURIComponent(user.id)
     + '&project_key=eq.' + encodeURIComponent(currentProjectKey) + '&limit=1';
   const response = await fetch(accountConfig.supabaseUrl + query, { headers: accountHeaders(token) });
   if (!response.ok) return null;
   const rows = await response.json();
+  if (key !== draftKey() || localStorage.getItem(key) !== cachedDraft) return null;
   if (rows[0] && rows[0].form_data) {
-    localStorage.setItem('syc_form_data', JSON.stringify(rows[0].form_data));
+    localStorage.setItem(key, JSON.stringify(rows[0].form_data));
+    if (typeof resetFormFields === 'function') resetFormFields();
     if (typeof restoreFormData === 'function') restoreFormData();
     setAccountSaveStatus('Loaded from your account');
     return rows[0].form_data;
@@ -176,9 +223,9 @@ async function listAccountProjects() {
 async function switchAccountProject(projectKey) {
   saveFormData();
   currentProjectKey = projectKey;
-  localStorage.setItem(ACCOUNT_PROJECT_STORAGE_KEY, projectKey);
-  localStorage.removeItem('syc_form_data');
+  localStorage.setItem(projectSelectionKey(), projectKey);
   if (typeof resetFormFields === 'function') resetFormFields();
+  restoreFormData();
   await loadAccountProject();
   go('form');
 }
@@ -186,8 +233,7 @@ async function switchAccountProject(projectKey) {
 async function createAccountProject() {
   saveFormData();
   currentProjectKey = crypto.randomUUID();
-  localStorage.setItem(ACCOUNT_PROJECT_STORAGE_KEY, currentProjectKey);
-  localStorage.removeItem('syc_form_data');
+  localStorage.setItem(projectSelectionKey(), currentProjectKey);
   if (typeof resetFormFields === 'function') resetFormFields();
   saveFormData();
   go('form');
@@ -215,10 +261,10 @@ async function renameAccountProject(projectKey, orgName) {
     body: JSON.stringify({ org_name: orgName.trim(), form_data: formData, updated_at: new Date().toISOString() }),
   });
   if (!response.ok) throw new Error('Unable to rename nonprofit');
-  if (currentProjectKey === projectKey) {
+  if (draftOwner() === 'user:' + user.id && draftKey() && currentProjectKey === projectKey) {
     const orgNameField = document.getElementById('f_orgName');
     if (orgNameField) orgNameField.value = orgName.trim();
-    localStorage.setItem('syc_form_data', JSON.stringify(formData));
+    localStorage.setItem(draftKey(), JSON.stringify(formData));
   }
 }
 
@@ -234,9 +280,9 @@ async function deleteAccountProject(projectKey) {
   const response = await fetch(accountConfig.supabaseUrl + query, { method: 'DELETE', headers: accountHeaders(token) });
   if (!response.ok) throw new Error('Unable to delete nonprofit');
   if (currentProjectKey === projectKey) {
+    localStorage.removeItem(draftKey());
     currentProjectKey = 'default';
-    localStorage.setItem(ACCOUNT_PROJECT_STORAGE_KEY, currentProjectKey);
-    localStorage.removeItem('syc_form_data');
+    localStorage.setItem(projectSelectionKey(), currentProjectKey);
     if (typeof resetFormFields === 'function') resetFormFields();
   }
 }
