@@ -55,7 +55,7 @@ function resetDraftContext() {
 
 window.addEventListener('storage', event => {
   if ((event.key === ACCOUNT_ACCESS_KEY || event.key === null)
-      && draftOwner(event.oldValue) !== draftOwner(event.newValue)) {
+      && draftOwner() !== activeDraftOwner) {
     window.location.reload();
   }
 });
@@ -191,14 +191,16 @@ async function loadAccountProject() {
   await getAccountConfig();
   const key = draftKey();
   if (!key || draftOwner(token) !== 'user:' + user.id || draftOwner() !== draftOwner(token)) return null;
+  const cachedDraft = localStorage.getItem(key);
   const query = '/rest/v1/nonprofit_projects?select=form_data&user_id=eq.' + encodeURIComponent(user.id)
     + '&project_key=eq.' + encodeURIComponent(currentProjectKey) + '&limit=1';
   const response = await fetch(accountConfig.supabaseUrl + query, { headers: accountHeaders(token) });
   if (!response.ok) return null;
   const rows = await response.json();
-  if (key !== draftKey()) return null;
+  if (key !== draftKey() || localStorage.getItem(key) !== cachedDraft) return null;
   if (rows[0] && rows[0].form_data) {
-    localStorage.setItem(draftKey(), JSON.stringify(rows[0].form_data));
+    localStorage.setItem(key, JSON.stringify(rows[0].form_data));
+    if (typeof resetFormFields === 'function') resetFormFields();
     if (typeof restoreFormData === 'function') restoreFormData();
     setAccountSaveStatus('Loaded from your account');
     return rows[0].form_data;
