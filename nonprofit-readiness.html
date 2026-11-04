@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Should I Start a Nonprofit? | Start Your Cause</title>
+<meta name="description" content="Take a free 2-minute nonprofit readiness check before spending money on formation. Get a practical next step based on your mission, board, funding and plans.">
+<style>
+body{font-family:Arial,sans-serif;background:#f7faf8;color:#18342b;margin:0}.wrap{max-width:760px;margin:auto;padding:32px 20px 64px}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.05}p{line-height:1.6}.card{background:white;border:1px solid #dce9e2;border-radius:16px;padding:24px;margin:20px 0;box-shadow:0 8px 30px rgba(0,0,0,.05)}label{display:block;font-weight:700;margin:18px 0 8px}select,input{width:100%;padding:12px;border:1px solid #b9cec4;border-radius:8px;font-size:16px;box-sizing:border-box}button,.cta{display:inline-block;background:#24765c;color:white;border:0;border-radius:9px;padding:13px 20px;font-weight:700;text-decoration:none;cursor:pointer;margin-top:18px}.muted{font-size:.9rem;color:#60756d}.result{display:none}.score{font-size:2rem;font-weight:800}</style>
+</head><body><main class="wrap">
+<p><a href="/">← Start Your Cause</a></p>
+<h1>Should you start a nonprofit?</h1>
+<p>Before you spend money filing anything, take this free two-minute readiness check. It is designed to help you decide whether nonprofit formation is a sensible next step—or whether you should validate the idea first.</p>
+<div class="card" id="quiz">
+<label for="mission">Is your primary purpose charitable, educational, religious, scientific, or otherwise public-serving?</label><select id="mission"><option value="">Choose one</option><option value="2">Yes</option><option value="1">Mostly / I'm still defining it</option><option value="0">No / primarily for private profit</option></select>
+<label for="board">Do you have at least 3 people who could serve on an initial board?</label><select id="board"><option value="">Choose one</option><option value="2">Yes</option><option value="1">I have 1–2 people</option><option value="0">Not yet</option></select>
+<label for="program">Can you clearly describe what the organization will actually do and who it will serve?</label><select id="program"><option value="">Choose one</option><option value="2">Yes</option><option value="1">Partly</option><option value="0">Not yet</option></select>
+<label for="funding">Do you have a realistic plan for donations, grants, program revenue, or other funding?</label><select id="funding"><option value="">Choose one</option><option value="2">Yes</option><option value="1">Some ideas</option><option value="0">Not yet</option></select>
+<label for="commit">Are you prepared for ongoing governance, records, annual filings and compliance after formation?</label><select id="commit"><option value="">Choose one</option><option value="2">Yes</option><option value="1">With guidance</option><option value="0">I wasn't aware of that</option></select>
+<button onclick="scoreQuiz()">See my next step</button><p class="muted">Educational guidance only; not legal or tax advice.</p>
+</div>
+<div class="card result" id="result"><div class="score" id="headline"></div><p id="copy"></p><a class="cta" id="cta" href="/">Continue with Start Your Cause</a></div>
+<script>
+function scoreQuiz(){const ids=['mission','board','program','funding','commit'];let total=0;for(const id of ids){const v=document.getElementById(id).value;if(v===''){alert('Please answer all five questions.');return}total+=Number(v)}let h,c,cta='/';if(total>=8){h='You look ready to move forward.';c='You have the core pieces of a viable nonprofit launch. Your next step is turning those plans into a formation and compliance roadmap.'}else if(total>=5){h='Promising idea—do a little more groundwork first.';c='You may be a good nonprofit candidate, but strengthening your board, program plan or funding approach before filing can save money and rework.'}else{h='Validate before you form.';c='Filing now may be premature. Clarify the mission, program, governance and funding model first. A fiscal sponsor or an informal pilot may also be worth exploring before creating a new entity.'}document.getElementById('headline').textContent=h;document.getElementById('copy').textContent=c;document.getElementById('cta').href=cta;document.getElementById('result').style.display='block';document.getElementById('result').scrollIntoView({behavior:'smooth'})}
+</script></main></body></html>
