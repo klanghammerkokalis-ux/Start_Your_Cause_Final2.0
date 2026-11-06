@@ -109,3 +109,31 @@ test('quick-start preview displays organization and mission HTML safely', () => 
   assert.doesNotMatch(preview.innerHTML, /<img/);
   assert.equal(preview.innerHTML.match(/&lt;img/g).length,2);
 });
+
+test('legacy annual subscribers can manage billing while one-time purchasers are not sent to cancel', async () => {
+  for (const [status, existingSubscription] of [['active',true],['formation_access',false],['formation_access',true]]) {
+    const calls=[];
+    const context={
+      console,URLSearchParams,
+      window:{location:{href:''},addEventListener(){}},document:{addEventListener(){}},
+      localStorage:{getItem:()=> 'test-only'},
+      alert:()=>calls.push('notice'),
+      fetch:async()=>{calls.push('portal');return {ok:existingSubscription,status:existingSubscription?200:403,json:async()=>existingSubscription?({url:'https://billing.example.test/'}):({error:'Verified customer access is required'})};},
+    };
+    vm.createContext(context);
+    vm.runInContext(fs.readFileSync('paywall.js','utf8')+`\nverifiedAccess = {verified:true,planId:'annual',subscriptionStatus:${JSON.stringify(status)}};`,context);
+    await context.openBillingPortal({textContent:'Manage billing'});
+    assert.deepEqual(calls,existingSubscription?['portal']:['portal','notice']);
+    assert.equal(context.window.location.href,existingSubscription?'https://billing.example.test/':'');
+  }
+});
+
+test('pricing-page checkout does not repurchase when access is already verified', async () => {
+  const source=fs.readFileSync('index.html','utf8');
+  let destination;
+  const context={hasAccess:()=>true,go:id=>destination=id};
+  vm.createContext(context);
+  vm.runInContext(source.slice(source.indexOf('async function doCheckout(planId, btn) {'),source.indexOf('</script>',source.indexOf('async function doCheckout(planId, btn) {'))),context);
+  await context.doCheckout('annual',null);
+  assert.equal(destination,'form');
+});

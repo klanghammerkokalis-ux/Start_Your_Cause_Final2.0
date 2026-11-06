@@ -335,14 +335,6 @@ async function openBillingPortal(btn) {
       }
       return;
     }
-    if (verifiedAccess && verifiedAccess.planId === 'annual') {
-      if (btn) {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
-      alert('Your Formation Package is a one-time payment and does not renew automatically. There is no subscription to cancel.');
-      return;
-    }
     const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
 
     if (typeof window.trackSycEvent === 'function') {
@@ -358,6 +350,15 @@ async function openBillingPortal(btn) {
       body: JSON.stringify({ sessionId }),
     });
     const result = await response.json();
+    if (response.status === 403 && result.error === 'Verified customer access is required'
+        && verifiedAccess && verifiedAccess.subscriptionStatus === 'formation_access') {
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      alert('Your Formation Package is a one-time payment and does not renew automatically. There is no subscription to cancel.');
+      return;
+    }
     if (!response.ok || !result.url) {
       throw new Error(result.error || 'Billing portal unavailable');
     }

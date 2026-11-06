@@ -946,7 +946,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
 
     <!-- Access banner -->
     <div id="annual-access-banner" style="display:none;background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:14px;color:var(--gdark)">
-      ✓ <strong>Subscription active.</strong> All annual filing documents are unlocked.
+      ✓ <strong>Document access active.</strong> All annual filing documents are unlocked.
       <button onclick="openBillingPortal(this)" style="margin-left:10px;padding:6px 10px;border:1px solid var(--gmid);border-radius:6px;background:#fff;color:var(--gdark);font:inherit;cursor:pointer">Manage billing</button>
     </div>
 
@@ -1924,7 +1924,11 @@ function initPricingPage() {
 }
 
 
-function doCheckout(planId, btn) {
+async function doCheckout(planId, btn) {
+  if (hasAccess() || await restoreVerifiedAccess()) {
+    go('form');
+    return;
+  }
   var accountToken = localStorage.getItem('syc_auth_access_token');
   if (!accountToken) {
     showAccountModal('signup');

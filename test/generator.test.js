@@ -201,7 +201,7 @@ test('returning access refreshes expired tokens and preserves purchase evidence 
 
 test('one-time formation customers are not sent to subscription cancellation', () => {
   const paywall = fs.readFileSync('paywall.js', 'utf8');
-  assert.match(paywall, /verifiedAccess\.planId === 'annual'/);
+  assert.match(paywall, /verifiedAccess\.subscriptionStatus === 'formation_access'/);
   assert.match(paywall, /one-time payment and does not renew automatically/);
 });
 
