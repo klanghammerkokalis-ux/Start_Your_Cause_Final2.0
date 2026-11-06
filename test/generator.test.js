@@ -170,12 +170,33 @@ test('purchase analytics are deduplicated by checkout session', () => {
   assert.match(paywall, /localStorage\.setItem\(purchaseKey, 'true'\)/);
 });
 
-test('returning customer access refreshes expired tokens before clearing access', () => {
-  const paywall = fs.readFileSync('paywall.js', 'utf8');
-  assert.match(paywall, /let verified = await verifyAccess\(sessionId\)/);
-  assert.match(paywall, /const refreshedToken = await refreshCustomerToken\(\)/);
-  assert.match(paywall, /if \(refreshedToken\) verified = await verifyAccess\(sessionId\)/);
-  assert.match(paywall, /if \(!verified\) clearStoredAccess\(\)/);
+test('returning access refreshes expired tokens and preserves purchase evidence on failure', async () => {
+  for (const recovered of [true, false]) {
+    const stored = new Map([
+      ['syc_checkout_session_id', 'cs_test_saved'],
+      ['syc_auth_access_token', 'expired'],
+    ]);
+    const calls = [];
+    const context = {
+      console, URLSearchParams,
+      localStorage: {
+        getItem: key => stored.get(key) || null,
+        setItem: (key, value) => stored.set(key, value),
+        removeItem: key => stored.delete(key),
+      },
+      window: { location: { search: '', hash: '', pathname: '/' }, addEventListener() {} },
+      document: { addEventListener() {}, getElementById() { return null; } },
+    };
+    vm.createContext(context);
+    vm.runInContext(fs.readFileSync('paywall.js', 'utf8'), context);
+    context.verifyAccess = async () => { calls.push('verify'); return calls.length > 1 && recovered; };
+    context.refreshCustomerToken = async () => { calls.push('refresh'); return 'fresh'; };
+    context.verifyCustomerToken = async () => false;
+    assert.equal(await context.restoreVerifiedAccess(), recovered);
+    assert.deepEqual(calls.slice(0, 3), ['verify', 'refresh', 'verify']);
+    assert.equal(stored.get('syc_checkout_session_id'), 'cs_test_saved');
+    assert.equal(context.hasAccess(), false, 'unverified stored evidence must not unlock documents');
+  }
 });
 
 test('one-time formation customers are not sent to subscription cancellation', () => {
