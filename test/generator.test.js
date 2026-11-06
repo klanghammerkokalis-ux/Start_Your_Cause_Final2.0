@@ -294,3 +294,19 @@ test('trust methodology is transparent, indexable, and identity-safe', () => {
   assert.match(sitemap, /how-we-build-our-resources/);
   assert.match(redirects, /from = "\/how-we-build-our-resources"/);
 });
+
+test('all 13 documents generate for every supported state and territory', () => {
+  const { STATE_DATA } = load('states.js', ['STATE_DATA']);
+  const { generateAllDocs } = load('docgen.js', ['generateAllDocs']);
+  const { generateYearlyDocs } = load('yearly-docs.js', ['generateYearlyDocs']);
+  assert.equal(Object.keys(STATE_DATA).length,56);
+  for (const [code, stateData] of Object.entries(STATE_DATA)) {
+    const sample = {...answers,state:stateData.name};
+    const docs = {...generateAllDocs(sample,stateData),...generateYearlyDocs(sample,stateData,2025)};
+    assert.equal(Object.keys(docs).length,13,code);
+    for (const [name,html] of Object.entries(docs)) {
+      assert.match(html, /<!DOCTYPE html>/i, `${code}/${name}`);
+      assert.doesNotMatch(html, /undefined|\[object Object\]/, `${code}/${name}`);
+    }
+  }
+});
