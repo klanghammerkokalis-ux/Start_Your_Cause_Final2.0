@@ -92,3 +92,20 @@ test('navigation saves the destination step and restoring the final step rebuild
   assert.equal(context.fCur,7);
   assert.equal(summaries,1);
 });
+
+test('quick-start preview displays organization and mission HTML safely', () => {
+  const preview = {innerHTML:''};
+  const context = {
+    document:{getElementById:id=>id==='quick-start-preview'?preview:{value:'IL'}},
+    STATE_DATA:{IL:{name:'Illinois'}},
+    fv:()=>'<img src=x onerror=alert(1)>',
+    escapeGeneratedHtml:value=>String(value).replaceAll('<','&lt;').replaceAll('>','&gt;'),
+    window:{trackSycEvent(){}},
+  };
+  vm.createContext(context);
+  const source=fs.readFileSync('index.html','utf8');
+  vm.runInContext(source.slice(source.indexOf('function buildQuickStartPreview(){'),source.indexOf('function submitRecoveryConsent(){')),context);
+  context.buildQuickStartPreview();
+  assert.doesNotMatch(preview.innerHTML, /<img/);
+  assert.equal(preview.innerHTML.match(/&lt;img/g).length,2);
+});

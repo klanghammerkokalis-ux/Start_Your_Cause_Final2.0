@@ -1706,7 +1706,7 @@ function buildQuickStartPreview(){
   const code=document.getElementById('f_stateSelect').value;
   const state=STATE_DATA[code];
   const mission=fv('f_mission');
-  preview.innerHTML=`<strong>${org} has a starting plan.</strong><br>${mission}<br><span style="font-size:13px">Your personalized packet will include ${state?state.name+' formation guidance, ':''}Articles of Incorporation, bylaws, conflict policy, board minutes, EIN guidance, and IRS application preparation.</span>`;
+  preview.innerHTML=`<strong>${escapeGeneratedHtml(org)} has a starting plan.</strong><br>${escapeGeneratedHtml(mission)}<br><span style="font-size:13px">Your personalized packet will include ${state?state.name+' formation guidance, ':''}Articles of Incorporation, bylaws, conflict policy, board minutes, EIN guidance, and IRS application preparation.</span>`;
   window.trackSycEvent('questionnaire_value_preview',{form_id:'nonprofit_intake',state:code});
 }
 
