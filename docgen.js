@@ -90,6 +90,8 @@ function generateArticles(a, sd) {
   return docHeader(stName, `State of ${stState} | Filing Fee: ${stFee}<br>File with: ${stAgency}`) + `
 
 <div class="section">
+${a.orgType === 'Private Foundation' ? '<p><strong>Private-foundation review required before use:</strong> This general draft does not resolve the additional governing-instrument requirements of IRC section 508(e), the excise-tax rules, or applicable state law. Have a qualified professional complete that review before filing.</p>' : ''}
+${sd?.name === 'New Hampshire' ? '<p><strong>New Hampshire draft is incomplete:</strong> The questionnaire collects only one incorporator. Complete the official five-incorporator requirements, all required addresses/signatures, and the separate charitable-board requirements before filing. Do not treat board membership as consent to serve as an incorporator.</p>' : ''}
 <h2>Article I — Name</h2>
 <p>The name of this nonprofit corporation is: <strong>${a.orgName || "[Organization Name]"}</strong></p>
 </div>
@@ -117,7 +119,7 @@ function generateArticles(a, sd) {
 
 <div class="section">
 <h2>Article V — Political Activity</h2>
-<p>No substantial part of the activities of the corporation shall be the carrying on of propaganda, or otherwise attempting to influence legislation (except as otherwise permitted by IRC Section 501(h)), and the corporation shall not participate in, or intervene in (including the publishing or distribution of statements), any political campaign on behalf of or in opposition to any candidate for public office.</p>
+<p>No substantial part of the activities of the corporation shall be the carrying on of propaganda, or otherwise attempting to influence legislation (an expenditure-test election under IRC Section 501(h) is available only to eligible organizations with a valid election; private foundations cannot make that election), and the corporation shall not participate in, or intervene in (including the publishing or distribution of statements), any political campaign on behalf of or in opposition to any candidate for public office.</p>
 </div>
 
 <div class="section">
@@ -170,7 +172,7 @@ function generateBylaws(a, sd) {
   return docHeader(`Bylaws of ${orgName}`, `A Nonprofit Corporation | State of ${stState}`) + `
 
 <div class="section">
-<h2>Article I — Name and Purpose</h2>
+<p><strong>Governance draft requiring state-law review:</strong> These defaults assume a board-governed corporation without voting members. Confirm that structure and review director qualifications, officer combinations, notices, quorum, election/removal, indemnification and amendment provisions under the applicable state law and Articles before adoption. A generic template is not a state-law compliance determination.</p><h2>Article I — Name and Purpose</h2>
 <h3>Section 1.1 — Name</h3>
 <p>The name of this organization is <strong>${orgName}</strong> (the "Corporation").</p>
 <h3>Section 1.2 — Purpose</h3>
@@ -195,7 +197,7 @@ function generateBylaws(a, sd) {
 <h3>Section 3.3 — Initial Board of Directors</h3>
 <p>The initial Board of Directors shall consist of:</p>
 <ol>
-<li>${a.founderName || "[Name]"} — Founder / President</li>
+<li>${a.founderName || "[Name]"} — Founder / Director</li>
 <li>${a.board2 || "[Board Member 2]"}</li>
 <li>${a.board3 || "[Board Member 3]"}</li>
 ${a.board4 ? `<li>${a.board4}</li>` : ''}
@@ -212,13 +214,13 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 <h3>Section 3.8 — Compensation</h3>
 <p>${directorCompensation}</p>
 <h3>Section 3.9 — Removal</h3>
-<p>Any director may be removed with or without cause by the vote of two-thirds (2/3) of the directors then in office at any regular or special meeting of the Board, provided that notice of such proposed removal was included in the notice of the meeting.</p>
+<p><strong>State-law review required:</strong> The following default is subject to mandatory state law, the Articles, member voting rights, and how the director was elected or designated. Any director may be removed with or without cause by the vote of two-thirds (2/3) of the directors then in office at any regular or special meeting of the Board, provided that notice of such proposed removal was included in the notice of the meeting.</p>
 </div>
 
 <div class="section">
 <h2>Article IV — Officers</h2>
 <h3>Section 4.1 — Officers</h3>
-<p>The officers of the Corporation shall be a President, a Vice President, a Secretary, and a Treasurer. The Board may elect or appoint such other officers as it deems necessary. One person may hold more than one office, except that the same person shall not serve as both President and Secretary.</p>
+<p>Subject to applicable state law, the officers shall include a President or Chair, a Secretary, and a Treasurer; a Vice President or other officers may be elected if provided for by the adopted governance documents. The Board may elect or appoint such other officers as it deems necessary. One person may hold more than one office, subject to applicable state-law restrictions. In California public benefit corporations, a person serving as Secretary or Treasurer/CFO cannot concurrently serve as President or Chair. Confirm the rules for the selected jurisdiction before combining offices.</p>
 <h3>Section 4.2 — Duties of Officers</h3>
 <p><strong>President:</strong> The President shall be the chief executive officer of the Corporation, shall preside at all meetings of the Board of Directors, shall have general and active management of the business of the Corporation, and shall see that all orders and resolutions of the Board are carried into effect.</p>
 <p><strong>Vice President:</strong> The Vice President shall perform the duties of the President in the President's absence or disability.</p>
@@ -272,8 +274,8 @@ ${a.board5 ? `<li>${a.board5}</li>` : ''}
 <p>Date: <span class="blank">&nbsp;</span> &nbsp;&nbsp; Location: <span class="blank">&nbsp;</span></p>
 
 <div style="margin-top:3em; display:flex; gap:4em; flex-wrap:wrap">
-<div><div class="sig-line">President</div><p>${a.founderName || "[President Name]"}</p></div>
-<div><div class="sig-line">Secretary</div><p>${a.board2 || "[Secretary Name]"}</p></div>
+<div><div class="sig-line">President</div><p>${a.president || "[President Name]"}</p></div>
+<div><div class="sig-line">Secretary</div><p>${a.secretary || "[Secretary Name]"}</p></div>
 </div>
 ` + docFooter;
 }
@@ -331,7 +333,7 @@ function generateConflictPolicy(a) {
 <table style="width:100%; border-collapse:collapse; margin-top:1em">
 <tr style="border-bottom:1px solid #ccc"><td style="padding:8px 0"><strong>Name</strong></td><td><strong>Role</strong></td><td><strong>Signature</strong></td><td><strong>Date</strong></td></tr>
 ${[
-  { name: a.founderName, role: 'President/Founder' },
+  { name: a.founderName, role: 'Founder / Director' },
   { name: a.board2, role: 'Director' },
   { name: a.board3, role: 'Director' },
   { name: a.board4, role: 'Director' },
@@ -379,10 +381,10 @@ Secretary: <strong>${a.secretary || '[Name]'}</strong><br>
 Treasurer: <strong>${a.treasurer || '[Name]'}</strong></p>
 <table style="width:100%; border-collapse:collapse; margin-top:0.5em">
 <tr style="border-bottom:1px solid #ccc"><td style="padding:6px 0"><strong>Office</strong></td><td><strong>Name</strong></td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">President</td><td>${a.founderName || "[Name]"}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">Vice President</td><td>${a.board2 || "[Name]"}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">Secretary</td><td>${a.board3 || "[Name]"}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">Treasurer</td><td>${a.board4 || a.board2 || "[Name]"}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">President</td><td>${a.president || "[President Name]"}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">Vice President (if elected)</td><td>[Name, if elected]</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">Secretary</td><td>${a.secretary || "[Secretary Name]"}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:6px 0">Treasurer</td><td>${a.treasurer || "[Treasurer Name]"}</td></tr>
 </table>
 <p style="margin-top:0.75em"><strong>Vote:</strong> Ayes: <span class="blank" style="min-width:40px">&nbsp;</span> &nbsp; Nays: <span class="blank" style="min-width:40px">&nbsp;</span> &nbsp; Abstentions: <span class="blank" style="min-width:40px">&nbsp;</span></p>
 </div>
@@ -413,7 +415,7 @@ Treasurer: <strong>${a.treasurer || '[Name]'}</strong></p>
 
 <div class="section">
 <h2>VIII. Application for 501(c)(3) Status</h2>
-<p>The Board authorized the filing of IRS Form 1023 (or Form 1023-EZ, if eligible) to apply for recognition of tax-exempt status under Section 501(c)(3) of the Internal Revenue Code.</p>
+<p><strong>Minutes use instruction:</strong> Replace proposed wording with the actions, attendance and votes that actually occurred. Do not sign this draft as a record of events that have not taken place.</p><p>The Board authorized the filing of IRS Form 1023 (or Form 1023-EZ, if eligible) to apply for recognition of tax-exempt status under Section 501(c)(3) of the Internal Revenue Code.</p>
 </div>
 
 <div class="section">
@@ -428,8 +430,8 @@ Treasurer: <strong>${a.treasurer || '[Name]'}</strong></p>
 
 <p style="margin-top:3em">Respectfully submitted,</p>
 <div style="margin-top:2em; display:flex; gap:4em; flex-wrap:wrap">
-<div><div class="sig-line">Secretary, Board of Directors</div><p>${a.board3 || "[Secretary Name]"}</p></div>
-<div><div class="sig-line">President, Board of Directors</div><p>${a.founderName || "[President Name]"}</p></div>
+<div><div class="sig-line">Secretary, Board of Directors</div><p>${a.secretary || "[Secretary Name]"}</p></div>
+<div><div class="sig-line">President, Board of Directors</div><p>${a.president || "[President Name]"}</p></div>
 </div>
 ` + docFooter;
 }
@@ -478,16 +480,16 @@ function generateEINChecklist(a, sd) {
 <div class="section">
 <p>An EIN (Employer Identification Number) is a free, 9-digit tax ID number from the IRS. You need it before opening a bank account or applying for 501(c)(3) status. You can apply in minutes online.</p>
 <h2>How to Apply for Your EIN</h2>
-<p><strong>Option 1 (Recommended): Apply Online</strong><br>Go to <strong>https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online</strong><br>The online tool is available Monday–Friday, 7am–10pm ET. You'll receive your EIN immediately.</p>
-<p><strong>Option 2: Mail or Fax Form SS-4</strong><br>Download Form SS-4 from IRS.gov and mail or fax it. Processing takes 4–6 weeks by mail, 4 business days by fax.</p>
+<p><strong>Option 1 (Recommended): Apply Online</strong><br>Go to <strong>https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online</strong><br>Check current IRS online-tool hours and eligibility. An approved online application generally provides the EIN during that session; other applicants may need another IRS method.</p>
+<p><strong>Option 2: Mail or Fax Form SS-4</strong><br>Download Form SS-4 from IRS.gov and mail or fax it. Use the current IRS SS-4 instructions for eligibility, destination, processing estimates and international-applicant rules.</p>
 </div>
 <div class="section">
 <h2>What You'll Need to Apply</h2>
 <table style="width:100%; border-collapse:collapse">
 <tr style="border-bottom:1px solid #ccc"><td style="padding:8px 0; width:60%"><strong>Item</strong></td><td><strong>Your Information</strong></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Legal name of organization</td><td>${a.orgName || "[Your org name]"}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Responsible party name</td><td>${a.founderName || "[Your name]"}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Responsible party SSN or ITIN</td><td>Your personal SSN (required)</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Responsible party name</td><td>[Confirm the qualified principal officer / individual exercising ultimate effective control; do not assume the founder qualifies]</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Responsible party SSN or ITIN</td><td>The qualified responsible party’s SSN or ITIN is generally required; foreign/N/A treatment may apply under the current SS-4 instructions. Do not enter a taxpayer ID into this website.</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Mailing address</td><td><span class="blank" style="min-width:200px">&nbsp;</span></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">State of formation</td><td>${a.state || "[Your state]"}</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Date organization was formed</td><td><span class="blank">&nbsp;</span></td></tr>
@@ -530,12 +532,12 @@ function generateIRSPrep(a, sd) {
 <table style="width:100%; border-collapse:collapse; margin-bottom:1em">
 <tr style="background:#f5f5f5"><td style="padding:10px; border:1px solid #ddd"><strong>Form 1023-EZ (Short Form)</strong></td><td style="padding:10px; border:1px solid #ddd"><strong>Form 1023 (Full Form)</strong></td></tr>
 <tr><td style="padding:10px; border:1px solid #ddd">Filing fee: <strong>$275</strong></td><td style="padding:10px; border:1px solid #ddd">Filing fee: <strong>$600</strong></td></tr>
-<tr><td style="padding:10px; border:1px solid #ddd">Projected annual gross receipts under $50,000</td><td style="padding:10px; border:1px solid #ddd">Projected annual gross receipts over $50,000</td></tr>
-<tr><td style="padding:10px; border:1px solid #ddd">Total assets under $250,000</td><td style="padding:10px; border:1px solid #ddd">Total assets over $250,000</td></tr>
+<tr><td style="padding:10px; border:1px solid #ddd">Annual gross receipts not over $50,000 in each of the past 3 years (if applicable) and projected not over $50,000 in each of the next 3 years</td><td style="padding:10px; border:1px solid #ddd">Required if a receipt limit or any other Form 1023-EZ eligibility condition is not met; also available to eligible organizations choosing the full form</td></tr>
+<tr><td style="padding:10px; border:1px solid #ddd">Total assets with fair market value not over $250,000</td><td style="padding:10px; border:1px solid #ddd">Total assets over $250,000</td></tr>
 <tr><td style="padding:10px; border:1px solid #ddd">Simpler to complete</td><td style="padding:10px; border:1px solid #ddd">More detailed — covers your programs in depth</td></tr>
 <tr><td style="padding:10px; border:1px solid #ddd">Filed entirely online at pay.gov</td><td style="padding:10px; border:1px solid #ddd">Filed online at pay.gov</td></tr>
 </table>
-<p><strong>Note:</strong> Some organization types CANNOT use Form 1023-EZ, including churches, schools, hospitals, and supporting organizations.</p>
+<p><strong>The financial thresholds alone do not establish eligibility.</strong> Complete every question in the current <a href="https://www.irs.gov/instructions/i1023ez">IRS Form 1023-EZ Eligibility Worksheet</a> before using that form. Churches, schools, hospitals, supporting organizations and other listed applicants are ineligible. This guide is not an eligibility determination.</p>
 </div>
 
 <div class="section">
@@ -559,7 +561,7 @@ function generateIRSPrep(a, sd) {
 <tr><td style="padding:7px 0">Intended classification</td><td>${a.orgType || "Not answered"}</td></tr>
 </table>
 
-<h3>Part IV — Narrative Description of Activities (Most Important!)</h3>
+<h3>Part IV — Narrative Description of Activities (Most Important!)</h3><p>This prefilled paragraph is only a starting point. For each actual or planned substantial activity, add who conducts it, when and where it occurs, its share of total time, how it is funded, its share of overall expenses, and how it furthers an exempt purpose. Do not include merely speculative future programs.</p>
 <p>The IRS will ask you to describe your programs. Use plain language. Below is a draft based on your answers:</p>
 <div style="background:#f9f9f9; border:1px solid #ddd; padding:1em; margin:0.5em 0">
 <p><strong>Program 1: ${a.orgName || "[Program Name]"}</strong></p>
@@ -576,8 +578,8 @@ function generateIRSPrep(a, sd) {
 <tr><td style="padding:7px 0">Board compensation plan</td><td>${compensationPlan}</td></tr>
 </table>
 
-<h3>Part IX — Financial Data</h3>
-<p>Projected budget for first 3 years:</p>
+<h3>Part VI — Financial Data</h3>
+<p>For an organization with less than one completed year, prepare the current year and next two years. Older organizations generally need four or five years of actual/projected information as specified in the current Form 1023 instructions. The three-column table below is a startup planning aid and does not replace the required financial statements or balance sheet.</p>
 <table style="width:100%; border-collapse:collapse">
 <tr style="background:#f5f5f5; border-bottom:1px solid #ddd"><td style="padding:8px"><strong>Revenue Source</strong></td><td style="padding:8px"><strong>Year 1</strong></td><td style="padding:8px"><strong>Year 2</strong></td><td style="padding:8px"><strong>Year 3</strong></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px">Donations</td><td style="padding:8px"><span class="blank">&nbsp;</span></td><td style="padding:8px"><span class="blank">&nbsp;</span></td><td style="padding:8px"><span class="blank">&nbsp;</span></td></tr>
@@ -602,7 +604,7 @@ ${specialItems.length ? '<div class="warn"><strong>Review required:</strong> The
 </div>
 
 <div class="section">
-<h2>Documents to Attach to Form 1023</h2>
+<h2>Application Supporting-Document Checklist</h2><p>For the full Form 1023, upload the organizing document, adopted bylaws if any, amendments and other materials required by the current instructions. The items below are records to gather; they are not all universally required attachments. Form 1023-EZ generally does not take these attachments, but you must retain compliant organizing documents and supporting records.</p>
 <table style="width:100%; border-collapse:collapse">
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0"><input type="checkbox"> Signed Articles of Incorporation (with state filing stamp)</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0"><input type="checkbox"> Bylaws (signed)</td></tr>
@@ -616,7 +618,7 @@ ${specialItems.length ? '<div class="warn"><strong>Review required:</strong> The
 <div class="section">
 <h2>Where to File</h2>
 <p>File online at <strong>https://www.pay.gov</strong> — search for "Form 1023" or "Form 1023-EZ".</p>
-<p>The IRS typically responds in <strong>3–6 months</strong>. You can operate as a nonprofit while waiting, but you don't have official tax-exempt status yet.</p>
+<p>IRS processing times differ by application and case. Check the <a href="https://www.irs.gov/charities-non-profits/charitable-organizations/where-is-my-application-for-tax-exempt-status">current IRS processing page</a>. State nonprofit status is separate from federal exemption. An approved timely application may receive recognition effective from formation; pending applicants must not promise approval or deductibility.</p>
 </div>
 ` + docFooter;
 }
@@ -636,8 +638,8 @@ function generateStateChecklist(a, sd) {
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Processing time</td><td>${sd.processingDays} business days</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Minimum board members</td><td>${minBoard}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Charitable solicitation registration</td><td>${sd.solicitationReg ? `Required — Fee: $${sd.solicitationFee || 'Free'}` : 'Not required'}</td></tr>
-<tr><td style="padding:8px 0">State income tax exemption</td><td>${sd.incomeTaxExempt ? 'Available — apply separately' : 'N/A'}</td></tr>
+<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Charitable solicitation registration</td><td>${sd.solicitationSummary || 'Confirm charity registration, exemptions, current fee and regulator before soliciting'}</td></tr>
+<tr><td style="padding:8px 0">State income tax exemption</td><td>Check income-tax and sales/use-tax rules separately; a separate state income-tax application is not always required</td></tr>
 </table>
 </div>
 
@@ -660,7 +662,7 @@ ${unique.length > 0 ? `<h3>Unique Requirements / Watch Out For:</h3><ul>${unique
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Hold first board meeting and adopt bylaws</td></tr>
 ${sd.solicitationReg ? `<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Register for charitable solicitation in ${sd.name} — Fee: $${sd.solicitationFee || 0}</td></tr>` : ''}
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> File IRS Form 1023 or 1023-EZ for federal 501(c)(3) status</td></tr>
-${sd.incomeTaxExempt ? `<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Apply for ${sd.name} state tax exemption (after receiving IRS approval)</td></tr>` : ''}
+${sd.incomeTaxExempt ? `<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Check ${sd.name} income-tax treatment and any separate sales/use-tax exemption process</td></tr>` : ''}
 <tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Open a bank account in the nonprofit's name</td></tr>
 <tr><td style="padding:9px 0"><input type="checkbox"> Set up annual reporting reminders for ${sd.name}</td></tr>
 </table>
@@ -673,7 +675,7 @@ ${sd.incomeTaxExempt ? `<tr style="border-bottom:1px solid #eee"><td style="padd
 ${sd.solicitationReg ? `<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Charitable solicitation registration</td><td>$${sd.solicitationFee || 0}</td></tr>` : ''}
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">IRS filing fee (1023-EZ)</td><td>$275</td></tr>
 <tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">IRS filing fee (1023 full)</td><td>$600</td></tr>
-<tr style="background:#f0f8f4"><td style="padding:8px 0"><strong>Estimated minimum total (1023-EZ)</strong></td><td><strong>$${sd.fee + (sd.solicitationFee || 0) + 275}</strong></td></tr>
+<tr style="background:#f0f8f4"><td style="padding:8px 0"><strong>Illustrative subtotal if 1023-EZ eligible</strong></td><td><strong>$${sd.fee + (sd.solicitationFee || 0) + 275}</strong></td></tr>
 </table>
 </div>
 ` + docFooter;

@@ -345,7 +345,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     </div>
     <!-- Trust bar -->
     <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:2rem;border-top:1px solid rgba(0,0,0,0.06)">
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmid)"><span>✅</span> IRS-aligned documents</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmid)"><span>✅</span> IRS-informed templates</div>
       <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmid)"><span>✅</span> All 50 states + territories</div>
       <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmid)"><span>✅</span> Plain language — professional help when you need it</div>
       <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--tmid)"><span>✅</span> Your data stays private</div>
@@ -364,7 +364,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
       <div class="step-card"><span class="step-num">03</span><h3>Write your bylaws</h3><p>We generate these for you based on your answers.</p></div>
       <div class="step-card"><span class="step-num">04</span><h3>Incorporate in your state</h3><p>File Articles of Incorporation — we show you exactly how.</p></div>
       <div class="step-card"><span class="step-num">05</span><h3>Get your EIN</h3><p>A free tax ID number from IRS.gov — takes 10 minutes.</p></div>
-      <div class="step-card"><span class="step-num">06</span><h3>File IRS Form 1023</h3><p>We prepare your 1023 summary and all required attachments.</p></div>
+      <div class="step-card"><span class="step-num">06</span><h3>File IRS Form 1023</h3><p>We help organize your application information. Complete the current IRS application and required attachments separately.</p></div>
       <div class="step-card"><span class="step-num">07</span><h3>Open a bank account</h3><p>Keep your nonprofit's money separate from personal funds.</p></div>
     </div>
     <div style="text-align:center;margin-top:2.5rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
@@ -494,7 +494,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div style="display:flex;flex-direction:column;gap:1rem">
           <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem;display:flex;align-items:flex-start;gap:.875rem">
             <span style="font-size:24px">📋</span>
-            <div><h4 style="font-size:14px;font-weight:500;margin-bottom:2px">IRS-aligned documents</h4><p style="font-size:13px;color:var(--tlight)">Templates based on IRS Form 1023 requirements and nonprofit governance best practices</p></div>
+            <div><h4 style="font-size:14px;font-weight:500;margin-bottom:2px">IRS-informed templates</h4><p style="font-size:13px;color:var(--tlight)">Templates based on IRS Form 1023 requirements and nonprofit governance best practices</p></div>
           </div>
           <div style="background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:1.25rem;display:flex;align-items:flex-start;gap:.875rem">
             <span style="font-size:24px">🔒</span>
@@ -776,7 +776,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="field"><label>Second board member's name</label><div class="hint">A friend, colleague, or community member who supports your cause.</div><input type="text" id="f_board2" placeholder="Full name"></div>
         <div class="field"><label>Third board member's name</label><input type="text" id="f_board3" placeholder="Full name"></div>
         <div class="field"><label>Fourth board member (optional)</label><input type="text" id="f_board4" placeholder="Full name (if applicable)"></div>
-        <div class="field"><label>Fifth board member (optional)</label><div class="hint">New Hampshire requires 5 incorporators. Other states may too.</div><input type="text" id="f_board5" placeholder="Full name (if applicable)"></div>
+        <div class="field"><label>Fifth board member (optional)</label><div class="hint">New Hampshire generally requires five incorporators separately from its five-person charitable board. The questionnaire does not collect every incorporator’s information; complete the official filing and check exceptions.</div><input type="text" id="f_board5" placeholder="Full name (if applicable)"></div>
         <div class="field"><label>President / Board Chair</label><input type="text" id="f_president" placeholder="Full legal name"></div>
         <div class="field"><label>Secretary</label><input type="text" id="f_secretary" placeholder="Full legal name"></div>
         <div class="field"><label>Treasurer</label><input type="text" id="f_treasurer" placeholder="Full legal name"></div>
@@ -939,9 +939,9 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
 
     <!-- Year selector -->
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap">
-      <label style="font-size:14px;font-weight:500;color:var(--text)">Tax year:</label>
+      <label style="font-size:14px;font-weight:500;color:var(--text)">Tax year beginning in:</label>
       <select id="annual-year" style="padding:9px 14px;border:1.5px solid var(--sand2);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;background:#fff;color:var(--text);cursor:pointer" onchange="updateAnnualYear()"></select>
-      <span style="font-size:13px;color:var(--tlight)">Documents will be filled in for the selected year</span>
+      <span style="font-size:13px;color:var(--tlight)">Annual-return dates use the fiscal year selected in your questionnaire. Donor letters use the selected calendar year.</span>
     </div>
 
     <!-- Access banner -->
@@ -993,7 +993,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
     </div>
 
     <div style="background:var(--amberL);border:1px solid #f5cfa8;border-radius:var(--rs);padding:1rem 1.25rem;margin-top:1.25rem;font-size:13px;color:#7a4010;line-height:1.6">
-      ⚠️ <strong>Never miss a filing:</strong> Failing to file Form 990 for 3 consecutive years automatically revokes your 501(c)(3) status. Set a recurring calendar reminder for May 15 every year.
+      ⚠️ <strong>Never miss a filing:</strong> Failing to file a required annual return or notice for three consecutive years generally causes automatic revocation. The usual deadline is the 15th day of the fifth month after year end (May 15 for calendar-year filers), adjusted for weekends and legal holidays. Form 990-N cannot be extended.
     </div>
   </div>
   <div id="annual-footer"></div>
@@ -1273,10 +1273,10 @@ function showStateCard() {
   const unique = (sd.unique||[]).map(u=>`<li>${u}</li>`).join('');
   card.innerHTML = `
 <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
-  <h2 style="font-size:1.5rem">${sd.name}</h2>
+  <h2 style="font-size:1.5rem">${sd.name}</h2><p style="font-size:13px">Starting reference only: confirm current requirements and exceptions with the corporation office and the separate charity regulator before filing or fundraising.</p>
   <div style="display:flex;gap:.5rem;flex-wrap:wrap">
     <span class="meta-pill">Fee: $${sd.fee}</span>
-    ${sd.solicitationReg?`<span class="meta-pill warn">Solicitation Reg Required</span>`:`<span class="meta-pill">No Solicitation Reg</span>`}
+    <span class="meta-pill">Charity requirements: review below</span>
     <span class="meta-pill">Min. ${sd.minBoardMembers} directors</span>
   </div>
 </div>
@@ -1286,9 +1286,9 @@ function showStateCard() {
   <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
   <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
   <tr><td>Minimum board members</td><td>${sd.minBoardMembers}</td></tr>
-  <tr><td>Charitable solicitation reg.</td><td>${sd.solicitationReg?`<strong>Required</strong> — Fee: $${sd.solicitationFee||'Free'}`:'Not required'}</td></tr>
-  <tr><td>State income tax exemption</td><td>${sd.incomeTaxExempt?'Available — apply separately after IRS approval':'N/A'}</td></tr>
-  <tr><td>Estimated minimum total cost</td><td><strong>$${sd.fee+(sd.solicitationFee||0)+275}</strong> (inc. IRS 1023-EZ fee)</td></tr>
+  <tr><td>Charitable solicitation reg.</td><td>${sd.solicitationSummary || (sd.solicitationReg?'Registration may apply; confirm exemptions and the current fee with the charity regulator':'No general requirement indicated here; confirm special activities and other-state obligations')}</td></tr>
+  <tr><td>State income tax exemption</td><td>Check income-tax treatment and any separate sales/use-tax exemption; state processes differ</td></tr>
+  <tr><td>Illustrative subtotal if 1023-EZ eligible</td><td><strong>$${sd.fee+(sd.solicitationFee||0)+275}</strong> (inc. IRS 1023-EZ fee)</td></tr>
 </table>
 <p style="font-size:14px;color:var(--tmid);line-height:1.6;margin-bottom:.875rem">${sd.notes}</p>
 ${unique?`<div style="margin-bottom:.875rem"><p style="font-size:13px;font-weight:500;margin-bottom:.4rem;color:var(--text)">⚠️ Watch out for — ${sd.name}-specific:</p><ul class="unique-list">${unique}</ul></div>`:''}
@@ -1313,14 +1313,14 @@ function buildStateQuickGrid() {
 
 // ── FAQ ──
 const FAQS = [
-  {q:"How long does it take to get 501(c)(3) status?",a:"After filing your IRS application, it typically takes 3–6 months for the IRS to respond. You can operate as a nonprofit during this time, but you don't yet have official tax-exempt status. Keep detailed records of all activities and finances."},
+  {q:"How long does it take to get 501(c)(3) status?",a:"IRS processing times vary by application and case. Check the current IRS processing page. An approved timely application may receive recognition effective from formation; approval and donation deductibility must not be promised while pending."},
   {q:"How much does it cost to start a nonprofit?",a:"The IRS filing fee is $275 (Form 1023-EZ, for smaller orgs) or $600 (Form 1023 full). Your state will also charge a fee to incorporate — ranging from $8 (Kentucky) to $170 (Maryland). If you hire a lawyer, add $500–$2,000+. Our State Guide shows exact fees for all 56 jurisdictions."},
   {q:"Do I need a lawyer?",a:"You don't legally need one, but it's strongly recommended — especially for the IRS application. Many areas have nonprofit legal aid clinics that offer free or low-cost help. Search 'nonprofit legal aid [your city]' to find local resources."},
   {q:"Can I pay myself to run my own nonprofit?",a:"Yes — founders and staff can receive a reasonable salary approved by the board. What you cannot do is take personal profit from the organization's funds beyond that salary. The IRS scrutinizes compensation, so 'reasonable' means comparable to similar roles at similar organizations."},
-  {q:"What's the difference between incorporating and getting 501(c)(3) status?",a:"Incorporating is a state-level step that creates your legal organization. Getting 501(c)(3) status is a federal step through the IRS that gives you tax-exempt status. You need both — and you always incorporate first, then apply to the IRS."},
+  {q:"What's the difference between incorporating and getting 501(c)(3) status?",a:"Incorporating is a state-level step that creates your legal organization. Getting 501(c)(3) status is a federal step through the IRS that gives you tax-exempt status. For the nonprofit-corporation route supported by this questionnaire, form the corporation first, then apply to the IRS. Other eligible structures, including some trusts and unincorporated associations, follow different formation rules."},
   {q:"Which IRS form do I use — 1023 or 1023-EZ?",a:"Form 1023-EZ ($275) is available only if your organization meets every IRS eligibility requirement. Gross receipts and asset limits are part of that test, but they are not the only requirements. Organizations that are not eligible for Form 1023-EZ use Form 1023 ($600)."},
   {q:"What is charitable solicitation registration?",a:"About 40 states require nonprofits to register with a state agency before they can publicly solicit donations from that state's residents. Fees range from free to $100+. Our State Guide shows which states require it and the fees for all 56 jurisdictions."},
-  {q:"What is Form 990 and when do I file it?",a:"Form 990 is an annual informational return filed with the IRS. Most 501(c)(3)s must file it each year. Organizations with gross receipts under $50,000 can file the simpler Form 990-N (the 'e-Postcard'). Failing to file for 3 consecutive years automatically revokes your tax-exempt status."},
+  {q:"What is Form 990 and when do I file it?",a:"Form 990 is an annual informational return filed with the IRS. Most 501(c)(3)s must file it each year. Many eligible organizations with gross receipts normally $50,000 or less may file Form 990-N, but special organization types and exceptions must be checked. Failing to file for 3 consecutive years automatically revokes your tax-exempt status."},
   {q:"What if I operate in multiple states?",a:"If you incorporate in one state but operate in others, you'll typically need to register as a 'foreign nonprofit' in each operating state. Charitable solicitation registration is usually required state-by-state wherever you actively fundraise, regardless of where you're incorporated."},
   {q:"What are bylaws and why do I need them?",a:"Bylaws are your organization's internal rulebook — they cover how the board operates, how officers are elected, how decisions are made, and what happens if someone needs to be removed. Form 1023 instructions call for bylaws to be included if your organization has adopted them. We generate a template based on your intake form answers."},
   {q:"What is a Conflict of Interest Policy?",a:"The IRS specifically asks if you have a conflict of interest policy in Form 1023. This policy prevents board members and officers from making decisions that benefit them personally at the expense of the nonprofit. We generate this document for you automatically."},
@@ -1692,7 +1692,7 @@ function updateStateBanner(){
   banner.innerHTML=`<div class="state-banner">
     <strong>📍 ${sd.name} — Key Requirements</strong>
     <strong>Formation document:</strong> ${sd.form}<br>
-    <strong>Filing fee:</strong> $${sd.fee} &nbsp;|&nbsp; <strong>Processing:</strong> ${sd.processingDays} days &nbsp;|&nbsp; <strong>Solicitation reg:</strong> ${sd.solicitationReg?'Required ($'+(sd.solicitationFee||0)+')':'Not required'}
+    <strong>Filing fee:</strong> $${sd.fee} &nbsp;|&nbsp; <strong>Processing:</strong> ${sd.processingDays} days &nbsp;|&nbsp; <strong>Solicitation reg:</strong> ${sd.solicitationSummary || 'Confirm registration, exemptions and fees with the state charity regulator'}
     ${unique?`<ul style="margin-top:.4rem">${unique}</ul>`:''}
     <a href="${sd.agencyUrl}" target="_blank" style="color:var(--green);font-size:13px">Visit ${sd.agency} ↗</a>
   </div>`;
@@ -1778,9 +1778,9 @@ function buildSummary(){
       <tr><td>Document to file</td><td>${sd.form}</td></tr>
       <tr><td>File with</td><td><a href="${sd.agencyUrl}" target="_blank" style="color:var(--green)">${sd.agency} ↗</a></td></tr>
       <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
-      <tr><td>Solicitation registration</td><td>${sd.solicitationReg?`Required — $${sd.solicitationFee||0}`:'Not required in your state'}</td></tr>
+      <tr><td>Solicitation registration</td><td>${sd.solicitationSummary || 'Confirm registration, exemptions and current fees with the state charity regulator'}</td></tr>
       <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
-      <tr><td>Estimated min. total cost</td><td><strong>&#36;${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
+      <tr><td>Illustrative subtotal if 1023-EZ eligible</td><td><strong>&#36;${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
     </table>
     <div style="background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem;margin-bottom:.875rem;font-size:13px;color:var(--gdark);line-height:1.7">
       <strong>Your filing sequence:</strong><br>
@@ -1832,16 +1832,17 @@ function buildComplianceCalendar() {
   const stateCode = document.getElementById('f_stateSelect') ? document.getElementById('f_stateSelect').value : '';
   const sd = STATE_DATA[stateCode] || null;
   const year = new Date().getFullYear();
+  const period = annualTaxPeriod(getAnswers(), document.getElementById('annual-year')?.value || year - 1);
   const items = [
     { month: 'January', task: 'Send year-end donor acknowledgment letters for prior year', type: 'donor' },
     { month: 'January', task: 'Hold annual board meeting — elect officers, approve budget', type: 'board' },
     { month: 'March', task: 'Gather financial records — revenue, expenses, bank statements', type: 'prep' },
     { month: 'April', task: 'Review draft Form 990 / 990-EZ / 990-N with board', type: 'irs' },
-    { month: 'May 15', task: `IRS Form 990 / 990-EZ / 990-N due for calendar-year orgs`, type: 'irs', urgent: true },
-    { month: 'May 15', task: 'File for extension (Form 8868) if needed — grants 6 months', type: 'irs' },
+    { month: period.due, task: `Nominal IRS annual-return/notice deadline for ${period.label}; confirm weekends, legal holidays and special relief.`, type: 'irs', urgent: true },
+    { month: period.due, task: 'Eligible Forms 990/990-EZ/990-PF: request a six-month filing extension with Form 8868 when needed. Form 990-N cannot be extended.', type: 'irs' },
     { month: 'Varies', task: `${sd ? sd.name + ' state' : 'State'} annual report due — check ${sd ? sd.agency : 'your state agency'}`, type: 'state' },
     { month: 'Varies', task: sd && sd.solicitationReg ? `Renew charitable solicitation registration in ${sd.name}` : 'Check if charitable solicitation renewal required', type: 'state' },
-    { month: 'November 15', task: 'Extended Form 990 due (if extension was filed)', type: 'irs' },
+    { month: '6 months after original due date', task: 'Eligible return deadline only if a valid extension was obtained; confirm the adjusted date. Form 990-N has no extension.', type: 'irs' },
     { month: 'December', task: 'Year-end fundraising push — send donor appeals', type: 'donor' },
     { month: 'December 31', task: 'Donor deadline for tax-deductible gifts — send reminders', type: 'donor' },
     { month: 'Ongoing', task: 'Maintain board meeting minutes for every meeting', type: 'board' },

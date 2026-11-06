@@ -1,6 +1,17 @@
 // ── Yearly Document Generators for Start Your Cause ──
 // Generates annual filing and compliance documents
 
+// The selected tax year is the year in which the accounting period begins.
+// Dates below are nominal statutory dates; weekend/holiday adjustments must be checked.
+function annualTaxPeriod(a, year) {
+  const startYear = Number(year) || new Date().getFullYear() - 1;
+  const fiscal = a.fiscal || 'January 1 – December 31 (Calendar Year)';
+  if (/July/.test(fiscal)) return { label: `July 1, ${startYear} – June 30, ${startYear + 1}`, due: `November 15, ${startYear + 1}` };
+  if (/October/.test(fiscal)) return { label: `October 1, ${startYear} – September 30, ${startYear + 1}`, due: `February 15, ${startYear + 2}` };
+  if (/January|Calendar/.test(fiscal)) return { label: `January 1 – December 31, ${startYear}`, due: `May 15, ${startYear + 1}` };
+  return { label: `Custom fiscal year beginning in ${startYear} — confirm start and end dates`, due: '15th day of the fifth month after the accounting period ends' };
+}
+
 function generateYearlyDocs(answers, stateData, year) {
   answers = sanitizeYearlyAnswers(answers);
   return {
@@ -64,11 +75,12 @@ function generateForm990Prep(a, sd, year) {
   const orgName = a.orgName || "[Organization Name]";
   const website = a.website || '<span class="blank" style="min-width:260px">&nbsp;</span>';
   const taxYear = year || new Date().getFullYear() - 1;
-  const dueDate = `May 15, ${parseInt(taxYear)+1}`;
+  const period = annualTaxPeriod(a, taxYear);
+  const dueDate = period.due + ' (nominal date; use the next business day if a weekend or legal holiday)';
 
   return ydocHeader(
     `IRS Form 990 Preparation Guide`,
-    `${orgName} | Tax Year ${taxYear} | Due: ${dueDate}`
+    `${orgName} | Tax year beginning ${taxYear} | Due: ${dueDate}`
   ) + `
 
 <div class="info-box">
@@ -76,7 +88,7 @@ function generateForm990Prep(a, sd, year) {
 • <strong>Form 990-N</strong> ("e-Postcard") — Gross receipts normally ≤ $50,000. Filed online only. No financial detail required.<br>
 • <strong>Form 990-EZ</strong> — Gross receipts &lt; $200,000 AND total assets &lt; $500,000.<br>
 • <strong>Form 990</strong> (full) — Gross receipts ≥ $200,000 OR total assets ≥ $500,000.<br>
-• <strong>Private foundations</strong> always file Form 990-PF regardless of size.
+• <strong>Private foundations</strong> generally file Form 990-PF, even with small receipts; verify any specific exception in the current IRS instructions. These size thresholds do not override special filing rules or exceptions for other organization types.
 </div>
 
 <h2>Part I — Summary</h2>
@@ -84,7 +96,7 @@ function generateForm990Prep(a, sd, year) {
 <tr><th>Item</th><th>Your Information</th></tr>
 <tr><td>Organization name</td><td>${orgName}</td></tr>
 <tr><td>EIN</td><td><span class="blank">&nbsp;</span></td></tr>
-<tr><td>Tax year</td><td>January 1 – December 31, ${taxYear}</td></tr>
+<tr><td>Tax year</td><td>${period.label}</td></tr>
 <tr><td>Address</td><td>${a.address||'<span class="blank">&nbsp;</span>'}</td></tr>
 <tr><td>State of formation</td><td>${sd?sd.name:(a.state||'<span class="blank">&nbsp;</span>')}</td></tr>
 <tr><td>Website</td><td>${website}</td></tr>
@@ -170,7 +182,7 @@ function generateForm990Prep(a, sd, year) {
 
 <h2>Schedule A — Public Support Test</h2>
 <div class="info-box">
-Public charities must pass the "public support test" — showing that at least 33.3% of their support comes from the general public (not one private source). If you receive most of your funding from one donor, you may be reclassified as a private foundation.
+Public-charity classification depends on the applicable category in section 509(a). Some charities qualify by their activities or relationships. For publicly supported organizations, section 170(b)(1)(A)(vi) generally uses a one-third support test or a 10%-plus facts-and-circumstances alternative; section 509(a)(2) uses different support and investment-income tests. Donor limits, unusual grants, and the initial five-year rules may matter. This worksheet does not determine classification. Review the current Schedule A instructions with a qualified tax professional.
 </div>
 <table>
 <tr><th>Year</th><th>${parseInt(taxYear)-4}</th><th>${parseInt(taxYear)-3}</th><th>${parseInt(taxYear)-2}</th><th>${parseInt(taxYear)-1}</th><th>${taxYear}</th><th>Total</th></tr>
@@ -179,12 +191,12 @@ Public charities must pass the "public support test" — showing that at least 3
 <tr><td colspan="6"><strong>Public support percentage</strong></td><td><span class="blank" style="min-width:40px">&nbsp;</span>%</td></tr>
 </table>
 
-<h2>Filing Deadlines &amp; Key Reminders</h2>
+<h2>Filing Deadlines &amp; Key Reminders</h2><p>Form 8868 can extend eligible returns, including Forms 990, 990-EZ and 990-PF, by six months when properly filed. It cannot extend Form 990-N. An extension to file does not extend time to pay tax. Short tax years and special filers need separate review.</p>
 <table>
 <tr><th>Item</th><th>Due Date</th><th>Where to File</th></tr>
-<tr><td>Form 990-N, 990-EZ, or 990</td><td>${dueDate} (or 15th day of 5th month after fiscal year end)</td><td>IRS.gov (990-N online only; 990/990-EZ via mail or e-file)</td></tr>
+<tr><td>Form 990-N, 990-EZ, or 990</td><td>${dueDate} (or 15th day of 5th month after fiscal year end)</td><td>Form 990-N: IRS electronic system. Current Form 990/990-EZ: electronic filing is generally required; check the current instructions for narrow exceptions and older-year procedures.</td></tr>
 <tr><td>State annual report</td><td>Varies by state — see State Report document</td><td>${sd?sd.agency:'Your state agency'}</td></tr>
-<tr><td>Charitable solicitation renewal</td><td>${sd&&sd.solicitationReg?'Annual renewal required':'N/A for your state'}</td><td>${sd&&sd.solicitationReg?sd.agency:'N/A'}</td></tr>
+<tr><td>Charitable solicitation renewal</td><td>Check the charity regulator’s reporting cycle and any applicable exemption</td><td>${sd?.charityAgency || 'State charity regulator (may differ from the corporation office)'}</td></tr>
 <tr><td>State tax exemption renewal</td><td>Varies — check with your state</td><td>${sd?sd.agency:'Your state agency'}</td></tr>
 </table>
 
@@ -203,6 +215,7 @@ function generateStateAnnualReport(a, sd, year) {
   const orgName = a.orgName || "[Organization Name]";
   const taxYear = year || new Date().getFullYear() - 1;
   const stateName = sd ? sd.name : (a.state || "[State]");
+  const period = annualTaxPeriod(a, taxYear);
 
   return ydocHeader(
     `Annual State Report Template`,
@@ -218,8 +231,8 @@ ${sd ? `
 <table>
 <tr><td width="45%">Filing agency</td><td><strong>${sd.agency}</strong></td></tr>
 <tr><td>Agency website</td><td><a href="${sd.agencyUrl}">${sd.agencyUrl}</a></td></tr>
-<tr><td>Solicitation registration renewal</td><td>${sd.solicitationReg ? `Required annually — Fee: $${sd.solicitationFee||0}` : 'Not required in your state'}</td></tr>
-<tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
+<tr><td>Solicitation registration renewal</td><td>${sd.solicitationReg ? `Check charity-regulator renewal requirements and fee; initial registration fees do not establish renewal fees` : 'No general registration indicated here; verify exceptions, activities and other jurisdictions'}</td></tr>
+<tr><td>Report form, fee and deadline</td><td>Verify the current annual or biennial reporting instructions; incorporation processing estimates do not apply to this report.</td></tr>
 </table>
 ${sd.unique&&sd.unique.length?`<div class="warn-box"><strong>⚠️ ${sd.name}-specific reminders:</strong><ul style="margin:.5em 0 0;padding-left:1.25em">${sd.unique.map(u=>`<li>${u}</li>`).join('')}</ul></div>`:''}
 ` : ''}
@@ -241,7 +254,7 @@ ${sd.unique&&sd.unique.length?`<div class="warn-box"><strong>⚠️ ${sd.name}-s
 <h2>Section 2 — Current Officers and Directors</h2>
 <table>
 <tr><th>Name</th><th>Title</th><th>Address</th><th>Compensation</th></tr>
-<tr><td>${a.founderName||'<span class="blank">&nbsp;</span>'}</td><td>President / Founder</td><td><span class="blank">&nbsp;</span></td><td>$<span class="blank" style="min-width:60px">&nbsp;</span></td></tr>
+<tr><td>${a.founderName||'<span class="blank">&nbsp;</span>'}</td><td>Founder / Director — confirm current title</td><td><span class="blank">&nbsp;</span></td><td>$<span class="blank" style="min-width:60px">&nbsp;</span></td></tr>
 <tr><td>${a.board2||'<span class="blank">&nbsp;</span>'}</td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td>$<span class="blank" style="min-width:60px">&nbsp;</span></td></tr>
 <tr><td>${a.board3||'<span class="blank">&nbsp;</span>'}</td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td>$<span class="blank" style="min-width:60px">&nbsp;</span></td></tr>
 ${a.board4?`<tr><td>${a.board4}</td><td><span class="blank">&nbsp;</span></td><td><span class="blank">&nbsp;</span></td><td>$<span class="blank" style="min-width:60px">&nbsp;</span></td></tr>`:''}
@@ -278,18 +291,18 @@ ${a.board5?`<tr><td>${a.board5}</td><td><span class="blank">&nbsp;</span></td><t
 
 <h2>Section 6 — Charitable Solicitation Renewal</h2>
 ${sd && sd.solicitationReg ? `
-<div class="warn-box">⚠️ <strong>${sd.name} requires annual charitable solicitation renewal.</strong> You must renew before the deadline or you will be prohibited from fundraising in ${sd.name}.</div>
+<div class="warn-box">⚠️ <strong>Check ${sd.name} charitable reporting and renewal requirements.</strong> Confirm whether registration or an exemption applies, which regulator receives the report, and its current deadline.</div>
 <table class="no-border">
-<tr><td width="45%">Renewal fee</td><td><strong>$${sd.solicitationFee||0}</strong></td></tr>
-<tr><td>File with</td><td>${sd.agency}</td></tr>
+<tr><td width="45%">Renewal fee</td><td>Confirm the current fee schedule; renewal fees may depend on revenue and may differ from the initial fee.</td></tr>
+<tr><td>File with</td><td>${sd.charityAgency || "The applicable state charity regulator"}</td></tr>
 <tr><td>Total gross contributions received in ${taxYear}</td><td>$<span class="blank">&nbsp;</span></td></tr>
 <tr><td>Did you use a professional fundraiser?</td><td>☐ Yes &nbsp; ☐ No</td></tr>
-</table>` : `<p style="color:#666">Your state (${stateName}) does not require charitable solicitation registration or renewal. No action needed.</p>`}
+</table>` : `<p style="color:#666">This reference does not identify a general charity-registration requirement for ${stateName}. That does not establish an exemption from local licenses, special fundraising rules, charitable-trust reporting, or registration in other states where you solicit.</p>`}
 
 <h2>Annual Compliance Checklist for ${taxYear}</h2>
 <table>
 <tr><th>Task</th><th>Due Date</th><th>Done?</th></tr>
-<tr><td>File IRS Form 990/990-EZ/990-N</td><td>May 15, ${parseInt(taxYear)+1}</td><td><input type="checkbox"></td></tr>
+<tr><td>File IRS Form 990/990-EZ/990-N</td><td>${period.due} (nominal date; check weekend/holiday adjustments)</td><td><input type="checkbox"></td></tr>
 <tr><td>File state annual report</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>
 ${sd&&sd.solicitationReg?`<tr><td>Renew charitable solicitation registration</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>`:''}
 <tr><td>Hold annual board meeting</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>
@@ -311,23 +324,24 @@ function generateAnnualMinutes(a, sd, year) {
   const orgName = a.orgName || "[Organization Name]";
   const taxYear = year || new Date().getFullYear() - 1;
   const currentYear = parseInt(taxYear) + 1;
+  const period = annualTaxPeriod(a, taxYear);
 
   return ydocHeader(
     `Annual Meeting of the Board of Directors`,
-    `${orgName} | For the Year Ended December 31, ${taxYear}`
+    `${orgName} | Accounting period: ${period.label}`
   ) + `
 
 <p><strong>Date:</strong> <span class="blank">&nbsp;</span> &nbsp;&nbsp; <strong>Time:</strong> <span class="blank">&nbsp;</span> &nbsp;&nbsp; <strong>Location:</strong> <span class="blank" style="min-width:220px">&nbsp;</span></p>
-<p><strong>Meeting called by:</strong> ${a.founderName||'[President Name]'}</p>
+<p><strong>Meeting called by:</strong> ${a.president||'[President Name]'}</p>
 
-<h2>I. Call to Order and Attendance</h2>
-<p>The annual meeting of the Board of Directors of <strong>${orgName}</strong> was called to order by ${a.founderName||'[President]'} at <span class="blank" style="min-width:60px">&nbsp;</span> on <span class="blank" style="min-width:120px">&nbsp;</span>.</p>
+<p><strong>Minutes use instruction:</strong> This is a proposed record. Confirm all current offices and record only attendance, decisions and votes that actually occurred; do not sign invented or future actions as completed.</p><h2>I. Call to Order and Attendance</h2>
+<p>The annual meeting of the Board of Directors of <strong>${orgName}</strong> was called to order by ${a.president||'[Presiding Officer]'} at <span class="blank" style="min-width:60px">&nbsp;</span> on <span class="blank" style="min-width:120px">&nbsp;</span>.</p>
 <p><strong>Directors present:</strong></p>
 <table>
 <tr><th>Name</th><th>Role</th><th>Present</th><th>Absent/Excused</th></tr>
-<tr><td>${a.founderName||'[Name]'}</td><td>President</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
-<tr><td>${a.board2||'[Name]'}</td><td>Vice President / Director</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
-<tr><td>${a.board3||'[Name]'}</td><td>Secretary / Director</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>${a.founderName||'[Name]'}</td><td>Director — confirm office</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>${a.board2||'[Name]'}</td><td>Director — confirm office</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+<tr><td>${a.board3||'[Name]'}</td><td>Director — confirm office</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
 ${a.board4?`<tr><td>${a.board4}</td><td>Director</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>`:''}
 ${a.board5?`<tr><td>${a.board5}</td><td>Director</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>`:''}
 <tr><td><span class="blank">&nbsp;</span></td><td>Director</td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
@@ -341,14 +355,14 @@ ${a.board5?`<tr><td>${a.board5}</td><td>Director</td><td><input type="checkbox">
 <p>Vote: &nbsp; Ayes <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; Nays <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; Abstentions <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; ☐ Approved &nbsp; ☐ Denied</p>
 
 <h2>III. President's Report — Year in Review (${taxYear})</h2>
-<p>President ${a.founderName||'[Name]'} presented an overview of the organization's activities and accomplishments for the year ended December 31, ${taxYear}:</p>
+<p>President ${a.president||'[President Name]'} presented an overview of the organization's activities and accomplishments for the accounting period ${period.label}:</p>
 <p><em>${a.activities||'[Describe major accomplishments, programs run, milestones reached]'}</em></p>
 <p>People/organizations served in ${taxYear}: <strong>${a.howMany||'<span class="blank">&nbsp;</span>'}</strong></p>
 <p>Major accomplishments: <span class="blank" style="min-width:400px">&nbsp;</span></p>
 <p>Challenges faced: <span class="blank" style="min-width:400px">&nbsp;</span></p>
 
 <h2>IV. Treasurer's Financial Report (${taxYear})</h2>
-<p>The Treasurer presented the following financial summary for the year ended December 31, ${taxYear}:</p>
+<p>The Treasurer presented the following financial summary for the accounting period ${period.label}:</p>
 <table>
 <tr><th>Category</th><th>Budget</th><th>Actual</th><th>Variance</th></tr>
 <tr><td>Total Revenue</td><td>$<span class="blank">&nbsp;</span></td><td>$<span class="blank">&nbsp;</span></td><td>$<span class="blank">&nbsp;</span></td></tr>
@@ -360,15 +374,15 @@ ${a.board5?`<tr><td>${a.board5}</td><td>Director</td><td><input type="checkbox">
 <p>Vote: &nbsp; Ayes <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; Nays <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; ☐ Approved</p>
 
 <h2>V. IRS Form 990 Filing</h2>
-<p>The Board reviewed the IRS Form 990 (or 990-EZ / 990-N) for tax year ${taxYear}, due May 15, ${currentYear}.</p>
+<p>The Board reviewed the IRS Form 990 (or 990-EZ / 990-N) for the accounting period ${period.label}. Nominal deadline: ${period.due}; confirm weekend/holiday adjustments and any special filing rule.</p>
 <p>Form type to be filed: &nbsp; ☐ 990-N &nbsp; ☐ 990-EZ &nbsp; ☐ 990 &nbsp; ☐ 990-PF</p>
-<p>Prepared by: <span class="blank" style="min-width:200px">&nbsp;</span> &nbsp; Filing deadline: May 15, ${currentYear}</p>
+<p>Prepared by: <span class="blank" style="min-width:200px">&nbsp;</span> &nbsp; Filing deadline: ${period.due} (confirm business-day adjustments)</p>
 <p>Motion to authorize filing: <span class="blank">&nbsp;</span> &nbsp; Seconded: <span class="blank">&nbsp;</span></p>
 <p>Vote: &nbsp; Ayes <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; Nays <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; ☐ Approved</p>
 
 <h2>VI. State Annual Report</h2>
 <p>The Board authorized the filing of the annual report with ${sd?sd.agency:'the state agency'} for the year ${taxYear}.</p>
-${sd&&sd.solicitationReg?`<p>The Board also authorized renewal of the charitable solicitation registration in ${sd.name}. Renewal fee: $${sd.solicitationFee||0}.</p>`:''}
+${sd&&sd.solicitationReg?`<p>The Board also authorized renewal of the charitable solicitation registration in ${sd.name}. Confirm the applicable charity regulator, reporting cycle, exemption and current renewal fee before filing.</p>`:''}
 <p>Motion to authorize: <span class="blank">&nbsp;</span> &nbsp; Seconded: <span class="blank">&nbsp;</span></p>
 <p>Vote: &nbsp; Ayes <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; Nays <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; ☐ Approved</p>
 
@@ -376,10 +390,10 @@ ${sd&&sd.solicitationReg?`<p>The Board also authorized renewal of the charitable
 <p>The following officers were elected/re-elected for the coming year:</p>
 <table>
 <tr><th>Office</th><th>Incumbent</th><th>Nominated</th><th>Vote</th></tr>
-<tr><td>President</td><td>${a.founderName||'[Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
-<tr><td>Vice President</td><td>${a.board2||'[Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
-<tr><td>Secretary</td><td>${a.board3||'[Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
-<tr><td>Treasurer</td><td>${a.board4||a.board2||'[Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
+<tr><td>President</td><td>${a.president||'[President Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
+<tr><td>Vice President (if elected)</td><td>[Name, if elected]</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
+<tr><td>Secretary</td><td>${a.secretary||'[Secretary Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
+<tr><td>Treasurer</td><td>${a.treasurer||'[Treasurer Name]'}</td><td><span class="blank">&nbsp;</span></td><td>Ayes <span class="blank" style="min-width:30px">&nbsp;</span> Nays <span class="blank" style="min-width:30px">&nbsp;</span></td></tr>
 </table>
 
 <h2>VIII. Budget Approval for ${currentYear}</h2>
@@ -416,8 +430,8 @@ ${sd&&sd.solicitationReg?`<p>The Board also authorized renewal of the charitable
 
 <p style="margin-top:3em">Respectfully submitted,</p>
 <div style="margin-top:2em;display:flex;gap:4em;flex-wrap:wrap">
-<div><div class="sig-line">Secretary</div><p>${a.board3||'[Secretary Name]'}</p><p>Date: <span class="blank" style="min-width:100px">&nbsp;</span></p></div>
-<div><div class="sig-line">President</div><p>${a.founderName||'[President Name]'}</p><p>Date: <span class="blank" style="min-width:100px">&nbsp;</span></p></div>
+<div><div class="sig-line">Secretary</div><p>${a.secretary||'[Secretary Name]'}</p><p>Date: <span class="blank" style="min-width:100px">&nbsp;</span></p></div>
+<div><div class="sig-line">President</div><p>${a.president||'[President Name]'}</p><p>Date: <span class="blank" style="min-width:100px">&nbsp;</span></p></div>
 </div>
 ` + ydocFooter;
 }
@@ -428,7 +442,7 @@ ${sd&&sd.solicitationReg?`<p>The Board also authorized renewal of the charitable
 function generateDonorLetters(a, year) {
   const orgName = a.orgName || "[Organization Name]";
   const taxYear = year || new Date().getFullYear() - 1;
-  const founder = a.founderName || "[Executive Director]";
+  const founder = a.president || "[Authorized Signatory Name]";
 
   return ydocHeader(
     `Donor Acknowledgment Letter Templates`,
@@ -436,7 +450,7 @@ function generateDonorLetters(a, year) {
   ) + `
 
 <div class="err-box">
-<strong>Confirm tax-exempt status before use:</strong> These templates contain optional 501(c)(3) and tax-deductibility language. Use that language only after confirming the organization’s IRS recognition, effective date, and EIN. If recognition is pending or does not cover the gift date, remove the optional language and do not tell a donor that a contribution is tax-deductible without qualified advice.
+<strong>Confirm each gift’s facts before use:</strong> Use a no-goods-or-services statement only if accurate. If the donor received something in return, use the exchange/quid-pro-quo wording and a good-faith value estimate. Describe donated property without assigning its value. A $250-or-more gift has acknowledgment requirements; a quid-pro-quo payment over $75 generally requires disclosure, subject to exceptions. <strong>Confirm tax-exempt status before use:</strong> These templates contain optional 501(c)(3) and tax-deductibility language. Use that language only after confirming the organization’s IRS recognition, effective date, and EIN. If recognition is pending or does not cover the gift date, remove the optional language and do not tell a donor that a contribution is tax-deductible without qualified advice.
 </div>
 
 <div class="info-box">
@@ -463,7 +477,7 @@ function generateDonorLetters(a, year) {
 <p>With gratitude,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
-<p>${founder}<br>President / Executive Director<br>${orgName}<br>${a.founderEmail||'[Email]'}</p>
+<p>${founder}<br>Authorized representative — confirm title<br>${orgName}<br>${a.founderEmail||'[Email]'}</p>
 </div>
 
 <hr style="margin:3em 0 2em;border:none;border-top:2px solid #ccc">
@@ -486,7 +500,7 @@ function generateDonorLetters(a, year) {
 <p>With deepest gratitude,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
-<p>${founder}<br>President / Executive Director<br>${orgName}</p>
+<p>${founder}<br>Authorized representative — confirm title<br>${orgName}</p>
 </div>
 
 <hr style="margin:3em 0 2em;border:none;border-top:2px solid #ccc">
@@ -510,7 +524,7 @@ function generateDonorLetters(a, year) {
 <p>Sincerely,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
-<p>${founder}<br>President / Executive Director<br>${orgName}</p>
+<p>${founder}<br>Authorized representative — confirm title<br>${orgName}</p>
 </div>
 
 <hr style="margin:3em 0 2em;border:none;border-top:2px solid #ccc">
@@ -530,7 +544,7 @@ function generateDonorLetters(a, year) {
 <p>Thank you again for your generous support!</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
-<p>${founder}<br>President / Executive Director<br>${orgName}</p>
+<p>${founder}<br>Authorized representative — confirm title<br>${orgName}</p>
 </div>
 
 <hr style="margin:3em 0 2em;border:none;border-top:2px solid #ccc">
@@ -553,7 +567,7 @@ function generateDonorLetters(a, year) {
 <p>With heartfelt thanks,</p>
 <div style="margin-top:2em">
 <div class="sig-line">Signature</div>
-<p>${founder}<br>President / Executive Director<br>${orgName}<br>${a.founderEmail||'[Email]'}</p>
+<p>${founder}<br>Authorized representative — confirm title<br>${orgName}<br>${a.founderEmail||'[Email]'}</p>
 </div>
 ` + ydocFooter;
 }
