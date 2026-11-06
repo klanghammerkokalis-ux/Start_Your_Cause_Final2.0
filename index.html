@@ -1417,6 +1417,7 @@ function fNav(dir){
     step_total: F_TOTAL
   });
   buildDots();
+  saveFormData();
   window.scrollTo(0,0);
 }
 
@@ -1628,6 +1629,8 @@ function restoreFormData() {
       document.getElementById('fb-back').style.visibility=fCur===0?'hidden':'visible';
       document.getElementById('fb-next').textContent=fCur===F_TOTAL-1?'✓ Done':'Next →';
       buildDots();
+      if (fCur === F_TOTAL - 1) buildSummary();
+      if (fCur > 0) buildQuickStartPreview();
     }
     console.log('Form data restored from saved session');
   } catch(e) { /* localStorage may be unavailable */ }
@@ -1728,6 +1731,8 @@ function buildSummary(){
   const a=getAnswers();
   const stateCode=document.getElementById('f_stateSelect').value;
   const sd=STATE_DATA[stateCode]||null;
+  const offer=document.getElementById('completion-offer');
+  if(offer) offer.style.display=hasAccess()?'none':'';
   const rows=[
     ['Nonprofit name',a.orgName||'—'],['Problem solving',a.problem||'—'],['Activities',a.activities||'—'],
     ['Who you help',a.whoHelp||'—'],['How many/year',a.howMany||'—'],['Location',a.location||'—'],
@@ -1742,7 +1747,7 @@ function buildSummary(){
     ['Employees',a.employees||'—'],['Fiscal year',a.fiscal||'—'],
     ['Board meetings',a.meetFreq||'—'],['Spend limit',a.spendLimit||'—'],
   ];
-  document.getElementById('sumTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  document.getElementById('sumTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${escapeGeneratedHtml(r[1])}</td></tr>`).join('');
 
   // Build docs grid
   const docs=[

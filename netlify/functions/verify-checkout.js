@@ -97,6 +97,10 @@ exports.handler = async (event) => {
       ? subscription.current_period_end * 1000
       : null;
 
+    if (isFormationPackage && (!Number.isFinite(currentPeriodEnd) || currentPeriodEnd <= Date.now())) {
+      return json(403, { verified: false, error: 'Formation Package access has expired' });
+    }
+
     return json(200, {
       verified: true,
       planId,

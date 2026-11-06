@@ -238,6 +238,8 @@ async function restoreVerifiedAccess() {
     return await verificationPromise;
   } finally {
     verificationPromise = null;
+    const offer = document.getElementById('completion-offer');
+    if (offer) offer.style.display = hasAccess() ? 'none' : '';
   }
 }
 
@@ -311,6 +313,8 @@ function showAccessRecovery() {
 
 function revokeAccess() {
   clearStoredAccess();
+  const offer = document.getElementById('completion-offer');
+  if (offer) offer.style.display = '';
 }
 
 async function openBillingPortal(btn) {
