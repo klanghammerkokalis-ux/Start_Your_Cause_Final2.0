@@ -2,6 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const PLANS = {
   monthly: {
+    amount: 1200,
     priceId: process.env.STRIPE_MONTHLY_PRICE_ID || 'price_1U3daX0dD4h0E3se5Zo5Bne0',
   },
   annual: {
@@ -54,7 +55,7 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || '{}');
     const planId = body.planId;
-    const plan = PLANS[planId];
+    const plan = Object.hasOwn(PLANS, planId) ? PLANS[planId] : null;
 
     if (!plan) {
       return json(400, { error: 'Invalid subscription plan' });
@@ -65,7 +66,19 @@ exports.handler = async (event) => {
 
     const siteUrl = getSiteUrl();
     const isFormationPackage = planId === 'annual';
+    if (!isFormationPackage) {
+      const price = await stripe.prices.retrieve(plan.priceId);
+      if (!price.active || price.currency !== 'usd' || price.unit_amount !== plan.amount
+          || price.recurring?.interval !== 'month' || price.recurring.interval_count !== 1
+          || price.recurring.usage_type !== 'licensed') {
+        return json(503, { error: 'Membership pricing is temporarily unavailable' });
+      }
+    }
+    const disclosure = isFormationPackage
+      ? 'One payment for 365 days of access. No automatic renewal. Government filing fees are separate.'
+      : 'Compliance Membership renews monthly at $12 USD (before applicable taxes or discounts) until canceled. To stop future renewals, sign in at startyourcause.org and select Pricing, then Log in / manage billing. Government filing fees are separate.';
     const session = await stripe.checkout.sessions.create({
+      custom_text: { submit: { message: disclosure } },
       mode: isFormationPackage ? 'payment' : 'subscription',
       payment_method_types: ['card'],
       line_items: [isFormationPackage ? {
@@ -74,7 +87,7 @@ exports.handler = async (event) => {
           unit_amount: plan.amount,
           product_data: {
             name: 'Start Your Cause Formation Package',
-            description: 'Twelve months of formation-document access, updates, and regeneration. Does not renew automatically.',
+            description: '365 days of formation-document access, updates, and regeneration. Does not renew automatically.',
           },
         },
         quantity: 1,

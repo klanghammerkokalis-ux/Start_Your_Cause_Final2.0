@@ -1,8 +1,8 @@
 window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());
 window.sycAnalyticsDisabled=new URLSearchParams(location.search).get('syc_test')==='1';
-if(!window.sycAnalyticsDisabled)gtag('config','G-BE983T68NN');
+if(!window.sycAnalyticsDisabled)gtag('config','G-BE983T68NN',{page_location:location.origin+location.pathname,page_referrer:''});
 function trackSycResourceEvent(name,params){if(window.sycAnalyticsDisabled)return;gtag('event',name,params||{});}
-document.addEventListener('click',function(e){const a=e.target.closest('[data-track]');if(!a)return;trackSycResourceEvent(a.dataset.track,{resource_slug:document.body.dataset.slug||'',link_url:a.href||'',link_text:(a.textContent||'').trim().slice(0,80)});});
+document.addEventListener('click',function(e){const a=e.target.closest('[data-track]');if(!a)return;trackSycResourceEvent(a.dataset.track,{resource_slug:document.body.dataset.slug||'',link_path:a.protocol==='https:'||a.protocol==='http:'?a.pathname:''});});
 document.addEventListener('DOMContentLoaded',function(){
   trackSycResourceEvent('resource_view',{resource_slug:document.body.dataset.slug||location.pathname});
   const updatesForm=document.querySelector('form[name="nonprofit-startup-updates"]');

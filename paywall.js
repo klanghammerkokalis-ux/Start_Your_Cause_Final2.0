@@ -202,16 +202,19 @@ async function restoreVerifiedAccess() {
       // It may be needed for support or a subsequent successful recovery.
       if (verified && returnedSessionId) {
         const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
+        const purchase = verifiedAccess.purchase;
         const purchaseKey = 'syc_purchase_tracked_' + sessionId;
-        if (!localStorage.getItem(purchaseKey) && typeof window.trackSycEvent === 'function') {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        window.resumeCheckoutAnalytics?.();
+        if (purchase && !localStorage.getItem(purchaseKey) && typeof window.trackSycEvent === 'function') {
           window.trackSycEvent('purchase', {
-            transaction_id: sessionId,
-            currency: 'USD',
-            value: plan.price,
+            transaction_id: purchase.id,
+            currency: purchase.currency,
+            value: purchase.value,
             items: [{
               item_id: verifiedAccess.planId,
               item_name: plan.name,
-              price: plan.price,
+              price: purchase.value,
               quantity: 1
             }]
           });
@@ -325,9 +328,8 @@ async function openBillingPortal(btn) {
       btn.disabled = true;
     }
 
-    const verified = hasAccess() || await restoreVerifiedAccess();
-    const sessionId = localStorage.getItem(CHECKOUT_SESSION_KEY);
-    if (!verified) {
+    const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!authToken) {
       showAccessRecovery();
       if (btn) {
         btn.textContent = originalText;
@@ -335,7 +337,6 @@ async function openBillingPortal(btn) {
       }
       return;
     }
-    const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
 
     if (typeof window.trackSycEvent === 'function') {
       window.trackSycEvent('manage_subscription', {});
@@ -345,11 +346,18 @@ async function openBillingPortal(btn) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(authToken ? { Authorization: 'Bearer ' + authToken } : {}),
+        Authorization: 'Bearer ' + authToken,
       },
-      body: JSON.stringify({ sessionId }),
     });
     const result = await response.json();
+    if (response.status === 401) {
+      showAccessRecovery();
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      return;
+    }
     if (response.status === 403 && result.error === 'Verified customer access is required'
         && verifiedAccess && verifiedAccess.subscriptionStatus === 'formation_access') {
       if (btn) {
@@ -416,7 +424,7 @@ async function startCheckout(planId) {
       window.trackSycEvent('checkout_error', {
         plan_id: planId,
         checkout_source: 'paywall_modal',
-        error_message: err.message
+        error_category: 'checkout_request_failed'
       });
     }
     if (btn) {

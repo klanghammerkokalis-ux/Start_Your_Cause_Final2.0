@@ -1,3 +1,4 @@
+const { createHash } = require('node:crypto');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { isPaidFormationSession } = require('./_stripe-access');
 
@@ -106,6 +107,9 @@ exports.handler = async (event) => {
       planId,
       subscriptionStatus: isFormationPackage ? 'formation_access' : subscriptionStatus,
       currentPeriodEnd,
+      purchase: Number.isInteger(session.amount_total) && session.amount_total >= 0 && session.currency === 'usd'
+        ? { id: createHash('sha256').update(sessionId).digest('hex'), value: session.amount_total / 100, currency: 'USD' }
+        : null,
     });
   } catch (error) {
     console.error('Unable to verify Stripe Checkout Session:', error.message);
