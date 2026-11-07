@@ -35,3 +35,14 @@ This pass checks the named formation and corporate-report topics only. The 56-ju
 - [Texas Form 202 instructions](https://www.sos.state.tx.us/corp/forms/instructions/202-boc-instructions.pdf)
 - [Michigan annual reports and fees](https://www.michigan.gov/lara/bureau-list/cscl/corps/michigan-business-roadmap/annual-reports-and-annual-statements)
 - [Florida Sunbiz fee schedule](https://dos.fl.gov/sunbiz/forms/fees/) and [annual report filing](https://dos.fl.gov/sunbiz/manage-business/efile/annual-report)
+
+## Follow-up review of corporate and charitable filing cycles
+
+The remaining six standalone state formation guides now distinguish the relevant corporate filings from charity filings. This closes the targeted corporate-reporting copy pass across the eleven standalone state formation guides. It does not validate every claim in those guides or in the separate state fee directory.
+
+- [California public benefit corporation instructions](https://bpd.cdn.sos.ca.gov/corp/pdf/articles/arts-pb.pdf) and [charity renewal](https://oag.ca.gov/charities/renewals)
+- [Georgia corporate registration](https://sos.ga.gov/how-to-guide/how-guide-register-domestic-entity) and [charity registration](https://sos.ga.gov/how-to-guide/how-guide-charities)
+- [Illinois Attorney General charitable reporting rules](https://www.illinoisattorneygeneral.gov/Page-Attachments/RulesTrustAct.pdf)
+- [New Jersey corporate registration guide](https://www.nj.gov/treasury/revenue/pdf/Legacy-Reg-Form-0825.pdf) and [charity registration and renewal](https://www.njconsumeraffairs.gov/charities/Pages/forms.aspx)
+- [North Carolina corporate reporting guidance](https://www.sosnc.gov/manual/business_registration_Reports/Page12) and [solicitation statutes and rules](https://www.sosnc.gov/documents/guides/charities/statutes_and_rules.pdf)
+- [Ohio continued existence instructions](https://www.ohiosos.gov/assets/522.pdf) and [charity registration and reporting](https://charitable.ohioago.gov/Charity-Registration)
