@@ -23,3 +23,15 @@ Review date November 7, 2026. This is a product and source audit for the operato
 ## Verification
 
 Local regression tests cover all 13 generated documents across supported jurisdictions, ownership and expiry of paid access, zero-dollar discounted checkout, purchase analytics payloads, and the options sent to Stripe Checkout. Hosted Checkout and Portal behavior, production network events, provider settings, and counsel review remain separate verification steps.
+
+## Follow-up review of five public formation guides
+
+The guides now distinguish New York’s statutory agent for service from its optional separate registered agent, and Pennsylvania’s registered office from a commercial office provider. The Pennsylvania guide also explains the incorporation-notice requirement and the corporate annual report. Texas now states the board-managed minimum and points to the member-managed option. Michigan and Florida identify the corporate annual filing separately from charity and IRS filings.
+
+This pass checks the named formation and corporate-report topics only. The 56-jurisdiction static fee directory, solicitation exceptions, state tax procedures, and full governing-document requirements remain separate review items.
+
+- [New York formation instructions](https://dos.ny.gov/certificate-incorporation-domestic-not-profit-corporations) and [Not-for-Profit Corporation Law § 305](https://www.nysenate.gov/legislation/laws/NPC/305)
+- [Pennsylvania registered office guidance](https://www.pa.gov/agencies/dos/programs/business/information-services/commercial-registered-office-providers), [Title 15 § 5307](https://www.legis.state.pa.us/WU01/LI/LI/CT/HTM/15/00.053..HTM), and [corporate annual reports](https://www.pa.gov/agencies/dos/programs/business/types-of-filings-and-registrations/annual-reports)
+- [Texas Form 202 instructions](https://www.sos.state.tx.us/corp/forms/instructions/202-boc-instructions.pdf)
+- [Michigan annual reports and fees](https://www.michigan.gov/lara/bureau-list/cscl/corps/michigan-business-roadmap/annual-reports-and-annual-statements)
+- [Florida Sunbiz fee schedule](https://dos.fl.gov/sunbiz/forms/fees/) and [annual report filing](https://dos.fl.gov/sunbiz/manage-business/efile/annual-report)
