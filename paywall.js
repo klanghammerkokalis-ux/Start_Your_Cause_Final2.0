@@ -328,9 +328,8 @@ async function openBillingPortal(btn) {
       btn.disabled = true;
     }
 
-    const verified = hasAccess() || await restoreVerifiedAccess();
-    const sessionId = localStorage.getItem(CHECKOUT_SESSION_KEY);
-    if (!verified) {
+    const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!authToken) {
       showAccessRecovery();
       if (btn) {
         btn.textContent = originalText;
@@ -338,7 +337,6 @@ async function openBillingPortal(btn) {
       }
       return;
     }
-    const authToken = localStorage.getItem(AUTH_TOKEN_KEY);
 
     if (typeof window.trackSycEvent === 'function') {
       window.trackSycEvent('manage_subscription', {});
@@ -348,11 +346,18 @@ async function openBillingPortal(btn) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(authToken ? { Authorization: 'Bearer ' + authToken } : {}),
+        Authorization: 'Bearer ' + authToken,
       },
-      body: JSON.stringify({ sessionId }),
     });
     const result = await response.json();
+    if (response.status === 401) {
+      showAccessRecovery();
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+      return;
+    }
     if (response.status === 403 && result.error === 'Verified customer access is required'
         && verifiedAccess && verifiedAccess.subscriptionStatus === 'formation_access') {
       if (btn) {

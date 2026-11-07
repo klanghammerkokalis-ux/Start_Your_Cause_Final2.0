@@ -119,7 +119,7 @@ test('quick-start preview displays organization and mission HTML safely', () => 
 });
 
 test('legacy annual subscribers can manage billing while one-time purchasers are not sent to cancel', async () => {
-  for (const [status, existingSubscription] of [['active',true],['formation_access',false],['formation_access',true]]) {
+  for (const [status, existingSubscription] of [['active',true],['formation_access',false],['formation_access',true],[null,true]]) {
     const calls=[];
     const context={
       console,URLSearchParams,
@@ -129,7 +129,7 @@ test('legacy annual subscribers can manage billing while one-time purchasers are
       fetch:async()=>{calls.push('portal');return {ok:existingSubscription,status:existingSubscription?200:403,json:async()=>existingSubscription?({url:'https://billing.example.test/'}):({error:'Verified customer access is required'})};},
     };
     vm.createContext(context);
-    vm.runInContext(fs.readFileSync('paywall.js','utf8')+`\nverifiedAccess = {verified:true,planId:'annual',subscriptionStatus:${JSON.stringify(status)}};`,context);
+    vm.runInContext(fs.readFileSync('paywall.js','utf8')+`\nverifiedAccess = ${status ? JSON.stringify({verified:true,planId:'annual',subscriptionStatus:status}) : 'null'};`,context);
     await context.openBillingPortal({textContent:'Manage billing'});
     assert.deepEqual(calls,existingSubscription?['portal']:['portal','notice']);
     assert.equal(context.window.location.href,existingSubscription?'https://billing.example.test/':'');
@@ -179,4 +179,40 @@ test('hosted checkout discloses billing terms and rejects mismatched membership 
   assert.equal((await checkout('monthly')).statusCode, 503);
   assert.equal((await checkout('__proto__')).statusCode, 400);
   assert.equal(requests.length, 2);
+});
+
+test('billing portal authorizes past-due members without granting document access', async () => {
+  const priceId = 'price_membership';
+  const event = {httpMethod:'POST', headers:{authorization:'Bearer test-token'}};
+  for (const [status, price, headers, expected] of [
+    ['past_due', priceId, event.headers, 200],
+    ['unpaid', priceId, event.headers, 200],
+    ['paused', priceId, event.headers, 200],
+    ['active', priceId, event.headers, 200],
+    ['canceled', priceId, event.headers, 403],
+    ['past_due', 'price_other', event.headers, 403],
+    ['past_due', priceId, {}, 401],
+  ]) {
+    const created = [];
+    const context = {
+      exports:{}, process:{env:{SITE_URL:'https://example.test', STRIPE_MONTHLY_PRICE_ID:priceId}}, URL, console,
+      fetch:async () => ({ok:true, json:async () => ({email:'owner@example.test'})}),
+      require:() => () => ({
+        customers:{list:async ({email}) => {
+          assert.equal(email,'owner@example.test');
+          return {data:[{id:'cus_owner'}]};
+        }},
+        subscriptions:{list:async () => ({data:[{status, items:{data:[{price:{id:price}}]}}]})},
+        billingPortal:{sessions:{create:async ({customer}) => {
+          created.push(customer);
+          return {url:'https://billing.example.test/'};
+        }}},
+      }),
+    };
+    vm.runInNewContext(fs.readFileSync('netlify/functions/create-portal.js','utf8'),context);
+    const response = await context.exports.handler({...event, headers});
+    assert.equal(response.statusCode, expected);
+    assert.deepEqual(created,expected === 200 ? ['cus_owner'] : []);
+    assert.equal(JSON.parse(response.body).verified, undefined);
+  }
 });
