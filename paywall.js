@@ -202,16 +202,19 @@ async function restoreVerifiedAccess() {
       // It may be needed for support or a subsequent successful recovery.
       if (verified && returnedSessionId) {
         const plan = PAYWALL_CONFIG.plans[verifiedAccess.planId] || PAYWALL_CONFIG.plans.monthly;
+        const purchase = verifiedAccess.purchase;
         const purchaseKey = 'syc_purchase_tracked_' + sessionId;
-        if (!localStorage.getItem(purchaseKey) && typeof window.trackSycEvent === 'function') {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        window.resumeCheckoutAnalytics?.();
+        if (purchase && !localStorage.getItem(purchaseKey) && typeof window.trackSycEvent === 'function') {
           window.trackSycEvent('purchase', {
-            transaction_id: sessionId,
-            currency: 'USD',
-            value: plan.price,
+            transaction_id: purchase.id,
+            currency: purchase.currency,
+            value: purchase.value,
             items: [{
               item_id: verifiedAccess.planId,
               item_name: plan.name,
-              price: plan.price,
+              price: purchase.value,
               quantity: 1
             }]
           });
@@ -416,7 +419,7 @@ async function startCheckout(planId) {
       window.trackSycEvent('checkout_error', {
         plan_id: planId,
         checkout_source: 'paywall_modal',
-        error_message: err.message
+        error_category: 'checkout_request_failed'
       });
     }
     if (btn) {

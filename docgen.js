@@ -85,9 +85,8 @@ function generateArticles(a, sd) {
   const stName = sd ? sd.form : "Articles of Incorporation (Nonprofit)";
   const stAgency = sd ? sd.agency : "[State Agency]";
   const stState = a.state || "[State]";
-  const stFee = sd ? `$${sd.fee}` : "[Fee]";
 
-  return docHeader(stName, `State of ${stState} | Filing Fee: ${stFee}<br>File with: ${stAgency}`) + `
+  return docHeader(stName, `State of ${stState} | Planning draft<br>Verify current filing instructions with ${stAgency}`) + `
 
 <div class="section">
 ${a.orgType === 'Private Foundation' ? '<p><strong>Private-foundation review required before use:</strong> This general draft does not resolve the additional governing-instrument requirements of IRC section 508(e), the excise-tax rules, or applicable state law. Have a qualified professional complete that review before filing.</p>' : ''}
@@ -158,10 +157,10 @@ Address: <strong>${a.founderAddress || "[Incorporator Address]"}</strong></p>
 }
 
 // ── 2. BYLAWS ──
-function generateBylaws(a, sd) {
+function generateBylaws(a) {
   const orgName = a.orgName || "[Organization Name]";
   const stState = a.state || "[State]";
-  const minBoard = sd && Number.isFinite(Number(sd.minBoardMembers)) ? Number(sd.minBoardMembers) : 3;
+
   const meetingFrequency = a.meetFreq || "Quarterly (4 times per year)";
   const fiscalYear = a.fiscal || "January 1 – December 31 (Calendar Year)";
   const spendingLimit = a.spendLimit || '<span class="blank" style="min-width:60px">&nbsp;</span>';
@@ -193,7 +192,7 @@ function generateBylaws(a, sd) {
 <h3>Section 3.1 — General Powers</h3>
 <p>The affairs of the Corporation shall be managed by its Board of Directors. The Board of Directors shall have control of and be responsible for the management of the affairs and property of the Corporation.</p>
 <h3>Section 3.2 — Number, Tenure, and Qualifications</h3>
-<p>The number of directors shall be not less than <strong>${minBoard}</strong> and may be increased by resolution of the Board. Directors shall serve two-year terms and may be reelected. Directors need not be residents of ${stState}.</p>
+<p>The number of directors shall be not less than <strong>[insert the board minimum after reviewing state law and the articles]</strong> and may be increased by resolution of the Board. Directors shall serve two-year terms and may be reelected. Directors need not be residents of ${stState}.</p>
 <h3>Section 3.3 — Initial Board of Directors</h3>
 <p>The initial Board of Directors shall consist of:</p>
 <ol>
@@ -625,58 +624,21 @@ ${specialItems.length ? '<div class="warn"><strong>Review required:</strong> The
 
 // ── 8. STATE-SPECIFIC CHECKLIST ──
 function generateStateChecklist(a, sd) {
-  if (!sd) return docHeader("State Filing Checklist", "Select your state to see state-specific requirements") + "<p>State not found.</p>" + docFooter;
-  const orgName = a.orgName || "[Organization Name]";
-  const unique = sd.unique || [];
-  const minBoard = Number.isFinite(Number(sd.minBoardMembers)) ? Number(sd.minBoardMembers) : 3;
-  return docHeader(`${sd.name} Nonprofit Filing Checklist`, `${orgName} | ${sd.name}-Specific Requirements`) + `
-<div class="section">
-<h2>Your State: ${sd.name}</h2>
-<table style="width:100%; border-collapse:collapse; margin-bottom:1em">
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0; width:55%">Formation document</td><td><strong>${sd.form}</strong></td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Filing agency</td><td><a href="${sd.agencyUrl}" style="color:#2d8f6f">${sd.agency}</a></td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Processing time</td><td>${sd.processingDays} business days</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Minimum board members</td><td>${minBoard}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Charitable solicitation registration</td><td>${sd.solicitationSummary || 'Confirm charity registration, exemptions, current fee and regulator before soliciting'}</td></tr>
-<tr><td style="padding:8px 0">State income tax exemption</td><td>Check income-tax and sales/use-tax rules separately; a separate state income-tax application is not always required</td></tr>
-</table>
-</div>
-
-<div class="section">
-<h2>State-Specific Notes for ${sd.name}</h2>
-<p>${sd.notes}</p>
-${unique.length > 0 ? `<h3>Unique Requirements / Watch Out For:</h3><ul>${unique.map(u => `<li>${u}</li>`).join('')}</ul>` : ''}
-</div>
-
-<div class="section">
-<h2>${sd.name} Step-by-Step Checklist</h2>
-<table style="width:100%; border-collapse:collapse">
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Choose and verify your nonprofit name is available in ${sd.name}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Recruit at least ${minBoard} board members</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Identify a registered agent in ${sd.name}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Prepare and sign your ${sd.form}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> File ${sd.form} with the ${sd.agency} — Fee: $${sd.fee}</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Receive confirmation from the state (est. ${sd.processingDays} days)</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Apply for EIN from IRS (free, at IRS.gov)</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Hold first board meeting and adopt bylaws</td></tr>
-${sd.solicitationReg ? `<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Register for charitable solicitation in ${sd.name} — Fee: $${sd.solicitationFee || 0}</td></tr>` : ''}
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> File IRS Form 1023 or 1023-EZ for federal 501(c)(3) status</td></tr>
-${sd.incomeTaxExempt ? `<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Check ${sd.name} income-tax treatment and any separate sales/use-tax exemption process</td></tr>` : ''}
-<tr style="border-bottom:1px solid #eee"><td style="padding:9px 0"><input type="checkbox"> Open a bank account in the nonprofit's name</td></tr>
-<tr><td style="padding:9px 0"><input type="checkbox"> Set up annual reporting reminders for ${sd.name}</td></tr>
-</table>
-</div>
-
-<div class="section">
-<h2>Total Estimated State Costs</h2>
-<table style="width:100%; border-collapse:collapse">
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">State incorporation fee</td><td>$${sd.fee}</td></tr>
-${sd.solicitationReg ? `<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">Charitable solicitation registration</td><td>$${sd.solicitationFee || 0}</td></tr>` : ''}
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">IRS filing fee (1023-EZ)</td><td>$275</td></tr>
-<tr style="border-bottom:1px solid #eee"><td style="padding:8px 0">IRS filing fee (1023 full)</td><td>$600</td></tr>
-<tr style="background:#f0f8f4"><td style="padding:8px 0"><strong>Illustrative subtotal if 1023-EZ eligible</strong></td><td><strong>$${sd.fee + (sd.solicitationFee || 0) + 275}</strong></td></tr>
-</table>
-</div>
+  const stateName = sd?.name || a.state || '[Jurisdiction]';
+  const agency = sd?.agency || 'the corporation office';
+  const agencyLink = sd?.agencyUrl
+    ? `<p><a href="${sd.agencyUrl}" rel="noopener noreferrer">${agency}</a></p>`
+    : '';
+  return docHeader(`${stateName} Filing Research Checklist`, a.orgName || '[Organization Name]') + `
+<p><strong>Planning worksheet.</strong> Confirm the applicable rules before signing, filing or soliciting.</p>
+${agencyLink}
+<p><a href="https://www.irs.gov/charities-non-profits/state-links">IRS directory of state corporation, charity and tax offices</a></p>
+<ul>
+<li>Verify the entity type, official form, name, registered agent, incorporators, directors, approvals and signatures.</li>
+<li>Record current formation fees, filing method and estimated processing time from the corporation office.</li>
+<li>Check initial and recurring charity registration, reporting and exemptions with each applicable charity regulator before fundraising.</li>
+<li>Confirm state tax treatment, separate tax exemptions and recurring corporate reporting.</li>
+<li>Use IRS instructions to verify EIN, tax-exemption application and federal filing obligations.</li>
+</ul>
 ` + docFooter;
 }

@@ -1,0 +1,25 @@
+# Start Your Cause legal review and corrections
+
+Review date November 7, 2026. This is a product and source audit for the operator. It records legal content checked, corrections prepared, and issues that require additional evidence or legal judgment. The baseline and individual jurisdiction citations are in [the November 6 review](legal-accuracy-review-2026-11-06.md).
+
+| Area | Correction in this branch | Remaining verification |
+| --- | --- | --- |
+| Federal formation and annual reporting | Preserved the prior corrections to Form 1023-EZ eligibility, the full Form 1023 pathway, annual return dates, extensions, and entity classifications. Used the IRS worksheet as the eligibility reference. | Attorney or exempt-organization tax review of tailored clauses and decisions for unusual entities, private foundations, and organizations with special filing obligations. |
+| State and territorial formation and solicitation | Replaced legacy fee, timing, board-size, and solicitation assertions in the interactive workflow and generated documents with verification steps and regulator links. The cost calculator totals amounts entered from official sources. | Reconcile dedicated public guides and the static fee directory against current agency forms for every jurisdiction before calling those pages individually verified. Check separate formation, fundraising, tax, and renewal authorities, and territory links. |
+| Paid access and recurring billing | Added clear renewal and cancellation text near hosted Checkout submission. The membership endpoint validates that Stripe's configured base price matches the disclosed $12 USD monthly plan. Aligned one-time access terms to the 365-day rule in the verifier. | In a Stripe sandbox, verify that the disclosure renders before confirmation, how assent is captured, which terms version is recorded, cancellation through the portal, renewal and acknowledgment notices, and discount/refund handling. Map state automatic-renewal requirements to the customers actually served. |
+| Privacy and data handling | Updated notices for public forms, support requests, account deletion, retention exceptions, and analytics. Removed raw Stripe session references, saved project IDs, entered fee amounts and formation dates from the affected analytics events. Recorded the amount actually paid after discounts. | Inspect real network payloads, Google Analytics enhanced measurement and retention, access policies, deletion across vendor systems, logs, backup schedules, and applicable state privacy rights and consent controls. |
+| Marketing and customer communications | Reviewed public signup and contact surfaces, plus the published Guided Start offer. | Verify the distinction between requested service emails and marketing, an approved business mailing address for commercial mail, unsubscribe processing, and suppression records. Confirm those controls in the welcome and follow-up automations. |
+| Guided Start and customized templates | The public description limits the offer to a written planning roadmap, resource links, and a follow-up exchange. Draft generation now directs customers to the appropriate public filing authorities for variable requirements. | Have counsel evaluate the actual intake, deliverables, recommendations, and follow-up scripts under the unauthorized-practice rules of jurisdictions served. Review the paid offer's scope, delivery and refund terms before expanding fulfillment. |
+| Terms and tax administration | Clarified current product price, access, renewal, and billing support terms. | Confirm the contracting entity, actual assent records, refunds and paid-access handling, and whether sales tax registration, collection, or filing applies. |
+
+## Primary references
+
+- [IRS Form 1023-EZ instructions and eligibility worksheet](https://www.irs.gov/instructions/i1023ez)
+- [IRS directory of state charity, corporation and tax agencies](https://www.irs.gov/charities-non-profits/state-links)
+- [Restore Online Shoppers' Confidence Act, 15 U.S.C. § 8403](https://www.govinfo.gov/link/uscode/15/8403)
+- [FTC CAN-SPAM Act compliance guide](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
+- [Stripe Checkout Session creation reference](https://docs.stripe.com/api/checkout/sessions/create)
+
+## Verification
+
+Local regression tests cover all 13 generated documents across supported jurisdictions, ownership and expiry of paid access, zero-dollar discounted checkout, purchase analytics payloads, and the options sent to Stripe Checkout. Hosted Checkout and Portal behavior, production network events, provider settings, and counsel review remain separate verification steps.

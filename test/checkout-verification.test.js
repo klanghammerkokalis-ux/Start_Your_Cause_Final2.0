@@ -10,7 +10,7 @@ function verificationHandler(session, email = 'qa@example.test') {
     fetch: async () => ({ ok: true, json: async () => ({email}) }),
     require: name => name === 'stripe'
       ? () => ({checkout: {sessions: {retrieve: async () => session}}})
-      : {isPaidFormationSession},
+      : name === 'node:crypto' ? require(name) : {isPaidFormationSession},
   };
   vm.createContext(context);
   vm.runInContext(fs.readFileSync('netlify/functions/verify-checkout.js','utf8'), context);
@@ -36,7 +36,14 @@ test('checkout verification enforces account ownership and twelve-month expiry',
   ]) {
     const response = await verificationHandler(candidate, email)(event);
     assert.equal(response.statusCode, expected);
-    assert.equal(Boolean(JSON.parse(response.body).verified), expected === 200);
+    const result = JSON.parse(response.body);
+    assert.equal(Boolean(result.verified), expected === 200);
+    if (expected === 200) {
+      assert.equal(result.purchase.value, candidate.amount_total / 100);
+      assert.equal(result.purchase.currency, 'USD');
+      assert.match(result.purchase.id, /^[a-f0-9]{64}$/);
+      assert.ok(!response.body.includes(candidate.id));
+    }
   }
   const unsigned = await verificationHandler(session)({...event, headers:{}});
   assert.equal(unsigned.statusCode, 401);
@@ -53,6 +60,7 @@ function summaryContext(access) {
   };
   vm.createContext(context);
   const source = fs.readFileSync('index.html','utf8');
+  vm.runInContext(fs.readFileSync('states.js','utf8'),context);
   const fn = source.slice(source.indexOf('function buildSummary(){'), source.indexOf('// ── ANNUAL FILING PAGE'));
   vm.runInContext(fn,context);
   context.buildSummary();
@@ -136,4 +144,39 @@ test('pricing-page checkout does not repurchase when access is already verified'
   vm.runInContext(source.slice(source.indexOf('async function doCheckout(planId, btn) {'),source.indexOf('</script>',source.indexOf('async function doCheckout(planId, btn) {'))),context);
   await context.doCheckout('annual',null);
   assert.equal(destination,'form');
+});
+
+test('hosted checkout discloses billing terms and rejects mismatched membership pricing', async () => {
+  const requests = [];
+  const price = {
+    active: true, currency: 'usd', unit_amount: 1200,
+    recurring: {interval: 'month', interval_count: 1, usage_type: 'licensed'},
+  };
+  const context = {
+    exports: {}, process: {env: {SITE_URL: 'https://example.test'}}, console, URL,
+    fetch: async () => ({ok: true, json: async () => ({email: 'qa@example.test'})}),
+    require: () => () => ({
+      prices: {retrieve: async () => price},
+      checkout: {sessions: {create: async options => {
+        requests.push(options);
+        return {url: 'https://example.test/checkout'};
+      }}},
+    }),
+  };
+  vm.runInNewContext(fs.readFileSync('netlify/functions/create-checkout.js', 'utf8'), context);
+  const checkout = planId => context.exports.handler({...event, body: JSON.stringify({planId})});
+
+  assert.equal((await checkout('annual')).statusCode, 200);
+  assert.equal(requests[0].mode, 'payment');
+  assert.equal(requests[0].line_items[0].price_data.unit_amount, 7900);
+  assert.match(requests[0].custom_text.submit.message, /365 days.*No automatic renewal/);
+
+  assert.equal((await checkout('monthly')).statusCode, 200);
+  assert.equal(requests[1].mode, 'subscription');
+  assert.match(requests[1].custom_text.submit.message, /monthly at \$12 USD.*until canceled.*manage billing/);
+
+  price.unit_amount = 1500;
+  assert.equal((await checkout('monthly')).statusCode, 503);
+  assert.equal((await checkout('__proto__')).statusCode, 400);
+  assert.equal(requests.length, 2);
 });

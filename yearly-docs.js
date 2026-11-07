@@ -231,10 +231,10 @@ ${sd ? `
 <table>
 <tr><td width="45%">Filing agency</td><td><strong>${sd.agency}</strong></td></tr>
 <tr><td>Agency website</td><td><a href="${sd.agencyUrl}">${sd.agencyUrl}</a></td></tr>
-<tr><td>Solicitation registration renewal</td><td>${sd.solicitationReg ? `Check charity-regulator renewal requirements and fee; initial registration fees do not establish renewal fees` : 'No general registration indicated here; verify exceptions, activities and other jurisdictions'}</td></tr>
+<tr><td>Solicitation registration renewal</td><td>Confirm applicability, exemption, fee and deadline with the charity regulator</td></tr>
 <tr><td>Report form, fee and deadline</td><td>Verify the current annual or biennial reporting instructions; incorporation processing estimates do not apply to this report.</td></tr>
 </table>
-${sd.unique&&sd.unique.length?`<div class="warn-box"><strong>⚠️ ${sd.name}-specific reminders:</strong><ul style="margin:.5em 0 0;padding-left:1.25em">${sd.unique.map(u=>`<li>${u}</li>`).join('')}</ul></div>`:''}
+
 ` : ''}
 
 <h2>Section 1 — Organization Information</h2>
@@ -290,21 +290,21 @@ ${a.board5?`<tr><td>${a.board5}</td><td><span class="blank">&nbsp;</span></td><t
 </table>
 
 <h2>Section 6 — Charitable Solicitation Renewal</h2>
-${sd && sd.solicitationReg ? `
+
 <div class="warn-box">⚠️ <strong>Check ${sd.name} charitable reporting and renewal requirements.</strong> Confirm whether registration or an exemption applies, which regulator receives the report, and its current deadline.</div>
 <table class="no-border">
 <tr><td width="45%">Renewal fee</td><td>Confirm the current fee schedule; renewal fees may depend on revenue and may differ from the initial fee.</td></tr>
 <tr><td>File with</td><td>${sd.charityAgency || "The applicable state charity regulator"}</td></tr>
 <tr><td>Total gross contributions received in ${taxYear}</td><td>$<span class="blank">&nbsp;</span></td></tr>
 <tr><td>Did you use a professional fundraiser?</td><td>☐ Yes &nbsp; ☐ No</td></tr>
-</table>` : `<p style="color:#666">This reference does not identify a general charity-registration requirement for ${stateName}. That does not establish an exemption from local licenses, special fundraising rules, charitable-trust reporting, or registration in other states where you solicit.</p>`}
+</table>
 
 <h2>Annual Compliance Checklist for ${taxYear}</h2>
 <table>
 <tr><th>Task</th><th>Due Date</th><th>Done?</th></tr>
 <tr><td>File IRS Form 990/990-EZ/990-N</td><td>${period.due} (nominal date; check weekend/holiday adjustments)</td><td><input type="checkbox"></td></tr>
 <tr><td>File state annual report</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>
-${sd&&sd.solicitationReg?`<tr><td>Renew charitable solicitation registration</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>`:''}
+<tr><td>Renew charitable solicitation registration</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>
 <tr><td>Hold annual board meeting</td><td><span class="blank">&nbsp;</span></td><td><input type="checkbox"></td></tr>
 <tr><td>Review and update conflict of interest disclosures</td><td>Annually</td><td><input type="checkbox"></td></tr>
 <tr><td>Review bylaws for needed updates</td><td>Annually</td><td><input type="checkbox"></td></tr>
@@ -382,7 +382,7 @@ ${a.board5?`<tr><td>${a.board5}</td><td>Director</td><td><input type="checkbox">
 
 <h2>VI. State Annual Report</h2>
 <p>The Board authorized the filing of the annual report with ${sd?sd.agency:'the state agency'} for the year ${taxYear}.</p>
-${sd&&sd.solicitationReg?`<p>The Board also authorized renewal of the charitable solicitation registration in ${sd.name}. Confirm the applicable charity regulator, reporting cycle, exemption and current renewal fee before filing.</p>`:''}
+<p>If applicable, record actual decisions about charity registration or reporting after confirming the governing rules.</p>
 <p>Motion to authorize: <span class="blank">&nbsp;</span> &nbsp; Seconded: <span class="blank">&nbsp;</span></p>
 <p>Vote: &nbsp; Ayes <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; Nays <span class="blank" style="min-width:30px">&nbsp;</span> &nbsp; ☐ Approved</p>
 
