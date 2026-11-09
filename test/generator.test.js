@@ -97,7 +97,8 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
-    'illinois-charitable-registration-before-fundraising'
+    'illinois-charitable-registration-before-fundraising',
+    'do-i-need-a-lawyer-to-start-a-nonprofit'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const redirects = fs.readFileSync('netlify.toml', 'utf8');
@@ -110,6 +111,18 @@ test('organic acquisition pages are indexable and linked', () => {
     assert.match(redirects, new RegExp(`from = "/${slug}"`));
     assert.match(resources, new RegExp(`href="/${slug}"`));
   }
+});
+
+test('lawyer decision guide accurately separates optional representation from required responsibility', () => {
+  const page = fs.readFileSync('do-i-need-a-lawyer-to-start-a-nonprofit.html', 'utf8');
+  assert.match(page, /do not require an attorney to submit Form 1023/i);
+  assert.match(page, /officer, director, trustee, or other official authorized to sign/);
+  assert.match(page, /Form 2848/);
+  assert.match(page, /strongly recommend that legal counsel review documents before submission/);
+  assert.match(page, /not a law firm, tax firm, filing service, or authorized representative/i);
+  assert.match(page, /do not submit state or IRS filings/);
+  assert.match(page, /G-BE983T68NN/);
+  assert.match(page, /data-slug="do-i-need-a-lawyer-to-start-a-nonprofit"/);
 });
 
 test('Form 1023 deadline calculator counts 27 months after the formation month', () => {

@@ -118,6 +118,11 @@
   status = 200
 
 [[redirects]]
+  from = "/do-i-need-a-lawyer-to-start-a-nonprofit"
+  to = "/do-i-need-a-lawyer-to-start-a-nonprofit.html"
+  status = 200
+
+[[redirects]]
   from = "/start-a-nonprofit-illinois"
   to = "/start-a-nonprofit-illinois.html"
   status = 200
