@@ -2,18 +2,39 @@
 <html lang="en">
 <head>
   <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE983T68NN"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    window.sycAnalyticsDisabled = new URLSearchParams(window.location.search).get('syc_test') === '1';
-    if (!window.sycAnalyticsDisabled) gtag('config', 'G-BE983T68NN');
+    const query = new URLSearchParams(window.location.search);
+    window.sycAnalyticsDisabled = query.get('syc_test') === '1'
+      || ['checkout_session_id', 'access_token', 'refresh_token', 'code', 'token_hash'].some(key => query.has(key))
+      || Boolean(window.location.hash);
+    const analyticsLocation = window.location.origin + window.location.pathname;
+    let analyticsStarted = false;
+    function startAnalytics() {
+      if (analyticsStarted) return;
+      analyticsStarted = true;
+      const tag = document.createElement('script');
+      tag.async = true;
+      tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-BE983T68NN';
+      document.head.appendChild(tag);
+      gtag('config', 'G-BE983T68NN', { page_location: analyticsLocation, page_referrer: '' });
+    }
+    if (!window.sycAnalyticsDisabled) startAnalytics();
 
     // Centralized GA4 event helper. Calls are safe if analytics is blocked or unavailable.
     window.trackSycEvent = function(name, params) {
-      if (window.sycAnalyticsDisabled || typeof window.gtag !== 'function') return;
-      window.gtag('event', name, params || {});
+      if (window.sycAnalyticsDisabled || typeof window.gtag !== 'function') return false;
+      window.gtag('event', name, { ...params, page_location: analyticsLocation, page_referrer: '' });
+      return true;
+    };
+
+    window.resumeCheckoutAnalytics = function() {
+      if (query.get('syc_test') === '1' || !query.has('checkout_session_id')
+          || window.location.search || window.location.hash) return;
+      window.sycAnalyticsDisabled = false;
+      startAnalytics();
     };
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -773,8 +794,8 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
         <div class="fs-desc">Every 501(c)(3) needs a <strong>board of directors</strong> — at least 3 people in most states who make key decisions. Board members must act in the nonprofit’s interests. Compensation, if any, should be reasonable, properly approved, and consistent with applicable law and governing documents.</div>
         <div class="field"><label>Your full name (founder)</label><input type="text" id="f_founderName" placeholder="Your full legal name"></div>
         <div class="field"><label>Your physical address as incorporator</label><div class="hint">Some state filings require an incorporator address. Review your state's official form before submitting.</div><input type="text" id="f_founderAddress" placeholder="Street address, City, State, ZIP"></div>
-        <div class="field"><label>Second board member's name</label><div class="hint">A friend, colleague, or community member who supports your cause.</div><input type="text" id="f_board2" placeholder="Full name"></div>
-        <div class="field"><label>Third board member's name</label><input type="text" id="f_board3" placeholder="Full name"></div>
+        <div class="field"><label>Second board member (if applicable)</label><div class="hint">A friend, colleague, or community member who supports your cause.</div><input type="text" id="f_board2" placeholder="Full name"></div>
+        <div class="field"><label>Third board member (if applicable)</label><input type="text" id="f_board3" placeholder="Full name"></div>
         <div class="field"><label>Fourth board member (optional)</label><input type="text" id="f_board4" placeholder="Full name (if applicable)"></div>
         <div class="field"><label>Fifth board member (optional)</label><div class="hint">New Hampshire generally requires five incorporators separately from its five-person charitable board. The questionnaire does not collect every incorporator’s information; complete the official filing and check exceptions.</div><input type="text" id="f_board5" placeholder="Full name (if applicable)"></div>
         <div class="field"><label>President / Board Chair</label><input type="text" id="f_president" placeholder="Full legal name"></div>
@@ -907,7 +928,7 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
       <div class="fcard" id="completion-offer" style="margin-top:.875rem;border:2px solid var(--green);background:var(--glight)">
         <div class="fs-tag">Your packet is ready to generate</div>
         <div class="fs-title" style="font-size:20px;margin-bottom:.5rem">Unlock all 9 personalized formation documents</div>
-        <p style="font-size:14px;color:var(--tmid);line-height:1.65;margin-bottom:1rem">The Formation Package is one payment for 12 months of account and document access. Regenerate documents as your plans change. Stripe securely processes payment.</p>
+        <p style="font-size:14px;color:var(--tmid);line-height:1.65;margin-bottom:1rem">The Formation Package is one payment for 365 days of account and document access. Regenerate documents as your plans change. Stripe securely processes payment.</p>
         <ul style="font-size:13px;color:var(--tmid);line-height:1.8;margin:0 0 1rem 1.25rem"><li>No automatic renewal for the Formation Package</li><li>Your saved answers remain available across devices when signed in</li><li>Government filing fees are separate; Start Your Cause does not submit filings</li><li>Billing and access help: hello@startyourcause.org</li></ul>
         <button class="btn btn-p" onclick="window.trackSycEvent('completion_checkout_cta',{source:'questionnaire_complete'});doCheckout('annual',this)" style="width:100%;max-width:430px">Get my Formation Package — $79 →</button>
       </div>
@@ -1046,10 +1067,10 @@ footer{background:#2c2418;color:#b8a898;padding:3rem 2rem;text-align:center;font
             <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:500;padding:4px 14px;border-radius:20px;white-space:nowrap">Best value — no automatic renewal</div>
             <div class="stag">Formation Package</div>
             <div style="font-size:2.5rem;font-family:'Lora',serif;font-weight:600;color:var(--text);line-height:1;margin:.25rem 0">$79</div>
-            <div style="font-size:13px;color:var(--tlight);margin-bottom:1.25rem">one payment — 12 months of access</div>
+            <div style="font-size:13px;color:var(--tlight);margin-bottom:1.25rem">one payment — 365 days of access</div>
             <ul class="pricing-feature-list" style="list-style:none;padding:0;margin:0 0 1.5rem;font-size:13px;color:var(--tmid)">
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All formation and annual document templates</li>
-              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>12 months of account and document access</li>
+              <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>365 days of account and document access</li>
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>All document updates included</li>
               <li style="padding:6px 0;border-bottom:1px solid var(--sand);display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>Annual compliance calendar</li>
               <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green);flex-shrink:0">✓</span>One payment — does not renew automatically</li>
@@ -1154,7 +1175,7 @@ const PAGE_SEO = {
   },
   states: {
     title: 'State Nonprofit Filing Guide | Start Your Cause',
-    description: 'Review nonprofit formation requirements, filing fees, forms, and state-specific rules across all 50 states and U.S. territories.'
+    description: 'Find official nonprofit filing resources by jurisdiction and prepare questions for the relevant regulators.'
   },
   checklist: {
     title: 'Nonprofit Startup Checklist | Start Your Cause',
@@ -1270,29 +1291,10 @@ function showStateCard() {
   const sd = STATE_DATA[code];
   if(!sd){ card.classList.remove('visible'); return; }
   teaser.style.display='none';
-  const unique = (sd.unique||[]).map(u=>`<li>${u}</li>`).join('');
-  card.innerHTML = `
-<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
-  <h2 style="font-size:1.5rem">${sd.name}</h2><p style="font-size:13px">Starting reference only: confirm current requirements and exceptions with the corporation office and the separate charity regulator before filing or fundraising.</p>
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-    <span class="meta-pill">Fee: $${sd.fee}</span>
-    <span class="meta-pill">Charity requirements: review below</span>
-    <span class="meta-pill">Min. ${sd.minBoardMembers} directors</span>
-  </div>
-</div>
-<table class="state-table">
-  <tr><td>Formation document</td><td><strong>${sd.form}</strong></td></tr>
-  <tr><td>Filing agency</td><td><a href="${sd.agencyUrl}" target="_blank" style="color:var(--green)">${sd.agency} ↗</a></td></tr>
-  <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
-  <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
-  <tr><td>Minimum board members</td><td>${sd.minBoardMembers}</td></tr>
-  <tr><td>Charitable solicitation reg.</td><td>${sd.solicitationSummary || (sd.solicitationReg?'Registration may apply; confirm exemptions and the current fee with the charity regulator':'No general requirement indicated here; confirm special activities and other-state obligations')}</td></tr>
-  <tr><td>State income tax exemption</td><td>Check income-tax treatment and any separate sales/use-tax exemption; state processes differ</td></tr>
-  <tr><td>Illustrative subtotal if 1023-EZ eligible</td><td><strong>$${sd.fee+(sd.solicitationFee||0)+275}</strong> (inc. IRS 1023-EZ fee)</td></tr>
-</table>
-<p style="font-size:14px;color:var(--tmid);line-height:1.6;margin-bottom:.875rem">${sd.notes}</p>
-${unique?`<div style="margin-bottom:.875rem"><p style="font-size:13px;font-weight:500;margin-bottom:.4rem;color:var(--text)">⚠️ Watch out for — ${sd.name}-specific:</p><ul class="unique-list">${unique}</ul></div>`:''}
-<div style="margin-top:1rem"><button class="btn btn-p" onclick="document.getElementById('f_stateSelect').value='${code}';go('form');updateStateBanner()" style="font-size:14px;padding:10px 20px">Start my ${sd.name} nonprofit →</button></div>`;
+  card.innerHTML = `<h2>${sd.name} filing resources</h2>
+    <p>Check the current formation form, filing fee, director and incorporator rules with the corporation office. Check charitable solicitation and tax obligations with the relevant regulators separately.</p>
+    <p>${stateFilingResources(sd)}</p>
+    <button class="btn btn-p" onclick="document.getElementById('f_stateSelect').value='${code}';go('form');updateStateBanner()">Start a planning draft</button>`;
   card.classList.add('visible');
 }
 
@@ -1300,10 +1302,9 @@ function buildStateQuickGrid() {
   const grid = document.getElementById('stateQuickGrid');
   if(!grid || grid.children.length > 0) return;
   STATE_LIST.forEach(s => {
-    const sd = STATE_DATA[s.code];
     const btn = document.createElement('div');
     btn.style.cssText='background:var(--warm);border:1px solid var(--sand2);border-radius:var(--rs);padding:.875rem;cursor:pointer;transition:border-color .15s';
-    btn.innerHTML=`<div style="font-weight:500;font-size:14px;margin-bottom:2px">${s.name}</div><div style="font-size:12px;color:var(--tmid)">$${sd.fee} filing fee</div>`;
+    btn.innerHTML=`<div style="font-weight:500;font-size:14px;margin-bottom:2px">${s.name}</div><div style="font-size:12px;color:var(--tmid)">Official filing resources</div>`;
     btn.onmouseenter=()=>btn.style.borderColor='var(--gmid)';
     btn.onmouseleave=()=>btn.style.borderColor='var(--sand2)';
     btn.onclick=()=>{ document.getElementById('stateSelect').value=s.code; showStateCard(); window.scrollTo(0,300); };
@@ -1443,8 +1444,6 @@ const REQUIRED_BY_STEP = [
   [
     {id:'f_founderName', message:'Enter the founder’s full name.'},
     {id:'f_founderAddress', message:'Enter the incorporator’s physical address.'},
-    {id:'f_board2', message:'Enter the second board member’s name.'},
-    {id:'f_board3', message:'Enter the third board member’s name.'},
     {id:'f_president', message:'Enter the president or board chair.'},
     {id:'f_secretary', message:'Enter the secretary.'},
     {id:'f_treasurer', message:'Enter the treasurer.'},
@@ -1496,16 +1495,6 @@ function requirementMet(rule) {
 function validateCurrentStep() {
   clearStepErrors();
   let requirements=[...(REQUIRED_BY_STEP[fCur]||[])];
-  if(fCur===3) {
-    const selectedState=STATE_DATA[document.getElementById('f_stateSelect')?.value];
-    const minimum=Math.max(1, Number(selectedState?.minBoardMembers)||3);
-    requirements=requirements.filter(rule =>
-      !(rule.id==='f_board2' && minimum<2)
-      && !(rule.id==='f_board3' && minimum<3)
-    );
-    if(minimum>=4) requirements.push({id:'f_board4',message:`${selectedState.name} requires at least ${minimum} directors. Enter the fourth board member.`});
-    if(minimum>=5) requirements.push({id:'f_board5',message:`${selectedState.name} requires at least ${minimum} directors. Enter the fifth board member.`});
-  }
   const failures=requirements.filter(rule => !requirementMet(rule));
   if(!failures.length) return true;
 
@@ -1688,14 +1677,8 @@ function updateStateBanner(){
   if(!code){ banner.style.display='none'; return; }
   const sd=STATE_DATA[code];
   if(!sd){ banner.style.display='none'; return; }
-  const unique=(sd.unique||[]).slice(0,4).map(u=>`<li>${u}</li>`).join('');
-  banner.innerHTML=`<div class="state-banner">
-    <strong>📍 ${sd.name} — Key Requirements</strong>
-    <strong>Formation document:</strong> ${sd.form}<br>
-    <strong>Filing fee:</strong> $${sd.fee} &nbsp;|&nbsp; <strong>Processing:</strong> ${sd.processingDays} days &nbsp;|&nbsp; <strong>Solicitation reg:</strong> ${sd.solicitationSummary || 'Confirm registration, exemptions and fees with the state charity regulator'}
-    ${unique?`<ul style="margin-top:.4rem">${unique}</ul>`:''}
-    <a href="${sd.agencyUrl}" target="_blank" style="color:var(--green);font-size:13px">Visit ${sd.agency} ↗</a>
-  </div>`;
+  banner.innerHTML=`<div class="state-banner"><strong>${sd.name} official filing resources</strong>
+    <p>Verify the official form, fees and board requirements before filing.</p><p>${stateFilingResources(sd)}</p></div>`;
   banner.style.display='block';
 }
 
@@ -1773,26 +1756,8 @@ function buildSummary(){
   // State next steps
   const sns=document.getElementById('stateNextSteps');
   if(sd){
-    sns.innerHTML=`<table class="state-table" style="margin-bottom:.875rem">
-      <tr><td>Your state</td><td><strong>${sd.name}</strong></td></tr>
-      <tr><td>Document to file</td><td>${sd.form}</td></tr>
-      <tr><td>File with</td><td><a href="${sd.agencyUrl}" target="_blank" style="color:var(--green)">${sd.agency} ↗</a></td></tr>
-      <tr><td>State filing fee</td><td><strong>$${sd.fee}</strong></td></tr>
-      <tr><td>Solicitation registration</td><td>${sd.solicitationSummary || 'Confirm registration, exemptions and current fees with the state charity regulator'}</td></tr>
-      <tr><td>Processing time</td><td>${sd.processingDays} business days</td></tr>
-      <tr><td>Illustrative subtotal if 1023-EZ eligible</td><td><strong>&#36;${sd.fee+(sd.solicitationFee||0)+275}</strong> (state fee + 1023-EZ)</td></tr>
-    </table>
-    <div style="background:var(--glight);border:1px solid var(--gmid);border-radius:var(--rs);padding:1rem;margin-bottom:.875rem;font-size:13px;color:var(--gdark);line-height:1.7">
-      <strong>Your filing sequence:</strong><br>
-      1. Review and file your Articles of Incorporation with ${sd.agency}.<br>
-      2. Keep your bylaws, conflict policy, and signed board minutes in your organization’s records.<br>
-      3. After state approval, request an EIN directly from the IRS.<br>
-      4. Submit Form 1023 or 1023-EZ and the IRS fee separately.<br>
-      5. Complete charitable solicitation registration if required in ${sd.name}.<br>
-      <strong>Start Your Cause does not complete or submit these filings for you.</strong>
-    </div>
-    <p style="font-size:13px;color:var(--tmid);line-height:1.6">${sd.notes}</p>
-    ${sd.unique&&sd.unique.length?`<ul style="font-size:13px;color:var(--tmid);padding-left:1.25rem;margin-top:.5rem;line-height:1.8">${sd.unique.map(u=>`<li>${u}</li>`).join('')}</ul>`:''}`;
+    sns.innerHTML=`<h3>${sd.name} filing preparation</h3><p>${stateFilingResources(sd)}</p>
+    <p>Verify the official form, current fees, approvals and signatures. Check charity registration before soliciting, including in other jurisdictions where you plan to fundraise. Use the IRS application instructions to confirm whether and how to apply for recognition.</p>`;
   } else {
     sns.innerHTML=`<p style="font-size:14px;color:var(--tmid)">Select your state in Step 3 to see state-specific requirements here.</p>`;
   }
@@ -1841,7 +1806,7 @@ function buildComplianceCalendar() {
     { month: period.due, task: `Nominal IRS annual-return/notice deadline for ${period.label}; confirm weekends, legal holidays and special relief.`, type: 'irs', urgent: true },
     { month: period.due, task: 'Eligible Forms 990/990-EZ/990-PF: request a six-month filing extension with Form 8868 when needed. Form 990-N cannot be extended.', type: 'irs' },
     { month: 'Varies', task: `${sd ? sd.name + ' state' : 'State'} annual report due — check ${sd ? sd.agency : 'your state agency'}`, type: 'state' },
-    { month: 'Varies', task: sd && sd.solicitationReg ? `Renew charitable solicitation registration in ${sd.name}` : 'Check if charitable solicitation renewal required', type: 'state' },
+    { month: 'Varies', task: 'Check charity registration, reporting and renewal with the applicable regulator', type: 'state' },
     { month: '6 months after original due date', task: 'Eligible return deadline only if a valid extension was obtained; confirm the adjusted date. Form 990-N has no extension.', type: 'irs' },
     { month: 'December', task: 'Year-end fundraising push — send donor appeals', type: 'donor' },
     { month: 'December 31', task: 'Donor deadline for tax-deductible gifts — send reminders', type: 'donor' },
@@ -1967,7 +1932,7 @@ async function doCheckout(planId, btn) {
     window.trackSycEvent('checkout_error', {
       plan_id: planId,
       checkout_source: 'pricing_page',
-      error_message: err.message
+      error_category: 'checkout_request_failed'
     });
     if (btn) {
       btn.textContent = orig;

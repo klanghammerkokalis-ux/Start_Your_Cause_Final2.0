@@ -61,3 +61,11 @@ const STATE_DATA = {
 
 // Helper: get sorted list for dropdowns
 const STATE_LIST = Object.entries(STATE_DATA).map(([code, d]) => ({ code, name: d.name })).sort((a, b) => a.name.localeCompare(b.name));
+
+// Use this directory for customer-facing references. Legacy figures above are
+// retained for source review and must not determine filing or intake requirements.
+function stateFilingResources(state) {
+  const official = state?.agencyUrl;
+  return (official ? '<a href="' + official + '" rel="noopener noreferrer">Jurisdiction corporation office</a> · ' : '')
+    + '<a href="https://www.irs.gov/charities-non-profits/state-links" rel="noopener noreferrer">IRS directory of state charity, corporation and tax offices</a>';
+}

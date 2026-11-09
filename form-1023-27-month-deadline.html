@@ -107,7 +107,7 @@
     const formatted=new Intl.DateTimeFormat('en-US',{year:'numeric',month:'long',day:'numeric',timeZone:'UTC'}).format(deadline);
     result.innerHTML='<h3>General 27-month date: '+formatted+'</h3><p>This is the last day of the 27th month after the end of the formation month. Filing by this date can generally preserve an approved effective date back to formation. Confirm the calculation and current IRS rules before relying on it.</p>';
     result.classList.add('show');
-    if(typeof gtag==='function')gtag('event','form_1023_deadline_result',{formation_month:input.value.slice(0,7)});
+    if(typeof trackSycResourceEvent==='function')trackSycResourceEvent('form_1023_deadline_result');
   });
 })();
 </script>

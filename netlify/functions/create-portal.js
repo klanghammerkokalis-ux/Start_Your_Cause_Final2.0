@@ -19,7 +19,9 @@ async function getVerifiedEmail(token) {
   return user && user.email ? user.email.trim().toLowerCase() : null;
 }
 
-async function findActiveCustomer(email) {
+const BILLING_STATUSES = new Set(['active', 'trialing', 'past_due', 'unpaid', 'paused']);
+
+async function findBillingCustomer(email) {
   const customers = await stripe.customers.list({ email, limit: 100 });
   for (const customer of customers.data) {
     const subscriptions = await stripe.subscriptions.list({
@@ -28,12 +30,12 @@ async function findActiveCustomer(email) {
       limit: 100,
       expand: ['data.items.data.price'],
     });
-    const active = subscriptions.data.some(subscription => {
-      if (!['active', 'trialing'].includes(subscription.status)) return false;
+    const canManageBilling = subscriptions.data.some(subscription => {
+      if (!BILLING_STATUSES.has(subscription.status)) return false;
       const price = subscription.items.data[0] && subscription.items.data[0].price;
       return price && ALLOWED_PRICES.has(price.id);
     });
-    if (active) return customer.id;
+    if (canManageBilling) return customer.id;
   }
   return null;
 }
@@ -68,7 +70,8 @@ exports.handler = async (event) => {
     const authorization = event.headers.authorization || event.headers.Authorization || '';
     const token = authorization.startsWith('Bearer ') ? authorization.slice(7).trim() : '';
     const email = await getVerifiedEmail(token);
-    const customerId = email ? await findActiveCustomer(email) : null;
+    if (!email) return json(401, { error: 'Sign-in required' });
+    const customerId = await findBillingCustomer(email);
 
     if (!customerId) {
       return json(403, { error: 'Verified customer access is required' });

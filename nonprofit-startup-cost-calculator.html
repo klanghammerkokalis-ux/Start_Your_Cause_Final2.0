@@ -32,7 +32,10 @@
         <div class="calc-field"><label for="buffer">Planning buffer</label><select id="buffer"><option value="0">No buffer</option><option value="25">Add $25</option><option value="50">Add $50</option><option value="100">Add $100</option></select></div>
       </div>
       <button class="btn" type="submit" style="margin-top:22px">Calculate my estimate</button>
-    </form>
+    <label for="formation-fee">Confirmed formation fee in USD</label><input id="formation-fee" type="number" min="0" step="0.01" required>
+<label for="charity-fee">Confirmed charity registration fee in USD</label><input id="charity-fee" type="number" min="0" step="0.01" required>
+<p>Enter zero only if the relevant agency confirms there is no fee or the filing does not apply.</p>
+</form>
     <section id="result" class="card result-panel" hidden tabindex="-1" aria-live="polite">
       <span class="tag">Estimated starting total</span><div class="total" id="total">$0</div>
       <div id="breakdown"></div>
@@ -41,8 +44,8 @@
       <a class="btn" href="/?view=form" data-track="calculator_to_form">Start the free questionnaire →</a>
       <a class="btn secondary" href="/1023-ez-eligibility-quiz" data-track="calculator_to_quiz">Check 1023-EZ indicators</a>
     </section>
-    <h2>What this estimate includes</h2><p>The total combines the incorporation fee shown in the Start Your Cause state guide, the selected IRS user fee, any charitable-solicitation registration fee listed in the guide, your optional support amount, and your selected buffer. Incorporation does not automatically create federal tax-exempt status.</p>
-    <div class="cta"><span class="tag">Founding customer offer</span><h2>Ready to organize the paperwork?</h2><p>Complete the four-question quick start without creating an account. Continue building the 13-document packet for $49 with code <strong>FOUNDERS49</strong>. One payment, 12 months of access, no automatic renewal, and government fees are separate.</p><a class="btn" href="/?view=form&utm_source=cost_calculator&utm_medium=organic&utm_campaign=founding_offer" data-track="calculator_bottom_cta">Create my free quick-start preview →</a></div>
+    <h2>What this estimate includes</h2><p>Enter the fees you confirm with the corporation office and charity regulator. The calculator adds those amounts to your selected IRS fee, optional support and buffer.</p>
+    <div class="cta"><span class="tag">Founding customer offer</span><h2>Ready to organize the paperwork?</h2><p>Complete the four-question quick start without creating an account. Continue building the 13-document packet for $49 with code <strong>FOUNDERS49</strong>. One payment, 365 days of access, no automatic renewal, and government fees are separate.</p><a class="btn" href="/?view=form&utm_source=cost_calculator&utm_medium=organic&utm_campaign=founding_offer" data-track="calculator_bottom_cta">Create my free quick-start preview →</a></div>
   </div>
 <section class="wrap" aria-label="Choose your next nonprofit step" data-offer="startup-next-step"><div class="card good"><h2 style="margin-top:0">Ready to turn your research into next steps?</h2><p>Choose the level of support that fits you.</p><div class="related"><div class="card"><h3>Work at your own pace</h3><p><strong>$79 one time</strong> for 12 months of Formation Package access. Use the guided questionnaire to generate customizable document templates and filing guidance.</p><a class="btn" href="/?view=form" data-track="resource_diy_offer_click">Start the free questionnaire →</a><p class="small">No payment required to begin. See <a href="/?view=pricing">current pricing and introductory offer terms</a>.</p></div><div class="card"><h3>Get a written task roadmap</h3><p><strong>$149 Guided Start pilot</strong> for a written startup task plan, official resource links, an information checklist, and one follow-up email exchange. No call required.</p><a class="btn secondary" href="/guided-start.html" data-track="resource_guided_offer_click">Ask about written planning →</a><p class="small">Scope, availability, and delivery date confirmed before payment. Document-package access is separate.</p></div></div><p class="small">Both options provide educational support. Government fees are separate. Start Your Cause does not provide legal or tax advice or submit filings.</p></div></section></main>
 <footer><div class="inner"><strong>Start Your Cause</strong><p>Plain-language nonprofit formation tools for everyday founders.</p><p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="mailto:hello@startyourcause.org">hello@startyourcause.org</a></p></div></footer>
@@ -56,15 +59,15 @@ document.getElementById('cost-form').addEventListener('submit',event=>{
   const irs=Number(document.getElementById('irs-form').value);
   const support=Math.max(0,Number(document.getElementById('support').value)||0);
   const buffer=Number(document.getElementById('buffer').value);
-  const stateFee=Number(data.fee)||0;
-  const solicitation=data.solicitationReg?(Number(data.solicitationFee)||0):0;
+  const stateFee=Number(document.getElementById('formation-fee').value);
+  const solicitation=Number(document.getElementById('charity-fee').value);
   const total=stateFee+irs+solicitation+support+buffer;
   document.getElementById('total').textContent=total.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
-  const rows=[['State incorporation fee',stateFee],['IRS application fee',irs],['Charitable-registration fee shown in guide',solicitation],['Optional support entered',support],['Planning buffer',buffer]];
+  const rows=[['State incorporation fee',stateFee],['IRS application fee',irs],['Charity registration fee entered',solicitation],['Optional support entered',support],['Planning buffer',buffer]];
   document.getElementById('breakdown').innerHTML=rows.map(([label,value])=>`<div class="cost-row"><span>${label}</span><span>${Number(value).toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0})}</span></div>`).join('');
-  document.getElementById('state-note').innerHTML=`For <strong>${data.name}</strong>: ${data.notes} <a href="${data.agencyUrl}" target="_blank" rel="noopener">Verify with ${data.agency} →</a>`;
+  document.getElementById('state-note').innerHTML=`For <strong>${data.name}</strong>: ${stateFilingResources(data)}`;
   const result=document.getElementById('result');result.hidden=false;result.focus();
-  if(window.trackSycEvent)window.trackSycEvent('calculator_complete',{calculator_name:'startup_cost',state:stateSelect.value,irs_fee:irs,estimated_total:total});
+  if(window.trackSycEvent)window.trackSycEvent('calculator_complete',{calculator_name:'startup_cost',state:stateSelect.value});
 });
 </script>
 </body></html>

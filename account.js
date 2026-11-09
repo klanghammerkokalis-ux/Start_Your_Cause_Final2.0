@@ -175,7 +175,7 @@ async function saveAccountProject(formData) {
       });
       if (!response.ok) throw new Error('Unable to save project');
       setAccountSaveStatus('Saved to your account');
-      if (typeof window.trackSycEvent === 'function') window.trackSycEvent('project_saved', { project_key: projectKey });
+      if (typeof window.trackSycEvent === 'function') window.trackSycEvent('project_saved', {});
     } catch (error) {
       console.error('Account save failed:', error);
       setAccountSaveStatus('Not saved — check your connection', true);
