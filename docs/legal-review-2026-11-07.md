@@ -46,3 +46,10 @@ The remaining six standalone state formation guides now distinguish the relevant
 - [New Jersey corporate registration guide](https://www.nj.gov/treasury/revenue/pdf/Legacy-Reg-Form-0825.pdf) and [charity registration and renewal](https://www.njconsumeraffairs.gov/charities/Pages/forms.aspx)
 - [North Carolina corporate reporting guidance](https://www.sosnc.gov/manual/business_registration_Reports/Page12) and [solicitation statutes and rules](https://www.sosnc.gov/documents/guides/charities/statutes_and_rules.pdf)
 - [Ohio continued existence instructions](https://www.ohiosos.gov/assets/522.pdf) and [charity registration and reporting](https://charitable.ohioago.gov/Charity-Registration)
+
+## Fee directory follow-up
+
+Clarified that the state fee directory covers domestic nonprofit incorporation, with separate charges possible for charitable registration, tax filings, and recurring reports. Added Minnesota’s method-specific prices and Oregon’s processing fee from their filing offices. The remaining rows labeled for verification still require a current filing-office check.
+
+- [Minnesota Secretary of State fee schedule](https://sos.mn.gov/fees)
+- [Oregon Secretary of State incorporation guide](https://sos.oregon.gov/business/documents/business-guides/start-business-guide.pdf)
