@@ -97,7 +97,8 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
-    'illinois-charitable-registration-before-fundraising'
+    'illinois-charitable-registration-before-fundraising',
+    'can-a-nonprofit-reimburse-founder-startup-expenses'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const redirects = fs.readFileSync('netlify.toml', 'utf8');
@@ -110,6 +111,20 @@ test('organic acquisition pages are indexable and linked', () => {
     assert.match(redirects, new RegExp(`from = "/${slug}"`));
     assert.match(resources, new RegExp(`href="/${slug}"`));
   }
+});
+
+test('founder reimbursement guide distinguishes substantiated expenses from insider benefits', () => {
+  const page = fs.readFileSync('can-a-nonprofit-reimburse-founder-startup-expenses.html', 'utf8');
+  assert.match(page, /Business connection/);
+  assert.match(page, /Adequate accounting/);
+  assert.match(page, /Return of excess/);
+  assert.match(page, /accounting within 60 days/);
+  assert.match(page, /returning an excess advance within 120 days/);
+  assert.match(page, /founder should not approve their own reimbursement/i);
+  assert.match(page, /should not also treat that cost as an unreimbursed charitable contribution/i);
+  assert.match(page, /do not approve reimbursements/);
+  assert.match(page, /G-BE983T68NN/);
+  assert.match(page, /data-slug="can-a-nonprofit-reimburse-founder-startup-expenses"/);
 });
 
 test('Form 1023 deadline calculator counts 27 months after the formation month', () => {
