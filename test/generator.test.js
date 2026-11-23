@@ -97,7 +97,8 @@ test('organic acquisition pages are indexable and linked', () => {
     'nonprofit-board-meeting-agenda-template',
     'nonprofit-organizational-meeting-minutes-template',
     'form-1023-27-month-deadline',
-    'illinois-charitable-registration-before-fundraising'
+    'illinois-charitable-registration-before-fundraising',
+    'does-an-illinois-nonprofit-need-members'
   ];
   const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
   const redirects = fs.readFileSync('netlify.toml', 'utf8');
@@ -110,6 +111,18 @@ test('organic acquisition pages are indexable and linked', () => {
     assert.match(redirects, new RegExp(`from = "/${slug}"`));
     assert.match(resources, new RegExp(`href="/${slug}"`));
   }
+});
+
+test('Illinois members guide distinguishes legal members from supporters and directors', () => {
+  const page = fs.readFileSync('does-an-illinois-nonprofit-need-members.html', 'utf8');
+  assert.match(page, /may have one or more classes of members or no members/i);
+  assert.match(page, /must appear in the articles of incorporation or bylaws/i);
+  assert.match(page, /at least <strong>three directors<\/strong>/);
+  assert.match(page, /donor, volunteer, subscriber, or program member does not automatically/i);
+  assert.match(page, /enter zero if they have no members/i);
+  assert.match(page, /do not choose a governance structure/i);
+  assert.match(page, /G-BE983T68NN/);
+  assert.match(page, /data-slug="does-an-illinois-nonprofit-need-members"/);
 });
 
 test('Form 1023 deadline calculator counts 27 months after the formation month', () => {
